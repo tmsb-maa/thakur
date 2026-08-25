@@ -30,6 +30,17 @@
   main h2 {
     margin-bottom: 20px;
   }
+   #logoutBtn {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-bottom: 15px;
+  }
 </style>
 </head>
 <body>
@@ -39,6 +50,7 @@
   </header>
 
   <main>
+   <button id="logoutBtn" onclick="logoutUser()">⏻</button>
     <h2>Welcome to the TMSB Library</h2>
     <!-- Tabs will go here -->
   </main>
@@ -46,7 +58,11 @@
   <footer>
     <p>Completely private and not for resale</p>
   </footer>
-
+<script>
+    function logoutUser() {
+      alert("Logout function will be connected once Firestore is set up.");
+    }
+  </script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
