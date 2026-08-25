@@ -60,6 +60,32 @@
   }
 
   #adminError { color: red; font-size: 13px; margin-top: 10px; text-align: center; }
+    header {
+    position: relative;
+  }
+
+  #adminLogoutBtn {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #e53935;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  @media (max-width: 480px) {
+    #adminLogoutBtn {
+      right: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+  }
 
   #panel { display: none; padding: 20px; max-width: 1000px; margin: 0 auto; }
 
@@ -155,7 +181,10 @@
 </head>
 <body>
 
-  <header>TMSB Admin Panel</header>
+  <header>
+  TMSB Admin Panel
+  <button id="adminLogoutBtn" onclick="adminLogout()">Logout</button>
+</header>
 
   <div id="adminLoginBox">
     <h3>Admin Login</h3>
@@ -218,6 +247,10 @@
     // ---- ADMIN ACCESS CONTROL ----
     // Only this email is allowed to use this page
     const ADMIN_EMAIL = "gtti.computer@gmail.com";
+
+function adminLogout() {
+  auth.signOut();
+}
 
     function adminLogin() {
       const email = document.getElementById('adminEmail').value;
