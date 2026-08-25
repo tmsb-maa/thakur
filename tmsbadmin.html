@@ -249,6 +249,10 @@
     const ADMIN_EMAIL = "gtti.computer@gmail.com";
 
 function adminLogout() {
+  if (usersListener) {
+    usersListener();
+    usersListener = null;
+  }
   auth.signOut();
 }
 
@@ -328,8 +332,10 @@ function adminLogout() {
     }
 
     // ---- LOAD USERS ----
+    let usersListener = null;
+
     function loadUsers() {
-      db.collection("users").onSnapshot((snapshot) => {
+      usersListener = db.collection("users").onSnapshot((snapshot) => {
         const tbody = document.getElementById('userTableBody');
         tbody.innerHTML = "";
         snapshot.forEach((doc) => {
