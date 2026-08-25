@@ -209,6 +209,7 @@
     }
 
         let profileListener = null;
+		let localSessionVersion = null;
 
     auth.onAuthStateChanged((user) => {
       const authBox = document.getElementById('authBox');
@@ -253,6 +254,14 @@
               return;
             }
 
+            if (localSessionVersion === null) {
+              localSessionVersion = data.sessionVersion || 0;
+            } else if (data.sessionVersion !== localSessionVersion) {
+              document.getElementById('authError').innerText = "You have been logged out by admin.";
+              auth.signOut();
+              return;
+            }
+			
             authBox.style.display = 'none';
             logoutBtn.style.display = 'block';
             welcomeText.style.display = 'block';
@@ -264,6 +273,7 @@
         logoutBtn.style.display = 'none';
         welcomeText.style.display = 'none';
         barContainer.style.display = 'none';
+		localSessionVersion = null;
       }
     });
   </script>

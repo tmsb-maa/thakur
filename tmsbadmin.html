@@ -268,7 +268,8 @@
             blocked: false,
             maxDevices: maxDevices,
             accessStart: start,
-            accessEnd: end
+            accessEnd: end,
+			sessionVersion: 0
           });
         })
         .then(() => {
@@ -309,6 +310,7 @@
               <button class="btnSmall block" onclick="setBlocked('${id}', true)">Block</button>
               <button class="btnSmall unblock" onclick="setBlocked('${id}', false)">Unblock</button>
               <button class="btnSmall reset" onclick="resetPin('${id}')">Reset PIN</button>
+			  <button class="btnSmall block" onclick="forceLogout('${id}')">Force Logout</button>
               <button class="btnSmall delete" onclick="deleteUser('${id}')">Delete</button>
             </td>
           `;
@@ -335,6 +337,14 @@
     function setBlocked(id, value) {
       db.collection("users").doc(id).update({ blocked: value });
     }
+
+function forceLogout(id) {
+  if (confirm("Force logout this user from ALL their devices?")) {
+    db.collection("users").doc(id).update({
+      sessionVersion: firebase.firestore.FieldValue.increment(1)
+    });
+  }
+}
 
     function resetPin(id) {
       const newPin = prompt("Enter new 6-digit PIN for this user:");
