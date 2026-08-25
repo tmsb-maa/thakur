@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMSB Admin</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+
+  header {
+    background-color: #FF8C00;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    font-size: 20px;
+  }
+
+  #adminLoginBox {
+    max-width: 320px;
+    margin: 60px auto;
+    padding: 30px 25px;
+    border: 2px solid #FF8C00;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: #fff;
+  }
+
+  #adminLoginBox h3 {
+    margin-bottom: 20px;
+    color: #FF8C00;
+    text-align: center;
+  }
+
+  #adminLoginBox input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+
+  #adminLoginBox button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #FFFFFF;
+    background-color: #FF8C00;
+  }
+
+  #adminError { color: red; font-size: 13px; margin-top: 10px; text-align: center; }
+
+  #panel { display: none; padding: 20px; max-width: 1000px; margin: 0 auto; }
+
+  #createUserBox {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+
+  #createUserBox h3 { margin-bottom: 15px; color: #FF8C00; }
+
+  #createUserBox input {
+    padding: 10px;
+    margin: 5px 5px 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  #createUserBox button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    background-color: #4CAF50;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 13px;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th { background-color: #FF8C00; color: #000; }
+
+  td input {
+    width: 90px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .btnSmall {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 12px;
+    margin: 2px;
+  }
+
+  .approve { background-color: #4CAF50; }
+  .block { background-color: #e53935; }
+  .unblock { background-color: #757575; }
+  .reset { background-color: #1e88e5; }
+  .save { background-color: #FF8C00; }
+  .delete { background-color: #000000; }
+
+  @media (max-width: 700px) {
+    table, thead, tbody, th, td, tr { display: block; }
+    th { display: none; }
+    td {
+      border: none;
+      border-bottom: 1px solid #eee;
+      position: relative;
+      padding-left: 45%;
+    }
+    td::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 10px;
+      font-weight: bold;
+      color: #FF8C00;
+    }
+    tr { border: 1px solid #ddd; margin-bottom: 12px; border-radius: 8px; overflow: hidden; }
+  }
+</style>
+</head>
+<body>
+
+  <header>TMSB Admin Panel</header>
+
+  <div id="adminLoginBox">
+    <h3>Admin Login</h3>
+    <input type="email" id="adminEmail" placeholder="Admin Email">
+    <input type="password" id="adminPassword" placeholder="Admin Password">
+    <button onclick="adminLogin()">Login</button>
+    <p id="adminError"></p>
+  </div>
+
+  <div id="panel">
+
+    <div id="createUserBox">
+      <h3>Create New User</h3>
+      <input type="text" id="newName" placeholder="Full Name">
+      <input type="email" id="newEmail" placeholder="Email">
+      <input type="text" id="newPin" placeholder="6-digit PIN" maxlength="6">
+      <input type="number" id="newMaxDevices" placeholder="Max Devices" value="1">
+      <input type="date" id="newStart">
+      <input type="date" id="newEnd">
+      <br>
+      <button onclick="createUser()">Create & Approve User</button>
+      <p id="createError" style="color:red;"></p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Approved</th>
+          <th>Blocked</th>
+          <th>Max Devices</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody">
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqmiTPNCbx2Kd9PKZdaKYrm_tKdR7gqzc",
+      authDomain: "tmsb-online-library.firebaseapp.com",
+      projectId: "tmsb-online-library",
+      storageBucket: "tmsb-online-library.firebasestorage.app",
+      messagingSenderId: "305360233952",
+      appId: "1:305360233952:web:3c92404970ac61c6143785"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ---- ADMIN ACCESS CONTROL ----
+    // Only this email is allowed to use this page
+    const ADMIN_EMAIL = "gtti.computer@gmail.com";
+
+    function adminLogin() {
+      const email = document.getElementById('adminEmail').value;
+      const password = document.getElementById('adminPassword').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then((cred) => {
+          if (cred.user.email !== ADMIN_EMAIL) {
+            document.getElementById('adminError').innerText = "Not authorized as admin.";
+            auth.signOut();
+          }
+        })
+        .catch((error) => {
+          document.getElementById('adminError').innerText = error.message;
+        });
+    }
+
+    auth.onAuthStateChanged((user) => {
+      if (user && user.email === ADMIN_EMAIL) {
+        document.getElementById('adminLoginBox').style.display = 'none';
+        document.getElementById('panel').style.display = 'block';
+        loadUsers();
+      } else {
+        document.getElementById('adminLoginBox').style.display = 'block';
+        document.getElementById('panel').style.display = 'none';
+      }
+    });
+
+    // ---- CREATE USER ----
+    function createUser() {
+      const name = document.getElementById('newName').value.trim();
+      const email = document.getElementById('newEmail').value.trim();
+      const pin = document.getElementById('newPin').value.trim();
+      const maxDevices = parseInt(document.getElementById('newMaxDevices').value) || 1;
+      const start = document.getElementById('newStart').value;
+      const end = document.getElementById('newEnd').value;
+      const errorBox = document.getElementById('createError');
+      errorBox.innerText = "";
+
+      if (!name || !email || pin.length !== 6 || !/^\d{6}$/.test(pin)) {
+        errorBox.innerText = "Please fill all fields. PIN must be exactly 6 digits.";
+        return;
+      }
+
+      // Create a secondary Firebase app instance so creating this user
+      // does not log the admin out of their own session.
+      const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
+      secondaryApp.auth().createUserWithEmailAndPassword(email, pin)
+        .then((cred) => {
+          return db.collection("users").doc(cred.user.uid).set({
+            name: name,
+            email: email,
+            approved: true,
+            blocked: false,
+            maxDevices: maxDevices,
+            accessStart: start,
+            accessEnd: end
+          });
+        })
+        .then(() => {
+          secondaryApp.auth().signOut();
+          secondaryApp.delete();
+          document.getElementById('newName').value = "";
+          document.getElementById('newEmail').value = "";
+          document.getElementById('newPin').value = "";
+          document.getElementById('newMaxDevices').value = "1";
+          document.getElementById('newStart').value = "";
+          document.getElementById('newEnd').value = "";
+        })
+        .catch((error) => {
+          errorBox.innerText = error.message;
+        });
+    }
+
+    // ---- LOAD USERS ----
+    function loadUsers() {
+      db.collection("users").onSnapshot((snapshot) => {
+        const tbody = document.getElementById('userTableBody');
+        tbody.innerHTML = "";
+        snapshot.forEach((doc) => {
+          const u = doc.data();
+          const id = doc.id;
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td data-label="Name">${u.name || ""}</td>
+            <td data-label="Email">${u.email || ""}</td>
+            <td data-label="Approved">${u.approved ? "Yes" : "No"}</td>
+            <td data-label="Blocked">${u.blocked ? "Yes" : "No"}</td>
+            <td data-label="Max Devices"><input type="number" id="dev-${id}" value="${u.maxDevices || 1}"></td>
+            <td data-label="Start"><input type="date" id="start-${id}" value="${u.accessStart || ''}"></td>
+            <td data-label="End"><input type="date" id="end-${id}" value="${u.accessEnd || ''}"></td>
+            <td data-label="Actions">
+              <button class="btnSmall save" onclick="saveUser('${id}')">Save</button>
+              <button class="btnSmall approve" onclick="setApproved('${id}', true)">Approve</button>
+              <button class="btnSmall block" onclick="setBlocked('${id}', true)">Block</button>
+              <button class="btnSmall unblock" onclick="setBlocked('${id}', false)">Unblock</button>
+              <button class="btnSmall reset" onclick="resetPin('${id}')">Reset PIN</button>
+              <button class="btnSmall delete" onclick="deleteUser('${id}')">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      });
+    }
+
+    function saveUser(id) {
+      const maxDevices = parseInt(document.getElementById(`dev-${id}`).value) || 1;
+      const start = document.getElementById(`start-${id}`).value;
+      const end = document.getElementById(`end-${id}`).value;
+      db.collection("users").doc(id).update({
+        maxDevices: maxDevices,
+        accessStart: start,
+        accessEnd: end
+      });
+    }
+
+    function setApproved(id, value) {
+      db.collection("users").doc(id).update({ approved: value });
+    }
+
+    function setBlocked(id, value) {
+      db.collection("users").doc(id).update({ blocked: value });
+    }
+
+    function resetPin(id) {
+      const newPin = prompt("Enter new 6-digit PIN for this user:");
+      if (!newPin || !/^\d{6}$/.test(newPin)) {
+        alert("PIN must be exactly 6 digits.");
+        return;
+      }
+      alert("Note: Resetting the login PIN requires a Cloud Function (admin SDK) since this can't be done from the browser alone. This button is a placeholder until that's set up — let Claude know when you're ready to add it.");
+    }
+
+    function deleteUser(id) {
+      if (confirm("Delete this user's access record? (Note: this removes their Firestore profile; deleting their login account fully requires a Cloud Function.)")) {
+        db.collection("users").doc(id).delete();
+      }
+    }
+  </script>
+
+</body>
+</html>
