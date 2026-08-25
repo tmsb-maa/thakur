@@ -158,7 +158,7 @@
 </div>
    <button id="logoutBtn" onclick="logoutUser()">⏻</button>
     <h2 id="welcomeText">Welcome to the TMSB Library</h2>
-	<div class="barContainer">
+	<div class="barContainer" id="barContainer">
   <div class="bar" style="background-color:#4CAF50;">Quote of the Day</div>
 </div>
     <!-- Tabs will go here -->
@@ -214,10 +214,12 @@
         authBox.style.display = 'none';
         logoutBtn.style.display = 'block';
         welcomeText.style.display = 'block';
+		document.getElementById('barContainer').style.display = 'flex';
       } else {
         authBox.style.display = 'block';
         logoutBtn.style.display = 'none';
         welcomeText.style.display = 'none';
+		document.getElementById('barContainer').style.display = 'none';
       }
     });
   </script>
