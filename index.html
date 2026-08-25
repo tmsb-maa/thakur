@@ -69,18 +69,75 @@
   </header>
 
   <main>
+   <div id="authBox">
+  <h3>Login / Sign Up</h3>
+  <input type="email" id="emailInput" placeholder="Email"><br><br>
+  <input type="password" id="passwordInput" placeholder="Password"><br><br>
+  <button onclick="signupUser()">Sign Up</button>
+  <button onclick="loginUser()">Login</button>
+  <p id="authError" style="color:red;"></p>
+</div>
    <button id="logoutBtn" onclick="logoutUser()">⏻</button>
-    <h2>Welcome to the TMSB Library</h2>
+    <h2 id="welcomeText">Welcome to the TMSB Library</h2>
     <!-- Tabs will go here -->
   </main>
 
   <footer>
     <p>Completely private and not for resale</p>
   </footer>
+
+ <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
 <script>
-    function logoutUser() {
-      alert("Logout function will be connected once Firestore is set up.");
+  const firebaseConfig = {
+    apiKey: "AIzaSyDqmiTPNCbx2Kd9PKZdaKYrm_tKdR7gqzc",
+    authDomain: "tmsb-online-library.firebaseapp.com",
+    projectId: "tmsb-online-library",
+    storageBucket: "tmsb-online-library.firebasestorage.app",
+    messagingSenderId: "305360233952",
+    appId: "1:305360233952:web:3c92404970ac61c6143785"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+</script>
+ <script>
+        function signupUser() {
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .catch((error) => {
+          document.getElementById('authError').innerText = error.message;
+        });
     }
+
+    function loginUser() {
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .catch((error) => {
+          document.getElementById('authError').innerText = error.message;
+        });
+    }
+
+    function logoutUser() {
+      auth.signOut();
+    }
+
+    auth.onAuthStateChanged((user) => {
+      const authBox = document.getElementById('authBox');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const welcomeText = document.getElementById('welcomeText');
+      if (user) {
+        authBox.style.display = 'none';
+        logoutBtn.style.display = 'block';
+        welcomeText.style.display = 'block';
+      } else {
+        authBox.style.display = 'block';
+        logoutBtn.style.display = 'none';
+        welcomeText.style.display = 'none';
+      }
+    });
   </script>
   <script>
     if ('serviceWorker' in navigator) {
