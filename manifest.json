@@ -1,5 +1,6 @@
 {
   "name": "TMSB Education",
+  "version": "1.0.1",
   "short_name": "TMSB",
   "start_url": "./index.html",
   "display": "standalone",
