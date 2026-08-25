@@ -208,6 +208,10 @@
     }
 
     function logoutUser() {
+      if (profileListener) {
+        profileListener();
+        profileListener = null;
+      }
       auth.signOut();
     }
 

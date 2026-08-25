@@ -183,7 +183,7 @@
 
   <header>
   TMSB Admin Panel
-  <button id="adminLogoutBtn" onclick="adminLogout()">Logout</button>
+  <button id="adminLogoutBtn" onclick="adminLogout()" style="display:none;">⏻</button>
 </header>
 
   <div id="adminLoginBox">
@@ -271,10 +271,12 @@ function adminLogout() {
       if (user && user.email === ADMIN_EMAIL) {
         document.getElementById('adminLoginBox').style.display = 'none';
         document.getElementById('panel').style.display = 'block';
+        document.getElementById('adminLogoutBtn').style.display = 'block';
         loadUsers();
       } else {
         document.getElementById('adminLoginBox').style.display = 'block';
         document.getElementById('panel').style.display = 'none';
+        document.getElementById('adminLogoutBtn').style.display = 'none';
       }
     });
 
