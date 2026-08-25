@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TMSB Education</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#FF8C00">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: Arial, sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
@@ -42,6 +46,14 @@
   <footer>
     <p>Completely private and not for resale</p>
   </footer>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js');
+      });
+    }
+  </script>
 
 </body>
 </html>
