@@ -153,7 +153,6 @@
   <h3>Login / Sign Up</h3>
   <input type="email" id="emailInput" placeholder="Email">
   <input type="password" id="passwordInput" placeholder="Password">
-  <button onclick="signupUser()">Sign Up</button>
   <button onclick="loginUser()">Login</button>
   <p id="authError" style="color:red;"></p>
 </div>
@@ -171,6 +170,7 @@
 
  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
   const firebaseConfig = {
@@ -183,6 +183,7 @@
   };
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
+  const db = firebase.firestore();
 </script>
  <script>
         function signupUser() {
@@ -207,20 +208,62 @@
       auth.signOut();
     }
 
+        let profileListener = null;
+
     auth.onAuthStateChanged((user) => {
       const authBox = document.getElementById('authBox');
       const logoutBtn = document.getElementById('logoutBtn');
       const welcomeText = document.getElementById('welcomeText');
+      const barContainer = document.getElementById('barContainer');
+
+      if (profileListener) {
+        profileListener();
+        profileListener = null;
+      }
+
       if (user) {
-        authBox.style.display = 'none';
-        logoutBtn.style.display = 'block';
-        welcomeText.style.display = 'block';
-		document.getElementById('barContainer').style.display = 'flex';
+        profileListener = db.collection("users").doc(user.uid)
+          .onSnapshot((doc) => {
+            if (!doc.exists) {
+              document.getElementById('authError').innerText = "Account not found. Contact admin.";
+              auth.signOut();
+              return;
+            }
+            const data = doc.data();
+            const today = new Date().toISOString().split('T')[0];
+
+            if (!data.approved) {
+              document.getElementById('authError').innerText = "Account pending admin approval.";
+              auth.signOut();
+              return;
+            }
+            if (data.blocked) {
+              document.getElementById('authError').innerText = "Account has been blocked by admin.";
+              auth.signOut();
+              return;
+            }
+            if (data.accessStart && today < data.accessStart) {
+              document.getElementById('authError').innerText = "Access not yet started.";
+              auth.signOut();
+              return;
+            }
+            if (data.accessEnd && today > data.accessEnd) {
+              document.getElementById('authError').innerText = "Access period has expired.";
+              auth.signOut();
+              return;
+            }
+
+            authBox.style.display = 'none';
+            logoutBtn.style.display = 'block';
+            welcomeText.style.display = 'block';
+            barContainer.style.display = 'flex';
+            document.getElementById('authError').innerText = "";
+          });
       } else {
         authBox.style.display = 'block';
         logoutBtn.style.display = 'none';
         welcomeText.style.display = 'none';
-		document.getElementById('barContainer').style.display = 'none';
+        barContainer.style.display = 'none';
       }
     });
   </script>
