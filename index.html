@@ -28,7 +28,56 @@
     padding: 30px;
     text-align: center;
   }
+  #authBox {
+    max-width: 320px;
+    margin: 60px auto;
+    padding: 30px 25px;
+    border: 2px solid #FF8C00;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
 
+  #authBox h3 {
+    margin-bottom: 20px;
+    color: #FF8C00;
+    font-size: 20px;
+  }
+
+  #authBox input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+
+  #authBox input:focus {
+    outline: none;
+    border-color: #FF8C00;
+  }
+
+  #authBox button {
+    width: 48%;
+    padding: 12px;
+    margin: 5px 1%;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #FFFFFF;
+    background-color: #FF8C00;
+  }
+
+  #authBox button:hover {
+    background-color: #e67c00;
+  }
+
+  #authError {
+    margin-top: 10px;
+    font-size: 13px;
+  }
   main h2 {
     font-size: 22px;
     padding: 0 10px;
@@ -58,6 +107,15 @@
       top: 12px;
       right: 12px;
     }
+        #authBox {
+      max-width: 90%;
+      margin: 30px auto;
+      padding: 20px 15px;
+    }
+    #authBox button {
+      width: 100%;
+      margin: 5px 0;
+    }
     footer p { font-size: 13px; }
   }
 </style>
@@ -71,8 +129,8 @@
   <main>
    <div id="authBox">
   <h3>Login / Sign Up</h3>
-  <input type="email" id="emailInput" placeholder="Email"><br><br>
-  <input type="password" id="passwordInput" placeholder="Password"><br><br>
+  <input type="email" id="emailInput" placeholder="Email">
+  <input type="password" id="passwordInput" placeholder="Password">
   <button onclick="signupUser()">Sign Up</button>
   <button onclick="loginUser()">Login</button>
   <p id="authError" style="color:red;"></p>
