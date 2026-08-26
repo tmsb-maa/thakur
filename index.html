@@ -159,7 +159,7 @@
   <input type="password" id="passwordInput" placeholder="Password">
   <button onclick="loginUser()">Login</button>
   </div>
-  <p style="margin-top:10px; font-size:14px;">New user? <a href="#" onclick="showSignup(); return false;">Sign up here</a></p>
+  <p id="signupPrompt" style="margin-top:15px; font-size:16px; font-weight:bold;">New user? <a href="#" onclick="showSignup(); return false;" style="color:#FF8C00; text-decoration:underline;">Sign up here</a></p>
   <p id="authError" style="color:red;"></p>
   <div id="signupBox" style="display:none; margin-top:20px; border-top:1px solid #eee; padding-top:20px;">
   <h3>Create Account</h3>
@@ -219,6 +219,7 @@
 
     function showSignup() {
       document.getElementById('loginFields').style.display = 'none';
+      document.getElementById('signupPrompt').style.display = 'none';
       document.getElementById('signupBox').style.display = 'block';
       document.getElementById('authTitle').innerText = 'Sign Up';
       document.getElementById('authError').innerText = '';
@@ -226,6 +227,7 @@
 
     function showLogin() {
       document.getElementById('loginFields').style.display = 'block';
+      document.getElementById('signupPrompt').style.display = 'block';
       document.getElementById('signupBox').style.display = 'none';
       document.getElementById('authTitle').innerText = 'Login';
       document.getElementById('signupError').innerText = '';
@@ -295,12 +297,7 @@
         .then(() => {
           localStorage.setItem('tmsb_signup_done', 'true');
           auth.signOut();
-          alert("Please call Admin to get authorized your account. Thanks.");
-          showLogin();
-          document.getElementById('signupName').value = '';
-          document.getElementById('signupEmail').value = '';
-          document.getElementById('signupPin').value = '';
-          document.getElementById('signupPinConfirm').value = '';
+          document.getElementById('authBox').innerHTML = '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:30px 10px;">Please call Admin to get authorized your account. Thanks.</p>';
         })
         .catch((error) => {
           errorBox.innerText = error.message;
