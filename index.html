@@ -289,9 +289,10 @@
       const name = toTitleCase(rawName);
       const deviceId = getDeviceId();
 
-      auth.createUserWithEmailAndPassword(email, pin)
+      const secondaryApp = firebase.initializeApp(firebaseConfig, "SignupSecondary");
+      secondaryApp.auth().createUserWithEmailAndPassword(email, pin)
         .then((cred) => {
-          return db.collection("users").doc(cred.user.uid).set({
+          return secondaryApp.firestore().collection("users").doc(cred.user.uid).set({
             name: name,
             email: email,
             approved: false,
@@ -302,14 +303,16 @@
             sessionVersion: 0,
             devices: []
           }).then(() => {
+            return secondaryApp.auth().signOut();
+          }).then(() => {
+            secondaryApp.delete();
             localStorage.setItem('tmsb_signup_done', 'true');
-            auth.signOut();
             document.getElementById('authBox').innerHTML = '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:30px 10px;">Please call Admin to get authorized your account. Thanks.</p>';
           }).catch((firestoreError) => {
             errorBox.innerText = "Profile creation failed: " + firestoreError.message;
           });
         })
-                .catch((authError) => {
+        .catch((authError) => {
           errorBox.innerText = authError.message;
         });
       } catch (e) {
