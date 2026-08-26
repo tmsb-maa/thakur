@@ -217,6 +217,15 @@
 
         let profileListener = null;
 		let localSessionVersion = null;
+	
+	    function getDeviceId() {
+      let id = localStorage.getItem('tmsb_device_id');
+      if (!id) {
+        id = 'dev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('tmsb_device_id', id);
+      }
+      return id;
+    }
 
     auth.onAuthStateChanged((user) => {
       const authBox = document.getElementById('authBox');
@@ -267,6 +276,19 @@
               document.getElementById('authError').innerText = "You have been logged out by admin.";
               auth.signOut();
               return;
+            }
+			            const deviceId = getDeviceId();
+            const devices = data.devices || [];
+
+            if (!devices.includes(deviceId)) {
+              if (devices.length >= (data.maxDevices || 1)) {
+                document.getElementById('authError').innerText = "Device limit reached. Contact admin.";
+                auth.signOut();
+                return;
+              }
+              db.collection("users").doc(user.uid).update({
+                devices: firebase.firestore.FieldValue.arrayUnion(deviceId)
+              });
             }
 			
             authBox.style.display = 'none';

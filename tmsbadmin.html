@@ -313,7 +313,8 @@ function adminLogout() {
             maxDevices: maxDevices,
             accessStart: start,
             accessEnd: end,
-			sessionVersion: 0
+			sessionVersion: 0,
+			devices: []
           });
         })
         .then(() => {
@@ -347,7 +348,7 @@ function adminLogout() {
             <td data-label="Email">${u.email || ""}</td>
             <td data-label="Approved">${u.approved ? "Yes" : "No"}</td>
             <td data-label="Blocked">${u.blocked ? "Yes" : "No"}</td>
-            <td data-label="Max Devices"><input type="number" id="dev-${id}" value="${u.maxDevices || 1}"></td>
+            <td data-label="Max Devices"><input type="number" id="dev-${id}" value="${u.maxDevices || 1}"><br><small>${(u.devices || []).length} registered</small></td>
             <td data-label="Start"><input type="date" id="start-${id}" value="${u.accessStart || ''}"></td>
             <td data-label="End"><input type="date" id="end-${id}" value="${u.accessEnd || ''}"></td>
             <td data-label="Actions">
@@ -385,9 +386,10 @@ function adminLogout() {
     }
 
 function forceLogout(id) {
-  if (confirm("Force logout this user from ALL their devices?")) {
+  if (confirm("Force logout this user from ALL devices and clear registered devices?")) {
     db.collection("users").doc(id).update({
-      sessionVersion: firebase.firestore.FieldValue.increment(1)
+      sessionVersion: firebase.firestore.FieldValue.increment(1),
+      devices: []
     });
   }
 }
