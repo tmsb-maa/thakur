@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quote of the Day - TMS Library</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#FF8C00">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+
+  header, footer {
+    background-color: #FF8C00;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #backBtn {
+    background: none;
+    border: none;
+    color: #000000;
+    font-size: 26px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 10px;
+  }
+
+  #headerTitle {
+    flex: 1;
+    text-align: center;
+    font-size: 18px;
+  }
+
+  #logoutBtn {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    font-size: 20px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  main {
+    flex: 1;
+    background-color: #FFFFFF;
+    padding: 30px 20px;
+  }
+
+  #statusMsg {
+    text-align: center;
+    font-size: 16px;
+    color: #FF8C00;
+    font-weight: bold;
+    margin-top: 60px;
+  }
+
+  #quoteContent {
+    display: none;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .quoteCard {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: #fff8f0;
+    border: 1px solid #FFDDB0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .avatar {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #FF8C00;
+    color: #fff;
+    font-weight: bold;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quoteText {
+    font-size: 16px;
+    font-style: italic;
+    margin-bottom: 6px;
+  }
+
+  .quoteAuthor {
+    font-size: 14px;
+    font-weight: bold;
+    color: #FF8C00;
+  }
+
+  @media (max-width: 480px) {
+    #headerTitle { font-size: 16px; }
+    #logoutBtn { width: 34px; height: 34px; font-size: 17px; }
+    .quoteCard { flex-direction: column; text-align: center; }
+    .quoteText { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <button id="backBtn" onclick="history.back()">&#8592;</button>
+    <h1 id="headerTitle">TMS Library</h1>
+    <button id="logoutBtn" onclick="logoutUser()">⏻</button>
+  </header>
+
+  <main>
+    <p id="statusMsg">Checking access...</p>
+
+    <div id="quoteContent">
+
+      <div class="quoteCard">
+        <div class="avatar">MG</div>
+        <div>
+          <p class="quoteText">"Be the change that you wish to see in the world."</p>
+          <p class="quoteAuthor">Mahatma Gandhi</p>
+        </div>
+      </div>
+
+      <div class="quoteCard">
+        <div class="avatar">AE</div>
+        <div>
+          <p class="quoteText">"Imagination is more important than knowledge."</p>
+          <p class="quoteAuthor">Albert Einstein</p>
+        </div>
+      </div>
+
+      <div class="quoteCard">
+        <div class="avatar">AL</div>
+        <div>
+          <p class="quoteText">"The best way to predict the future is to create it."</p>
+          <p class="quoteAuthor">Abraham Lincoln</p>
+        </div>
+      </div>
+
+      <div class="quoteCard">
+        <div class="avatar">RT</div>
+        <div>
+          <p class="quoteText">"Where the mind is without fear and the head is held high."</p>
+          <p class="quoteAuthor">Rabindranath Tagore</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>Completely private and not for resale</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqmiTPNCbx2Kd9PKZdaKYrm_tKdR7gqzc",
+      authDomain: "tmsb-online-library.firebaseapp.com",
+      projectId: "tmsb-online-library",
+      storageBucket: "tmsb-online-library.firebasestorage.app",
+      messagingSenderId: "305360233952",
+      appId: "1:305360233952:web:3c92404970ac61c6143785"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let profileListener = null;
+    let localSessionVersion = null;
+
+    function getDeviceId() {
+      let id = localStorage.getItem('tmsb_device_id');
+      if (!id) {
+        id = 'dev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('tmsb_device_id', id);
+      }
+      return id;
+    }
+
+    function logoutUser() {
+      if (profileListener) {
+        profileListener();
+        profileListener = null;
+      }
+      auth.signOut();
+    }
+
+    auth.onAuthStateChanged(function(user) {
+      const statusMsg = document.getElementById('statusMsg');
+      const quoteContent = document.getElementById('quoteContent');
+
+      if (profileListener) {
+        profileListener();
+        profileListener = null;
+      }
+
+      if (!user) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      profileListener = db.collection("users").doc(user.uid).onSnapshot(function(doc) {
+        if (!doc.exists) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        const data = doc.data();
+        const today = new Date().toISOString().split('T')[0];
+
+        if (!data.approved) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        if (data.blocked) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        if (data.accessStart && today < data.accessStart) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        if (data.accessEnd && today > data.accessEnd) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+
+        if (localSessionVersion === null) {
+          localSessionVersion = data.sessionVersion || 0;
+        } else if (data.sessionVersion !== localSessionVersion) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+
+        const deviceId = getDeviceId();
+        const devices = data.devices || [];
+
+        if (!devices.includes(deviceId)) {
+          if (devices.length >= (data.maxDevices || 1)) {
+            auth.signOut();
+            window.location.href = 'index.html';
+            return;
+          }
+          db.collection("users").doc(user.uid).update({
+            devices: firebase.firestore.FieldValue.arrayUnion(deviceId)
+          });
+        }
+
+        statusMsg.style.display = 'none';
+        quoteContent.style.display = 'block';
+      });
+    });
+  </script>
+
+</body>
+</html>
