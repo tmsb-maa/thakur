@@ -286,8 +286,10 @@
                 auth.signOut();
                 return;
               }
-              db.collection("users").doc(user.uid).update({
+                            db.collection("users").doc(user.uid).update({
                 devices: firebase.firestore.FieldValue.arrayUnion(deviceId)
+              }).catch((error) => {
+                alert("Device registration failed: " + error.message);
               });
             }
 			
