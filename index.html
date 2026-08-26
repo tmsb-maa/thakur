@@ -23,7 +23,27 @@
     padding: 20px;
     font-size: 16px;
   }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
+  #backBtn {
+    background: none;
+    border: none;
+    color: #000000;
+    font-size: 26px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 10px;
+  }
+
+  #headerTitle {
+    flex: 1;
+    text-align: center;
+    font-size: 18px;
+  }
   main {
     position: relative;
     flex: 1;
@@ -84,7 +104,7 @@
     color: red;
   }
 
-  #logoutBtn, #welcomeText, #barContainer {
+  #logoutBtn, #barContainer {
     display: none;
   }
 
@@ -113,34 +133,28 @@
   }
 
   #logoutBtn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
     background-color: #FF0000;
     color: #FFFFFF;
     border: none;
     border-radius: 50%;
-    width: 45px;
-    height: 45px;
+    width: 38px;
+    height: 38px;
     padding: 0;
-    font-size: 24px;
+    font-size: 20px;
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    flex-shrink: 0;
   }
 
   @media (max-width: 480px) {
-    header h1 { font-size: 20px; }
-    main h2 { font-size: 18px; }
+    #headerTitle { font-size: 16px; }
     #logoutBtn {
-      width: 38px;
-      height: 38px;
-      padding: 0;
-      font-size: 19px;
-      top: 12px;
-      right: 12px;
+      width: 34px;
+      height: 34px;
+      font-size: 17px;
     }
     #authBox {
       max-width: 90%;
@@ -162,8 +176,10 @@
 </head>
 <body>
 
-  <header>
-    <h1>TMSB Education</h1>
+<header>
+    <button id="backBtn" onclick="history.back()" style="display:none;">&#8592;</button>
+    <h1 id="headerTitle">TMS Library</h1>
+    <button id="logoutBtn" onclick="logoutUser()">⏻</button>
   </header>
 
   <main>
@@ -199,10 +215,8 @@
       </div>
     </div>
 
-    <button id="logoutBtn" onclick="logoutUser()">⏻</button>
-    <h2 id="welcomeText">Welcome to the TMSB Library</h2>
     <div class="barContainer" id="barContainer">
-      <div class="bar" style="background-color:#4CAF50;">Quote of the Day</div>
+      <div class="bar" style="background-color:#4CAF50;" onclick="window.location.href='quoteoftheday.html'">Quote of the Day</div>
     </div>
 
   </main>
@@ -357,7 +371,6 @@
     auth.onAuthStateChanged(function(user) {
       const authBox = document.getElementById('authBox');
       const logoutBtn = document.getElementById('logoutBtn');
-      const welcomeText = document.getElementById('welcomeText');
       const barContainer = document.getElementById('barContainer');
 
       if (profileListener) {
@@ -422,14 +435,12 @@
 
           authBox.style.display = 'none';
           logoutBtn.style.display = 'flex';
-          welcomeText.style.display = 'block';
           barContainer.style.display = 'flex';
           document.getElementById('authError').innerText = "";
         });
       } else {
         authBox.style.display = 'block';
         logoutBtn.style.display = 'none';
-        welcomeText.style.display = 'none';
         barContainer.style.display = 'none';
         localSessionVersion = null;
       }
