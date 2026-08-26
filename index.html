@@ -25,12 +25,13 @@
   }
 
   main {
-       position: relative;
+    position: relative;
     flex: 1;
     background-color: #FFFFFF;
     padding: 30px;
     text-align: center;
   }
+
   #authBox {
     max-width: 320px;
     margin: 60px auto;
@@ -80,8 +81,14 @@
   #authError {
     margin-top: 10px;
     font-size: 13px;
+    color: red;
   }
-    .barContainer {
+
+  #logoutBtn, #welcomeText, #barContainer {
+    display: none;
+  }
+
+  .barContainer {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -98,15 +105,14 @@
     cursor: pointer;
     text-align: center;
   }
-    #logoutBtn, #welcomeText, #barContainer {
-    display: none;
-  }
+
   main h2 {
     font-size: 22px;
     padding: 0 10px;
     margin-bottom: 20px;
   }
-     #logoutBtn {
+
+  #logoutBtn {
     position: absolute;
     top: 20px;
     right: 20px;
@@ -124,10 +130,11 @@
     justify-content: center;
     cursor: pointer;
   }
-   @media (max-width: 480px) {
+
+  @media (max-width: 480px) {
     header h1 { font-size: 20px; }
     main h2 { font-size: 18px; }
-        #logoutBtn {
+    #logoutBtn {
       width: 38px;
       height: 38px;
       padding: 0;
@@ -135,7 +142,7 @@
       top: 12px;
       right: 12px;
     }
-        #authBox {
+    #authBox {
       max-width: 90%;
       margin: 30px auto;
       padding: 20px 15px;
@@ -144,7 +151,7 @@
       width: 100%;
       margin: 5px 0;
     }
-	    .bar {
+    .bar {
       font-size: 19px;
       padding: 18px 0;
       font-weight: 700;
@@ -160,69 +167,77 @@
   </header>
 
   <main>
-   <div id="authBox">
-  <h3 id="authTitle">Login</h3>
-  <div id="loginFields">
-  <input type="email" id="emailInput" placeholder="Email">
-  <input type="password" id="passwordInput" placeholder="Password">
-  <button onclick="loginUser()">Login</button>
-  </div>
-  <p id="signupPrompt" style="margin-top:15px; font-size:16px; font-weight:bold;">New user? <a href="#" onclick="showSignup(); return false;" style="color:#FF8C00; text-decoration:underline;">Sign up here</a></p>
-  <p id="authError" style="color:red;"></p>
-  <div id="signupBox" style="display:none; margin-top:20px; border-top:1px solid #eee; padding-top:20px;">
-  <h3>Create Account</h3>
-  <input type="text" id="signupName" placeholder="Full Name">
-  <input type="email" id="signupEmail" placeholder="Email">
-  <div style="position:relative;">
-    <input type="text" id="signupPin" placeholder="6-digit PIN" maxlength="6">
-    <span onclick="togglePin('signupPin')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
-  </div>
-  <div style="position:relative;">
-    <input type="text" id="signupPinConfirm" placeholder="Confirm PIN" maxlength="6">
-    <span onclick="togglePin('signupPinConfirm')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
-  </div>
-  <button onclick="registerUser()" style="width:100%;">Register</button>
-  <p id="signupError" style="color:red; font-size:13px;"></p>
-  <p style="margin-top:10px; font-size:14px;"><a href="#" onclick="showLogin(); return false;">Back to Login</a></p>
-</div>
-</div>
-   <button id="logoutBtn" onclick="logoutUser()">⏻</button>
+
+    <div id="authBox">
+      <h3 id="authTitle">Login</h3>
+
+      <div id="loginFields">
+        <input type="email" id="emailInput" placeholder="Email">
+        <input type="password" id="passwordInput" placeholder="Password">
+        <button onclick="loginUser()">Login</button>
+      </div>
+
+      <p id="signupPrompt" style="margin-top:15px; font-size:16px; font-weight:bold;">New user? <a href="#" onclick="showSignup(); return false;" style="color:#FF8C00; text-decoration:underline;">Sign up here</a></p>
+
+      <p id="authError"></p>
+
+      <div id="signupBox" style="display:none; margin-top:20px; border-top:1px solid #eee; padding-top:20px;">
+        <h3>Create Account</h3>
+        <input type="text" id="signupName" placeholder="Full Name">
+        <input type="email" id="signupEmail" placeholder="Email">
+        <div style="position:relative;">
+          <input type="text" id="signupPin" placeholder="6-digit PIN" maxlength="6">
+          <span onclick="togglePin('signupPin')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
+        </div>
+        <div style="position:relative;">
+          <input type="text" id="signupPinConfirm" placeholder="Confirm PIN" maxlength="6">
+          <span onclick="togglePin('signupPinConfirm')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
+        </div>
+        <button onclick="registerUser()" style="width:100%;">Register</button>
+        <p id="signupError" style="color:red; font-size:13px;"></p>
+        <p style="margin-top:10px; font-size:14px;"><a href="#" onclick="showLogin(); return false;">Back to Login</a></p>
+      </div>
+    </div>
+
+    <button id="logoutBtn" onclick="logoutUser()">⏻</button>
     <h2 id="welcomeText">Welcome to the TMSB Library</h2>
-	<div class="barContainer" id="barContainer">
-  <div class="bar" style="background-color:#4CAF50;">Quote of the Day</div>
-</div>
-    <!-- Tabs will go here -->
+    <div class="barContainer" id="barContainer">
+      <div class="bar" style="background-color:#4CAF50;">Quote of the Day</div>
+    </div>
+
   </main>
 
   <footer>
     <p>Completely private and not for resale</p>
   </footer>
 
- <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDqmiTPNCbx2Kd9PKZdaKYrm_tKdR7gqzc",
-    authDomain: "tmsb-online-library.firebaseapp.com",
-    projectId: "tmsb-online-library",
-    storageBucket: "tmsb-online-library.firebasestorage.app",
-    messagingSenderId: "305360233952",
-    appId: "1:305360233952:web:3c92404970ac61c6143785"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-</script>
- <script>
-        function signupUser() {
-      const email = document.getElementById('emailInput').value;
-      const password = document.getElementById('passwordInput').value;
-      auth.createUserWithEmailAndPassword(email, password)
-        .catch((error) => {
-          document.getElementById('authError').innerText = error.message;
-        });
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqmiTPNCbx2Kd9PKZdaKYrm_tKdR7gqzc",
+      authDomain: "tmsb-online-library.firebaseapp.com",
+      projectId: "tmsb-online-library",
+      storageBucket: "tmsb-online-library.firebasestorage.app",
+      messagingSenderId: "305360233952",
+      appId: "1:305360233952:web:3c92404970ac61c6143785"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let profileListener = null;
+    let localSessionVersion = null;
+
+    function getDeviceId() {
+      let id = localStorage.getItem('tmsb_device_id');
+      if (!id) {
+        id = 'dev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('tmsb_device_id', id);
+      }
+      return id;
     }
 
     function showSignup() {
@@ -248,13 +263,12 @@
 
     function toTitleCase(str) {
       return str.trim().toLowerCase().split(' ')
-        .filter(w => w.length > 0)
-        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .filter(function(w) { return w.length > 0; })
+        .map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1); })
         .join(' ');
     }
 
     function registerUser() {
-      try {
       const errorBox = document.getElementById('signupError');
       errorBox.innerText = '';
 
@@ -287,11 +301,11 @@
       }
 
       const name = toTitleCase(rawName);
-      const deviceId = getDeviceId();
 
-      const secondaryApp = firebase.initializeApp(firebaseConfig, "SignupSecondary");
+      const secondaryApp = firebase.initializeApp(firebaseConfig, "SignupSecondary_" + Date.now());
+
       secondaryApp.auth().createUserWithEmailAndPassword(email, pin)
-        .then((cred) => {
+        .then(function(cred) {
           return secondaryApp.firestore().collection("users").doc(cred.user.uid).set({
             name: name,
             email: email,
@@ -302,30 +316,27 @@
             accessEnd: "",
             sessionVersion: 0,
             devices: []
-          }).then(() => {
-            return secondaryApp.auth().signOut();
-          }).then(() => {
-            secondaryApp.delete();
-            localStorage.setItem('tmsb_signup_done', 'true');
-            document.getElementById('authBox').innerHTML = '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:30px 10px;">Please call Admin to get authorized your account. Thanks.</p>';
-          }).catch((firestoreError) => {
-            errorBox.innerText = "Profile creation failed: " + firestoreError.message;
           });
         })
-        .catch((authError) => {
-          errorBox.innerText = authError.message;
+        .then(function() {
+          return secondaryApp.auth().signOut();
+        })
+        .then(function() {
+          secondaryApp.delete();
+          localStorage.setItem('tmsb_signup_done', 'true');
+          document.getElementById('authBox').innerHTML = '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:30px 10px;">Please call Admin to get authorized your account. Thanks.</p>';
+        })
+        .catch(function(error) {
+          errorBox.innerText = error.message;
+          try { secondaryApp.delete(); } catch (e) {}
         });
-      } catch (e) {
-        alert("JavaScript error: " + e.message);
-      }
-    }
     }
 
     function loginUser() {
       const email = document.getElementById('emailInput').value;
       const password = document.getElementById('passwordInput').value;
       auth.signInWithEmailAndPassword(email, password)
-        .catch((error) => {
+        .catch(function(error) {
           document.getElementById('authError').innerText = error.message;
         });
     }
@@ -338,19 +349,7 @@
       auth.signOut();
     }
 
-        let profileListener = null;
-		let localSessionVersion = null;
-	
-	    function getDeviceId() {
-      let id = localStorage.getItem('tmsb_device_id');
-      if (!id) {
-        id = 'dev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
-        localStorage.setItem('tmsb_device_id', id);
-      }
-      return id;
-    }
-
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(function(user) {
       const authBox = document.getElementById('authBox');
       const logoutBtn = document.getElementById('logoutBtn');
       const welcomeText = document.getElementById('welcomeText');
@@ -362,79 +361,80 @@
       }
 
       if (user) {
-        profileListener = db.collection("users").doc(user.uid)
-          .onSnapshot((doc) => {
-            if (!doc.exists) {
-              document.getElementById('authError').innerText = "Account not found. Contact admin.";
-              auth.signOut();
-              return;
-            }
-            const data = doc.data();
-            const today = new Date().toISOString().split('T')[0];
+        profileListener = db.collection("users").doc(user.uid).onSnapshot(function(doc) {
+          if (!doc.exists) {
+            document.getElementById('authError').innerText = "Account not found. Contact admin.";
+            auth.signOut();
+            return;
+          }
+          const data = doc.data();
+          const today = new Date().toISOString().split('T')[0];
 
-            if (!data.approved) {
-              document.getElementById('authError').innerText = "Account pending admin approval.";
-              auth.signOut();
-              return;
-            }
-            if (data.blocked) {
-              document.getElementById('authError').innerText = "Account has been blocked by admin.";
-              auth.signOut();
-              return;
-            }
-            if (data.accessStart && today < data.accessStart) {
-              document.getElementById('authError').innerText = "Access not yet started.";
-              auth.signOut();
-              return;
-            }
-            if (data.accessEnd && today > data.accessEnd) {
-              document.getElementById('authError').innerText = "Access period has expired.";
-              auth.signOut();
-              return;
-            }
+          if (!data.approved) {
+            document.getElementById('authError').innerText = "Account pending admin approval.";
+            auth.signOut();
+            return;
+          }
+          if (data.blocked) {
+            document.getElementById('authError').innerText = "Account has been blocked by admin.";
+            auth.signOut();
+            return;
+          }
+          if (data.accessStart && today < data.accessStart) {
+            document.getElementById('authError').innerText = "Access not yet started.";
+            auth.signOut();
+            return;
+          }
+          if (data.accessEnd && today > data.accessEnd) {
+            document.getElementById('authError').innerText = "Access period has expired.";
+            auth.signOut();
+            return;
+          }
 
-            if (localSessionVersion === null) {
-              localSessionVersion = data.sessionVersion || 0;
-            } else if (data.sessionVersion !== localSessionVersion) {
-              document.getElementById('authError').innerText = "You have been logged out by admin.";
+          if (localSessionVersion === null) {
+            localSessionVersion = data.sessionVersion || 0;
+          } else if (data.sessionVersion !== localSessionVersion) {
+            document.getElementById('authError').innerText = "You have been logged out by admin.";
+            auth.signOut();
+            return;
+          }
+
+          const deviceId = getDeviceId();
+          const devices = data.devices || [];
+
+          if (!devices.includes(deviceId)) {
+            if (devices.length >= (data.maxDevices || 1)) {
+              document.getElementById('authError').innerText = "Device limit reached. Contact admin.";
               auth.signOut();
               return;
             }
-			            const deviceId = getDeviceId();
-            const devices = data.devices || [];
+            db.collection("users").doc(user.uid).update({
+              devices: firebase.firestore.FieldValue.arrayUnion(deviceId)
+            }).catch(function(error) {
+              alert("Device registration failed: " + error.message);
+            });
+          }
 
-            if (!devices.includes(deviceId)) {
-              if (devices.length >= (data.maxDevices || 1)) {
-                document.getElementById('authError').innerText = "Device limit reached. Contact admin.";
-                auth.signOut();
-                return;
-              }
-                            db.collection("users").doc(user.uid).update({
-                devices: firebase.firestore.FieldValue.arrayUnion(deviceId)
-              }).catch((error) => {
-                alert("Device registration failed: " + error.message);
-              });
-            }
-			
-            authBox.style.display = 'none';
-            logoutBtn.style.display = 'block';
-            welcomeText.style.display = 'block';
-            barContainer.style.display = 'flex';
-            document.getElementById('authError').innerText = "";
-          });
+          authBox.style.display = 'none';
+          logoutBtn.style.display = 'flex';
+          welcomeText.style.display = 'block';
+          barContainer.style.display = 'flex';
+          document.getElementById('authError').innerText = "";
+        });
       } else {
         authBox.style.display = 'block';
         logoutBtn.style.display = 'none';
         welcomeText.style.display = 'none';
         barContainer.style.display = 'none';
-		localSessionVersion = null;
+        localSessionVersion = null;
       }
     });
   </script>
+
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js?v=3');
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js?v=4');
       });
     }
   </script>
