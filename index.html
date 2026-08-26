@@ -153,11 +153,30 @@
 
   <main>
    <div id="authBox">
-  <h3>Login / Sign Up</h3>
+  <h3 id="authTitle">Login</h3>
+  <div id="loginFields">
   <input type="email" id="emailInput" placeholder="Email">
   <input type="password" id="passwordInput" placeholder="Password">
   <button onclick="loginUser()">Login</button>
+  </div>
+  <p style="margin-top:10px; font-size:14px;">New user? <a href="#" onclick="showSignup(); return false;">Sign up here</a></p>
   <p id="authError" style="color:red;"></p>
+  <div id="signupBox" style="display:none; margin-top:20px; border-top:1px solid #eee; padding-top:20px;">
+  <h3>Create Account</h3>
+  <input type="text" id="signupName" placeholder="Full Name">
+  <input type="email" id="signupEmail" placeholder="Email">
+  <div style="position:relative;">
+    <input type="text" id="signupPin" placeholder="6-digit PIN" maxlength="6">
+    <span onclick="togglePin('signupPin')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
+  </div>
+  <div style="position:relative;">
+    <input type="text" id="signupPinConfirm" placeholder="Confirm PIN" maxlength="6">
+    <span onclick="togglePin('signupPinConfirm')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
+  </div>
+  <button onclick="registerUser()" style="width:100%;">Register</button>
+  <p id="signupError" style="color:red; font-size:13px;"></p>
+  <p style="margin-top:10px; font-size:14px;"><a href="#" onclick="showLogin(); return false;">Back to Login</a></p>
+</div>
 </div>
    <button id="logoutBtn" onclick="logoutUser()">⏻</button>
     <h2 id="welcomeText">Welcome to the TMSB Library</h2>
@@ -195,6 +214,96 @@
       auth.createUserWithEmailAndPassword(email, password)
         .catch((error) => {
           document.getElementById('authError').innerText = error.message;
+        });
+    }
+
+    function showSignup() {
+      document.getElementById('loginFields').style.display = 'none';
+      document.getElementById('signupBox').style.display = 'block';
+      document.getElementById('authTitle').innerText = 'Sign Up';
+      document.getElementById('authError').innerText = '';
+    }
+
+    function showLogin() {
+      document.getElementById('loginFields').style.display = 'block';
+      document.getElementById('signupBox').style.display = 'none';
+      document.getElementById('authTitle').innerText = 'Login';
+      document.getElementById('signupError').innerText = '';
+    }
+
+    function togglePin(id) {
+      const field = document.getElementById(id);
+      field.type = field.type === 'password' ? 'text' : 'password';
+    }
+
+    function toTitleCase(str) {
+      return str.trim().toLowerCase().split(' ')
+        .filter(w => w.length > 0)
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+    }
+
+    function registerUser() {
+      const errorBox = document.getElementById('signupError');
+      errorBox.innerText = '';
+
+      if (localStorage.getItem('tmsb_signup_done')) {
+        errorBox.innerText = 'This device has already been used to register an account.';
+        return;
+      }
+
+      const rawName = document.getElementById('signupName').value;
+      const email = document.getElementById('signupEmail').value.trim();
+      const pin = document.getElementById('signupPin').value.trim();
+      const pinConfirm = document.getElementById('signupPinConfirm').value.trim();
+
+      if (!rawName.trim()) {
+        errorBox.innerText = 'Please enter your full name.';
+        return;
+      }
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        errorBox.innerText = 'Please enter a valid email address.';
+        return;
+      }
+      if (!/^\d{6}$/.test(pin)) {
+        errorBox.innerText = 'PIN must be exactly 6 digits.';
+        return;
+      }
+      if (pin !== pinConfirm) {
+        errorBox.innerText = 'PIN and Confirm PIN do not match.';
+        return;
+      }
+
+      const name = toTitleCase(rawName);
+      const deviceId = getDeviceId();
+
+      auth.createUserWithEmailAndPassword(email, pin)
+        .then((cred) => {
+          return db.collection("users").doc(cred.user.uid).set({
+            name: name,
+            email: email,
+            approved: false,
+            blocked: false,
+            maxDevices: 2,
+            accessStart: "",
+            accessEnd: "",
+            sessionVersion: 0,
+            devices: []
+          });
+        })
+        .then(() => {
+          localStorage.setItem('tmsb_signup_done', 'true');
+          auth.signOut();
+          alert("Please call Admin to get authorized your account. Thanks.");
+          showLogin();
+          document.getElementById('signupName').value = '';
+          document.getElementById('signupEmail').value = '';
+          document.getElementById('signupPin').value = '';
+          document.getElementById('signupPinConfirm').value = '';
+        })
+        .catch((error) => {
+          errorBox.innerText = error.message;
         });
     }
 
