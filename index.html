@@ -292,15 +292,16 @@
             accessEnd: "",
             sessionVersion: 0,
             devices: []
+          }).then(() => {
+            localStorage.setItem('tmsb_signup_done', 'true');
+            auth.signOut();
+            document.getElementById('authBox').innerHTML = '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:30px 10px;">Please call Admin to get authorized your account. Thanks.</p>';
+          }).catch((firestoreError) => {
+            errorBox.innerText = "Profile creation failed: " + firestoreError.message;
           });
         })
-        .then(() => {
-          localStorage.setItem('tmsb_signup_done', 'true');
-          auth.signOut();
-          document.getElementById('authBox').innerHTML = '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:30px 10px;">Please call Admin to get authorized your account. Thanks.</p>';
-        })
-        .catch((error) => {
-          errorBox.innerText = error.message;
+        .catch((authError) => {
+          errorBox.innerText = authError.message;
         });
     }
 
