@@ -272,9 +272,14 @@
       const errorBox = document.getElementById('signupError');
       errorBox.innerText = '';
 
-      if (localStorage.getItem('tmsb_signup_done')) {
-        errorBox.innerText = 'This device has already been used to register an account.';
-        return;
+      const SIGNUP_COOLDOWN_MINUTES = 60; // <-- change this number to adjust the wait time
+      const lastSignupTime = localStorage.getItem('tmsb_signup_done');
+      if (lastSignupTime) {
+        const minutesPassed = (Date.now() - parseInt(lastSignupTime)) / 60000;
+        if (minutesPassed < SIGNUP_COOLDOWN_MINUTES) {
+          errorBox.innerText = 'This device recently registered an account. Please try again in ' + Math.ceil(SIGNUP_COOLDOWN_MINUTES - minutesPassed) + ' minutes.';
+          return;
+        }
       }
 
       const rawName = document.getElementById('signupName').value;
@@ -323,7 +328,7 @@
         })
         .then(function() {
           secondaryApp.delete();
-          localStorage.setItem('tmsb_signup_done', 'true');
+          localStorage.setItem('tmsb_signup_done', Date.now().toString());
           document.getElementById('authBox').innerHTML = '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:30px 10px;">Please call Admin to get authorized your account. Thanks.</p>';
         })
         .catch(function(error) {
