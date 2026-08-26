@@ -254,6 +254,7 @@
     }
 
     function registerUser() {
+      try {
       const errorBox = document.getElementById('signupError');
       errorBox.innerText = '';
 
@@ -308,9 +309,13 @@
             errorBox.innerText = "Profile creation failed: " + firestoreError.message;
           });
         })
-        .catch((authError) => {
+                .catch((authError) => {
           errorBox.innerText = authError.message;
         });
+      } catch (e) {
+        alert("JavaScript error: " + e.message);
+      }
+    }
     }
 
     function loginUser() {
