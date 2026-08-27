@@ -161,12 +161,7 @@
 
   <main>
     <p id="statusMsg">Checking access...</p>
-
-    <div id="quoteContent">
-      <div id="person1Card" class="quoteCard"></div>
-      <div id="person2Card" class="quoteCard"></div>
-      <div id="person3Card" class="quoteCard"></div>
-    </div>
+    <div id="quoteContent"></div>
   </main>
 
   <footer>
@@ -192,8 +187,8 @@
 
     let profileListener = null;
     let localSessionVersion = null;
-    const PERSON_IDS = ["person1", "person2", "person3"];
     const personState = {};
+    let quotesLoaded = false;
 
     function getDeviceId() {
       let id = localStorage.getItem('tmsb_device_id');
@@ -223,13 +218,13 @@
 
     function renderPerson(personId) {
       const state = personState[personId];
-      const card = document.getElementById(personId + 'Card');
-      if (!state) return;
+      const card = document.getElementById('card-' + personId);
+      if (!state || !card) return;
 
       if (!state.quotes || state.quotes.length === 0) {
         card.innerHTML =
           '<div class="avatar">' + (state.initials || '?') + '</div>' +
-          '<p class="quoteAuthor">' + (state.name || 'Not set up yet') + '</p>' +
+          '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
           '<p class="quoteText">No quotes added yet.</p>';
         return;
       }
@@ -257,48 +252,44 @@
       renderPerson(personId);
     }
 
-    async function loadAllQuotes() {
+    async function loadQuotesFromJson() {
+      const container = document.getElementById('quoteContent');
+      container.innerHTML = '';
+
+      let jsonData;
+      try {
+        const response = await fetch('quotes.json?t=' + Date.now());
+        jsonData = await response.json();
+      } catch (e) {
+        container.innerHTML = '<p style="text-align:center; color:#888;">Quotes not available right now. Please try again later.</p>';
+        return;
+      }
+
+      const intervalHours = jsonData.rotationHours || 24;
+      const persons = jsonData.persons || [];
       const deviceId = getDeviceId();
       const deviceHash = hashString(deviceId);
-
-      let intervalHours = 24;
-      try {
-        const settingsDoc = await db.collection("settings").doc("quoteRotation").get();
-        if (settingsDoc.exists && settingsDoc.data().intervalHours) {
-          intervalHours = settingsDoc.data().intervalHours;
-        }
-      } catch (e) {}
-
       const timeSlot = Math.floor(Date.now() / (intervalHours * 3600000));
 
-      for (const personId of PERSON_IDS) {
-        try {
-          const personDoc = await db.collection("quotePersons").doc(personId).get();
-          const personData = personDoc.exists ? personDoc.data() : {};
+      persons.forEach(function(person) {
+        const card = document.createElement('div');
+        card.className = 'quoteCard';
+        card.id = 'card-' + person.id;
+        container.appendChild(card);
 
-          const quotesSnap = await db.collection("quotePersons").doc(personId)
-            .collection("quotes").get();
+        const quotes = person.quotes || [];
+        personState[person.id] = {
+          name: person.name || '',
+          initials: person.initials || '',
+          quotes: quotes,
+          baseIndex: quotes.length > 0 ? ((timeSlot + deviceHash) % quotes.length) : 0,
+          manualOffset: 0
+        };
 
-          const quotes = [];
-          quotesSnap.forEach(function(q) {
-            const text = q.data().text;
-            if (text) quotes.push(text);
-          });
+        renderPerson(person.id);
+      });
 
-          personState[personId] = {
-            name: personData.name || '',
-            initials: personData.initials || '',
-            quotes: quotes,
-            baseIndex: quotes.length > 0 ? ((timeSlot + deviceHash) % quotes.length) : 0,
-            manualOffset: 0
-          };
-
-          renderPerson(personId);
-        } catch (e) {
-          personState[personId] = { name: '', initials: '?', quotes: [], baseIndex: 0, manualOffset: 0 };
-          renderPerson(personId);
-        }
-      }
+      quotesLoaded = true;
     }
 
     auth.onAuthStateChanged(function(user) {
@@ -369,7 +360,10 @@
 
         statusMsg.style.display = 'none';
         quoteContent.style.display = 'block';
-        loadAllQuotes();
+
+        if (!quotesLoaded) {
+          loadQuotesFromJson();
+        }
       });
     });
   </script>

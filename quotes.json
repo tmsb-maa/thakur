@@ -1,0 +1,13 @@
+{
+  "rotationHours": 24,
+  "persons": [
+    {
+      "id": "p_sample_1",
+      "name": "Sample Person",
+      "initials": "SP",
+      "quotes": [
+        "This is a sample quote. Open admin-quotes-editor.html to replace this with your real content."
+      ]
+    }
+  ]
+}
