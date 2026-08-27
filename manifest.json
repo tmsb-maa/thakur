@@ -1,7 +1,7 @@
 {
-  "name": "TMSB Education",
+  "name": "TMS Library",
   "version": "1.0.1",
-  "short_name": "TMSB",
+  "short_name": "TMS Library",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#FFFFFF",
