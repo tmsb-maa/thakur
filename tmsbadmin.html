@@ -99,6 +99,34 @@
 
   #createUserBox h3 { margin-bottom: 15px; color: #FF8C00; }
 
+  #statsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 25px;
+  }
+
+  .statCard {
+    background: #fff;
+    border: 2px solid #FF8C00;
+    border-radius: 10px;
+    padding: 18px 10px;
+    text-align: center;
+  }
+
+  .statCard .statNumber {
+    font-size: 28px;
+    font-weight: bold;
+    color: #FF8C00;
+  }
+
+  .statCard .statLabel {
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 5px;
+  }
+
   #createUserBox input {
     padding: 10px;
     margin: 5px 5px 5px 0;
@@ -226,6 +254,16 @@
 
       <p id="rotationStatus" style="color:green; font-weight:bold; margin-top:10px;"></p>
     </div>
+
+    <div id="statsGrid">
+      <div class="statCard"><div class="statNumber" id="statApproved">0</div><div class="statLabel">Approved Users</div></div>
+      <div class="statCard"><div class="statNumber" id="statPending">0</div><div class="statLabel">Pending Users</div></div>
+      <div class="statCard"><div class="statNumber" id="statTotalLic">0</div><div class="statLabel">Total Licenses</div></div>
+      <div class="statCard"><div class="statNumber" id="statActiveLic">0</div><div class="statLabel">Active Licenses</div></div>
+      <div class="statCard"><div class="statNumber" id="statInactiveLic">0</div><div class="statLabel">Inactive Licenses</div></div>
+      <div class="statCard"><div class="statNumber" id="statBlocked">0</div><div class="statLabel">Blocked Users</div></div>
+    </div>
+
     <div id="createUserBox">
       <h3>Create New User</h3>
       <input type="text" id="newName" placeholder="Full Name">
@@ -400,6 +438,33 @@
     // ---- LOAD USERS ----
     function loadUsers() {
       usersListener = db.collection("users").onSnapshot(function(snapshot) {
+        const tbody = document.getElementById('userTableBody');
+        tbody.innerHTML = "";
+
+        let approvedCount = 0;
+        let pendingCount = 0;
+        let blockedCount = 0;
+        let totalLicenses = 0;
+        let activeLicenses = 0;
+
+        snapshot.forEach(function(doc) {
+          const u = doc.data();
+          if (u.approved) {
+            approvedCount++;
+            totalLicenses += (u.maxDevices || 0);
+            activeLicenses += ((u.devices || []).length);
+          } else {
+            pendingCount++;
+          }
+          if (u.blocked) blockedCount++;
+        });
+
+        document.getElementById('statApproved').innerText = approvedCount;
+        document.getElementById('statPending').innerText = pendingCount;
+        document.getElementById('statTotalLic').innerText = totalLicenses;
+        document.getElementById('statActiveLic').innerText = activeLicenses;
+        document.getElementById('statInactiveLic').innerText = (totalLicenses - activeLicenses);
+        document.getElementById('statBlocked').innerText = blockedCount;
         const tbody = document.getElementById('userTableBody');
         tbody.innerHTML = "";
         snapshot.forEach(function(doc) {
