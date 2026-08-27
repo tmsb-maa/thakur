@@ -2,11 +2,27 @@
   "rotationHours": 24,
   "persons": [
     {
-      "id": "p_sample_1",
-      "name": "Sample Person",
-      "initials": "SP",
+      "id": "p_1787815684192_juoz95",
+      "name": "Sri Maa Sarada",
+      "initials": "",
       "quotes": [
-        "This is a sample quote. Open admin-quotes-editor.html to replace this with your real content."
+        "আমি সতের-ও মা, অসতের-ও মা। আমি সত্যিকারের জননী। আমি সকলের মা। "
+      ]
+    },
+    {
+      "id": "p_1787815981600_a25yl6",
+      "name": "Swami Vivekananda",
+      "initials": "",
+      "quotes": [
+        "সত্যের জন্য সব কিছুকে ত্যাগ করা যা। কিন্তু কোনো কিছুর জন্য সত্যকে ত্যাগ করা যায় না। "
+      ]
+    },
+    {
+      "id": "p_1787816093817_7u6woo",
+      "name": "Thakur Sri Ramakrishna",
+      "initials": "",
+      "quotes": [
+        "যত মত, তত পথ।"
       ]
     }
   ]
