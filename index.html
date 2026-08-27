@@ -215,6 +215,8 @@
       </div>
     </div>
 
+    <button id="installPwaBtn" style="display:none; width:100%; max-width:320px; margin:20px auto 0 auto; padding:18px; background-color:#FF8C00; color:#fff; border:none; border-radius:10px; font-size:18px; font-weight:bold; cursor:pointer;">Install PWA</button>
+
     <div class="barContainer" id="barContainer">
       <div class="bar" style="background-color:#4CAF50;" onclick="window.location.href='quoteoftheday.html'">Quote of the Day</div>
     </div>
@@ -222,8 +224,7 @@
   </main>
 
   <footer>
-    <p>Completely private library.</p>
-    <p>Call:+91-9830894559</p>
+    <p>Completely private Library.</p>
   </footer>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -454,6 +455,36 @@
         navigator.serviceWorker.register('sw.js');
       });
     }
+
+    let deferredInstallPrompt = null;
+    const installBtn = document.getElementById('installPwaBtn');
+
+    function isPwaInstalled() {
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      setTimeout(function() {
+        if (!isPwaInstalled()) {
+          installBtn.style.display = 'block';
+        }
+      }, 2000);
+    });
+
+    installBtn.addEventListener('click', function() {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      deferredInstallPrompt.userChoice.then(function() {
+        deferredInstallPrompt = null;
+        installBtn.style.display = 'none';
+      });
+    });
+
+    window.addEventListener('appinstalled', function() {
+      installBtn.style.display = 'none';
+    });
   </script>
 
 </body>
