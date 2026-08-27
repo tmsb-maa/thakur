@@ -348,7 +348,7 @@
         .then(function() {
           secondaryApp.delete();
           localStorage.setItem('tmsb_signup_done', Date.now().toString());
-          document.getElementById('authBox').innerHTML = '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:30px 10px;">Please call Admin to get authorized your account. Thanks.</p>';
+          document.getElementById('authBox').innerHTML = '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:30px 10px;">Please call Admin to get authorized your account: +91-9830894559. Thanks.</p>';
         })
         .catch(function(error) {
           errorBox.innerText = error.message;
