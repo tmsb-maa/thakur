@@ -1,35 +1,13 @@
-const CACHE_NAME = "tmsb-cache-v5";
-const urlsToCache = [
-  "./",
-  "./index.html",
-  "./manifest.json",
-  "./icon-192.png",
-  "./icon-512.png"
-];
+const CACHE_NAME = "tmsb-cache-dynamic";
+
+// Network-first strategy: always try to get the latest file from the
+// internet first. Only fall back to the saved offline copy if the
+// network request fails (e.g. no internet connection at that moment).
+// This means every future update you upload becomes visible immediately,
+// with no manual version numbers to remember or change, ever.
 
 self.addEventListener("install", (event) => {
-  self.skipWaiting(); // activate new SW immediately, don't wait for old tabs to close
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
-  );
-});
-
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // got a fresh copy from the network — update the cache for offline fallback
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
-        });
-        return response;
-      })
-      .catch(() => {
-        // network failed (offline) — fall back to whatever's cached
-        return caches.match(event.request);
-      })
-  );
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
@@ -40,6 +18,32 @@ self.addEventListener("activate", (event) => {
           .filter((name) => name !== CACHE_NAME)
           .map((name) => caches.delete(name))
       )
-    ).then(() => self.clients.claim()) // take control of open tabs right away
+    ).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener("fetch", (event) => {
+  // Only handle simple GET requests (page loads, files) - let everything
+  // else (like Firestore's own network calls) pass through untouched.
+  if (event.request.method !== "GET") {
+    return;
+  }
+
+  event.respondWith(
+    fetch(event.request)
+      .then((networkResponse) => {
+        // Got a fresh copy from the internet - save it for offline use,
+        // and show this fresh copy to the user right now.
+        const responseClone = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseClone);
+        });
+        return networkResponse;
+      })
+      .catch(() => {
+        // No internet available right now - fall back to the last
+        // saved copy, if one exists.
+        return caches.match(event.request);
+      })
   );
 });
