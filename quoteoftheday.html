@@ -240,10 +240,11 @@
 
       const quoteText = state.quotes[index];
 
-            card.innerHTML =
+        card.innerHTML =
         '<img class="avatar" src="' + personId + '.png" alt="' + (state.name || '') + '">' +
         '<p class="quoteText">&ldquo;' + quoteText + '&rdquo;</p>' +
         '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
+        (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '') +
         '<div class="navRow">' +
         '<button class="navBtn" onclick="navPerson(\'' + personId + '\', -1)">&#8592;</button>' +
         '<button class="navBtn" onclick="navPerson(\'' + personId + '\', 1)">&#8594;</button>' +
