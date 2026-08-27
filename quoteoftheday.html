@@ -87,7 +87,7 @@
     background: #fff8f0;
     border: 1px solid #FFDDB0;
     border-radius: 12px;
-    padding: 25px;
+    padding: 25px 15px;
     margin: 0 auto 20px auto;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     text-align: center;
@@ -109,6 +109,7 @@
     font-style: italic;
     margin-bottom: 10px;
     line-height: 1.4;
+    text-align: left;
   }
 
   .quoteAuthor {
@@ -117,7 +118,13 @@
     color: #FF8C00;
     margin-bottom: 15px;
   }
-
+  .quoteAuthorBn {
+    font-size: 20px;
+    font-weight: bold;
+    color: #FF8C00;
+    margin-top: -10px;
+    margin-bottom: 15px;
+  }
   .navRow {
     display: flex;
     justify-content: center;
@@ -222,6 +229,7 @@
           card.innerHTML =
           '<img class="avatar" src="' + personId + '.png" alt="' + (state.name || '') + '">' +
           '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
+        (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '') +
           '<p class="quoteText">No quotes added yet.</p>';
         return;
       }
@@ -281,8 +289,9 @@
         const intervalHours = personData.rotationHours || 24;
         const timeSlot = Math.floor(Date.now() / (intervalHours * 3600000));
 
-        personState[p.key] = {
+          personState[p.key] = {
           name: personData.name || '',
+          nameBengali: personData.nameBengali || '',
           initials: personData.initials || '',
           quotes: quotes,
           baseIndex: quotes.length > 0 ? ((timeSlot + deviceHash) % quotes.length) : 0,

@@ -47,19 +47,6 @@
   .btnRed { background-color: #e53935; color: #fff; }
   .btnGray { background-color: #757575; color: #fff; }
 
-  .rotationBox {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .rotationBox input { width: 80px; padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
-
   #personsContainer { display: flex; flex-direction: column; gap: 20px; }
 
   .personBlock {
@@ -110,6 +97,12 @@
     font-weight: bold;
     color: green;
   }
+
+  .filenamePreview {
+    font-size: 13px;
+    color: #888;
+    margin-top: 6px;
+  }
 </style>
 </head>
 <body>
@@ -117,81 +110,43 @@
   <header>TMS Quotes Editor &mdash; Offline Tool</header>
 
   <div class="topBar">
-    <button class="btnGray" onclick="document.getElementById('importFile').click()">Import quotes.json</button>
+    <button class="btnGray" onclick="document.getElementById('importFile').click()">Import person's json</button>
     <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importJson(event)">
-    <button class="btnGreen" onclick="exportJson()">Export / Save quotes.json</button>
+    <button class="btnGreen" onclick="exportJson()">Export / Save json</button>
     <button class="btnRed" onclick="clearAll()">Clear Everything</button>
   </div>
 
   <p id="statusMsg" class="statusMsg"></p>
-
-  <div class="rotationBox">
-    <label><b>Rotation interval (hours, 1&ndash;24):</b></label>
-    <input type="number" id="rotationHours" min="1" max="24" value="24" onchange="saveDraft()">
-  </div>
 
   <div id="personsContainer"></div>
 
   <button id="addPersonBtn" class="btnPrimary" onclick="addPerson()">+ Add New Person</button>
 
   <script>
-    let data = { rotationHours: 24, persons: [] };
-
-    function uid() {
-      return 'p_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-    }
+    let person = null; // null = nothing added yet; otherwise { name, initials, quotes: [] }
 
     function saveDraft() {
-      data.rotationHours = parseInt(document.getElementById('rotationHours').value) || 24;
-      localStorage.setItem('tms_quotes_draft', JSON.stringify(data));
+      if (person) {
+        localStorage.setItem('tms_quotes_draft', JSON.stringify(person));
+      } else {
+        localStorage.removeItem('tms_quotes_draft');
+      }
     }
 
     function loadDraft() {
       const saved = localStorage.getItem('tms_quotes_draft');
       if (saved) {
         try {
-          data = JSON.parse(saved);
+          person = JSON.parse(saved);
         } catch (e) {
-          data = { rotationHours: 24, persons: [] };
+          person = null;
         }
       }
-      if (!data.persons) data.persons = [];
-      if (!data.rotationHours) data.rotationHours = 24;
-      document.getElementById('rotationHours').value = data.rotationHours;
       render();
     }
 
-    function render() {
-      const container = document.getElementById('personsContainer');
-      container.innerHTML = '';
-
-      data.persons.forEach(function(person, pIndex) {
-        const block = document.createElement('div');
-        block.className = 'personBlock';
-
-        let html = '<div class="personHeader">' +
-          '<div>' +
-          '<input type="text" placeholder="Full Name" value="' + escapeHtml(person.name) + '" onchange="updatePersonField(' + pIndex + ', \'name\', this.value)">' +
-          '<input type="text" placeholder="Initials" maxlength="3" value="' + escapeHtml(person.initials) + '" onchange="updatePersonField(' + pIndex + ', \'initials\', this.value)" style="width:60px;">' +
-          '</div>' +
-          '<button class="btnRed" onclick="removePerson(' + pIndex + ')">Remove Person</button>' +
-          '</div>';
-
-        html += '<div id="quotes-' + pIndex + '">';
-        person.quotes.forEach(function(q, qIndex) {
-          html += '<div class="quoteRow">' +
-            '<textarea onchange="updateQuote(' + pIndex + ', ' + qIndex + ', this.value)">' + escapeHtml(q) + '</textarea>' +
-            '<button class="btnRed" onclick="removeQuote(' + pIndex + ', ' + qIndex + ')">Delete</button>' +
-            '</div>';
-        });
-        html += '</div>';
-
-        html += '<button class="btnGreen" onclick="addQuote(' + pIndex + ')">+ Add Quote</button>' +
-          '<span style="margin-left:10px; color:#888; font-size:13px;">' + person.quotes.length + ' quote(s)</span>';
-
-        block.innerHTML = html;
-        container.appendChild(block);
-      });
+    function makeFilename(name) {
+      return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
     }
 
     function escapeHtml(str) {
@@ -199,56 +154,107 @@
       return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    function render() {
+      const container = document.getElementById('personsContainer');
+      const addBtn = document.getElementById('addPersonBtn');
+      container.innerHTML = '';
+
+      if (!person) {
+        addBtn.style.display = 'inline-block';
+        return;
+      }
+
+      addBtn.style.display = 'none';
+
+      const block = document.createElement('div');
+      block.className = 'personBlock';
+
+      let html = '<div class="personHeader">' +
+        '<div>' +
+        '<input type="text" placeholder="Name in Bengali (optional)" value="' + escapeHtml(person.nameBengali || '') + '" onchange="updatePersonField(\'nameBengali\', this.value)" style="margin-top:6px; display:block;">' +
+        '<input type="text" placeholder="Initials" maxlength="3" value="' + escapeHtml(person.initials) + '" onchange="updatePersonField(\'initials\', this.value)" style="width:60px;">' +
+        '</div>' +
+        '<button class="btnRed" onclick="removePerson()">Remove Person</button>' +
+        '</div>';
+
+      html += '<div class="filenamePreview">Will save as: ' + (makeFilename(person.name) || '(type a name first)') + '.json</div>';
+
+      html += '<div id="quotesList" style="margin-top:12px;">';
+      person.quotes.forEach(function(q, qIndex) {
+        html += '<div class="quoteRow">' +
+          '<textarea onchange="updateQuote(' + qIndex + ', this.value)">' + escapeHtml(q) + '</textarea>' +
+          '<button class="btnRed" onclick="removeQuote(' + qIndex + ')">Delete</button>' +
+          '</div>';
+      });
+      html += '</div>';
+
+      html += '<button class="btnGreen" onclick="addQuote()">+ Add Quote</button>' +
+        '<span style="margin-left:10px; color:#888; font-size:13px;">' + person.quotes.length + ' quote(s)</span>';
+
+      block.innerHTML = html;
+      container.appendChild(block);
+    }
+
     function addPerson() {
-      data.persons.push({ id: uid(), name: '', initials: '', quotes: [] });
+      person = { name: '', initials: '', quotes: [] };
       saveDraft();
       render();
     }
 
-    function removePerson(pIndex) {
-      if (confirm('Remove this person and all their quotes?')) {
-        data.persons.splice(pIndex, 1);
+    function removePerson() {
+      if (confirm('Remove this person and all their quotes from the editor? (This does not delete anything already uploaded to GitHub.)')) {
+        person = null;
         saveDraft();
         render();
       }
     }
 
-    function updatePersonField(pIndex, field, value) {
-      data.persons[pIndex][field] = value;
-      saveDraft();
-    }
-
-    function addQuote(pIndex) {
-      data.persons[pIndex].quotes.push('');
+    function updatePersonField(field, value) {
+      person[field] = value;
       saveDraft();
       render();
     }
 
-    function updateQuote(pIndex, qIndex, value) {
-      data.persons[pIndex].quotes[qIndex] = value;
+    function addQuote() {
+      person.quotes.push('');
+      saveDraft();
+      render();
+    }
+
+    function updateQuote(qIndex, value) {
+      person.quotes[qIndex] = value;
       saveDraft();
     }
 
-    function removeQuote(pIndex, qIndex) {
-      data.persons[pIndex].quotes.splice(qIndex, 1);
+    function removeQuote(qIndex) {
+      person.quotes.splice(qIndex, 1);
       saveDraft();
       render();
     }
 
     function exportJson() {
-      data.rotationHours = parseInt(document.getElementById('rotationHours').value) || 24;
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      if (!person) {
+        alert('Add or import a person first.');
+        return;
+      }
+      const filename = makeFilename(person.name);
+      if (!filename) {
+        alert('Please type the name first.');
+        return;
+      }
+
+      const blob = new Blob([JSON.stringify(person, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'quotes.json';
+      a.download = filename + '.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
       const status = document.getElementById('statusMsg');
-      status.innerText = 'quotes.json downloaded! Now upload this file to your GitHub repo.';
+      status.innerText = filename + '.json downloaded! Now upload this file to your GitHub repo.';
       setTimeout(function() { status.innerText = ''; }, 5000);
     }
 
@@ -259,17 +265,18 @@
       reader.onload = function(e) {
         try {
           const imported = JSON.parse(e.target.result);
-          if (!imported.persons) imported.persons = [];
-          if (!imported.rotationHours) imported.rotationHours = 24;
-          data = imported;
-          document.getElementById('rotationHours').value = data.rotationHours;
+          person = {
+            name: imported.name || '',
+            initials: imported.initials || '',
+            quotes: imported.quotes || []
+          };
           saveDraft();
           render();
           const status = document.getElementById('statusMsg');
           status.innerText = 'Imported successfully! You can continue editing.';
           setTimeout(function() { status.innerText = ''; }, 4000);
         } catch (err) {
-          alert('Could not read this file. Please make sure it is a valid quotes.json file.');
+          alert('Could not read this file. Please make sure it is a valid person json file.');
         }
       };
       reader.readAsText(file);
@@ -278,9 +285,8 @@
 
     function clearAll() {
       if (confirm('This will erase everything currently in the editor (not any file already uploaded to GitHub). Continue?')) {
-        data = { rotationHours: 24, persons: [] };
+        person = null;
         localStorage.removeItem('tms_quotes_draft');
-        document.getElementById('rotationHours').value = 24;
         render();
       }
     }
