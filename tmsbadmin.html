@@ -465,8 +465,6 @@
         document.getElementById('statActiveLic').innerText = activeLicenses;
         document.getElementById('statInactiveLic').innerText = (totalLicenses - activeLicenses);
         document.getElementById('statBlocked').innerText = blockedCount;
-        const tbody = document.getElementById('userTableBody');
-        tbody.innerHTML = "";
         snapshot.forEach(function(doc) {
           const u = doc.data();
           const id = doc.id;
