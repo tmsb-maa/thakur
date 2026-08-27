@@ -83,27 +83,25 @@
     margin: 0 auto;
   }
 
-  .quoteCard {
+    .quoteCard {
     background: #fff8f0;
     border: 1px solid #FFDDB0;
     border-radius: 12px;
     padding: 25px;
-    margin-bottom: 20px;
+    margin: 0 auto 20px auto;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     text-align: center;
+    width: fit-content;
+    max-width: 700px;
+    min-width: 260px;
   }
 
-  .avatar {
+    .avatar {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background-color: #FF8C00;
-    color: #fff;
-    font-weight: bold;
-    font-size: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    object-fit: cover;
+    display: block;
     margin: 0 auto 15px auto;
   }
 
@@ -165,7 +163,7 @@
   </main>
 
   <footer>
-    <p>Completely private and not for resale</p>
+    <p>Completely private Library.</p>
   </footer>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -222,8 +220,8 @@
       if (!state || !card) return;
 
       if (!state.quotes || state.quotes.length === 0) {
-        card.innerHTML =
-          '<div class="avatar">' + (state.initials || '?') + '</div>' +
+          card.innerHTML =
+          '<img class="avatar" src="' + personId + '.png" alt="' + (state.name || '') + '">' +
           '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
           '<p class="quoteText">No quotes added yet.</p>';
         return;
@@ -252,42 +250,48 @@
       renderPerson(personId);
     }
 
-    async function loadQuotesFromJson() {
+        async function loadQuotesFromJson() {
       const container = document.getElementById('quoteContent');
       container.innerHTML = '';
 
-      let jsonData;
-      try {
-        const response = await fetch('quotes.json?t=' + Date.now());
-        jsonData = await response.json();
-      } catch (e) {
-        container.innerHTML = '<p style="text-align:center; color:#888;">Quotes not available right now. Please try again later.</p>';
-        return;
-      }
+      const personFiles = [
+        { key: 'thakursriramakrishna', file: 'thakursriramakrishna.json' },
+        { key: 'srimaasarada', file: 'srimaasarada.json' },
+        { key: 'swamivivekananda', file: 'swamivivekananda.json' }
+      ];
 
-      const intervalHours = jsonData.rotationHours || 24;
-      const persons = jsonData.persons || [];
       const deviceId = getDeviceId();
       const deviceHash = hashString(deviceId);
-      const timeSlot = Math.floor(Date.now() / (intervalHours * 3600000));
 
-      persons.forEach(function(person) {
+      for (const p of personFiles) {
         const card = document.createElement('div');
         card.className = 'quoteCard';
-        card.id = 'card-' + person.id;
+        card.id = 'card-' + p.key;
         container.appendChild(card);
 
-        const quotes = person.quotes || [];
-        personState[person.id] = {
-          name: person.name || '',
-          initials: person.initials || '',
+        let personData;
+        try {
+          const response = await fetch(p.file + '?t=' + Date.now());
+          personData = await response.json();
+        } catch (e) {
+          card.innerHTML = '<p style="text-align:center; color:#888;">Quotes not available for this person right now.</p>';
+          continue;
+        }
+
+        const quotes = personData.quotes || [];
+        const intervalHours = personData.rotationHours || 24;
+        const timeSlot = Math.floor(Date.now() / (intervalHours * 3600000));
+
+        personState[p.key] = {
+          name: personData.name || '',
+          initials: personData.initials || '',
           quotes: quotes,
           baseIndex: quotes.length > 0 ? ((timeSlot + deviceHash) % quotes.length) : 0,
           manualOffset: 0
         };
 
-        renderPerson(person.id);
-      });
+        renderPerson(p.key);
+      }
 
       quotesLoaded = true;
     }
