@@ -171,6 +171,7 @@
 
       let html = '<div class="personHeader">' +
         '<div>' +
+        '<input type="text" placeholder="Full Name" value="' + escapeHtml(person.name) + '" onchange="updatePersonField(\'name\', this.value)">' +
         '<input type="text" placeholder="Name in Bengali (optional)" value="' + escapeHtml(person.nameBengali || '') + '" onchange="updatePersonField(\'nameBengali\', this.value)" style="margin-top:6px; display:block;">' +
         '<input type="text" placeholder="Initials" maxlength="3" value="' + escapeHtml(person.initials) + '" onchange="updatePersonField(\'initials\', this.value)" style="width:60px;">' +
         '</div>' +
