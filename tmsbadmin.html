@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TMS Admin</title>
+<link rel="manifest" href="manifest-admin.json">
+<meta name="theme-color" content="#FF8C00">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -192,6 +194,8 @@
     <p id="adminError"></p>
   </div>
 
+  <button id="installAdminBtn" style="display:none; width:90%; max-width:320px; margin:20px auto; padding:18px; background-color:#FF8C00; color:#fff; border:none; border-radius:10px; font-size:18px; font-weight:bold; cursor:pointer;">Install TMS Admin App</button>
+  
   <div id="panel">
     <div id="rotationBox" style="background:#fff; border:2px solid #FF8C00; border-radius:10px; padding:20px; margin-bottom:25px;">
       <h3 style="color:#FF8C00; margin-bottom:15px;">Set Quote Rotation Timing</h3>
@@ -466,6 +470,37 @@
         db.collection("users").doc(id).delete();
       }
     }
+
+    let deferredAdminInstallPrompt = null;
+    const installAdminBtn = document.getElementById('installAdminBtn');
+
+    function isAdminPwaInstalled() {
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredAdminInstallPrompt = e;
+      setTimeout(function() {
+        if (!isAdminPwaInstalled()) {
+          installAdminBtn.style.display = 'block';
+        }
+      }, 2000);
+    });
+
+    installAdminBtn.addEventListener('click', function() {
+      if (!deferredAdminInstallPrompt) return;
+      deferredAdminInstallPrompt.prompt();
+      deferredAdminInstallPrompt.userChoice.then(function() {
+        deferredAdminInstallPrompt = null;
+        installAdminBtn.style.display = 'none';
+      });
+    });
+
+    window.addEventListener('appinstalled', function() {
+      installAdminBtn.style.display = 'none';
+    });
+
   </script>
 
 </body>
