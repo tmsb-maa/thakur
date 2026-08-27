@@ -233,8 +233,8 @@
 
       const quoteText = state.quotes[index];
 
-      card.innerHTML =
-        '<div class="avatar">' + (state.initials || '?') + '</div>' +
+            card.innerHTML =
+        '<img class="avatar" src="' + personId + '.png" alt="' + (state.name || '') + '">' +
         '<p class="quoteText">&ldquo;' + quoteText + '&rdquo;</p>' +
         '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
         '<div class="navRow">' +
