@@ -20,6 +20,7 @@
     text-align: center;
     padding: 20px;
     font-size: 20px;
+    position: relative;
   }
 
   #adminLoginBox {
@@ -60,9 +61,6 @@
   }
 
   #adminError { color: red; font-size: 13px; margin-top: 10px; text-align: center; }
-    header {
-    position: relative;
-  }
 
   #adminLogoutBtn {
     position: absolute;
@@ -89,7 +87,7 @@
 
   #panel { display: none; padding: 20px; max-width: 1000px; margin: 0 auto; }
 
-  #createUserBox {
+  .sectionBox {
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 10px;
@@ -97,17 +95,26 @@
     margin-bottom: 25px;
   }
 
-  #createUserBox h3 { margin-bottom: 15px; color: #FF8C00; }
+  .sectionBox h3 { margin-bottom: 15px; color: #FF8C00; }
 
-  #createUserBox input {
+  .sectionBox input, .sectionBox textarea {
     padding: 10px;
     margin: 5px 5px 5px 0;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
+    font-family: Arial, sans-serif;
   }
 
-  #createUserBox button {
+  .sectionBox textarea {
+    width: 100%;
+    min-height: 70px;
+    resize: vertical;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .sectionBox button {
     padding: 10px 18px;
     border: none;
     border-radius: 6px;
@@ -177,14 +184,51 @@
     }
     tr { border: 1px solid #ddd; margin-bottom: 12px; border-radius: 8px; overflow: hidden; }
   }
+
+  .personBlock {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .personBlock h4 {
+    color: #FF8C00;
+    margin-bottom: 10px;
+  }
+
+  .quoteRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+  }
+
+  .quoteRow span {
+    flex: 1;
+    padding-right: 10px;
+  }
+
+  .rotationBox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .rotationBox input {
+    width: 80px;
+  }
 </style>
 </head>
 <body>
 
   <header>
-  TMSB Admin Panel
-  <button id="adminLogoutBtn" onclick="adminLogout()" style="display:none;">⏻</button>
-</header>
+    TMSB Admin Panel
+    <button id="adminLogoutBtn" onclick="adminLogout()" style="display:none;">⏻</button>
+  </header>
 
   <div id="adminLoginBox">
     <h3>Admin Login</h3>
@@ -196,7 +240,7 @@
 
   <div id="panel">
 
-    <div id="createUserBox">
+    <div class="sectionBox">
       <h3>Create New User</h3>
       <input type="text" id="newName" placeholder="Full Name">
       <input type="email" id="newEmail" placeholder="Email">
@@ -205,7 +249,7 @@
       <input type="date" id="newStart">
       <input type="date" id="newEnd">
       <br>
-      <button onclick="createUser()">Create & Approve User</button>
+      <button onclick="createUser()">Create &amp; Approve User</button>
       <p id="createError" style="color:red;"></p>
     </div>
 
@@ -225,6 +269,24 @@
       <tbody id="userTableBody">
       </tbody>
     </table>
+
+    <div class="sectionBox" style="margin-top:25px;">
+      <h3>Manage Quotes</h3>
+
+      <div class="rotationBox">
+        <label>Rotation interval (1&ndash;24 hours):</label>
+        <input type="number" id="rotationHours" min="1" max="24" value="24">
+        <button onclick="saveRotation()">Save</button>
+        <span id="rotationSaved" style="color:green; font-size:13px;"></span>
+      </div>
+
+      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+
+      <div id="person1" class="personBlock"></div>
+      <div id="person2" class="personBlock"></div>
+      <div id="person3" class="personBlock"></div>
+    </div>
+
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -244,39 +306,47 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // ---- ADMIN ACCESS CONTROL ----
-    // Only this email is allowed to use this page
     const ADMIN_EMAIL = "gtti.computer@gmail.com";
+    const PERSON_IDS = ["person1", "person2", "person3"];
 
-function adminLogout() {
-  if (usersListener) {
-    usersListener();
-    usersListener = null;
-  }
-  auth.signOut();
-}
+    let usersListener = null;
+    let quotesListeners = {};
+
+    function adminLogout() {
+      if (usersListener) {
+        usersListener();
+        usersListener = null;
+      }
+      Object.keys(quotesListeners).forEach(function(k) {
+        if (quotesListeners[k]) quotesListeners[k]();
+      });
+      quotesListeners = {};
+      auth.signOut();
+    }
 
     function adminLogin() {
       const email = document.getElementById('adminEmail').value;
       const password = document.getElementById('adminPassword').value;
       auth.signInWithEmailAndPassword(email, password)
-        .then((cred) => {
+        .then(function(cred) {
           if (cred.user.email !== ADMIN_EMAIL) {
             document.getElementById('adminError').innerText = "Not authorized as admin.";
             auth.signOut();
           }
         })
-        .catch((error) => {
+        .catch(function(error) {
           document.getElementById('adminError').innerText = error.message;
         });
     }
 
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(function(user) {
       if (user && user.email === ADMIN_EMAIL) {
         document.getElementById('adminLoginBox').style.display = 'none';
         document.getElementById('panel').style.display = 'block';
         document.getElementById('adminLogoutBtn').style.display = 'block';
         loadUsers();
+        loadRotationSetting();
+        PERSON_IDS.forEach(loadPersonBlock);
       } else {
         document.getElementById('adminLoginBox').style.display = 'block';
         document.getElementById('panel').style.display = 'none';
@@ -300,11 +370,9 @@ function adminLogout() {
         return;
       }
 
-      // Create a secondary Firebase app instance so creating this user
-      // does not log the admin out of their own session.
-      const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
+      const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary_" + Date.now());
       secondaryApp.auth().createUserWithEmailAndPassword(email, pin)
-        .then((cred) => {
+        .then(function(cred) {
           return db.collection("users").doc(cred.user.uid).set({
             name: name,
             email: email,
@@ -313,11 +381,11 @@ function adminLogout() {
             maxDevices: maxDevices,
             accessStart: start,
             accessEnd: end,
-			sessionVersion: 0,
-			devices: []
+            sessionVersion: 0,
+            devices: []
           });
         })
-        .then(() => {
+        .then(function() {
           secondaryApp.auth().signOut();
           secondaryApp.delete();
           document.getElementById('newName').value = "";
@@ -327,49 +395,46 @@ function adminLogout() {
           document.getElementById('newStart').value = "";
           document.getElementById('newEnd').value = "";
         })
-        .catch((error) => {
+        .catch(function(error) {
           errorBox.innerText = error.message;
         });
     }
 
     // ---- LOAD USERS ----
-    let usersListener = null;
-
     function loadUsers() {
-      usersListener = db.collection("users").onSnapshot((snapshot) => {
+      usersListener = db.collection("users").onSnapshot(function(snapshot) {
         const tbody = document.getElementById('userTableBody');
         tbody.innerHTML = "";
-        snapshot.forEach((doc) => {
+        snapshot.forEach(function(doc) {
           const u = doc.data();
           const id = doc.id;
           const row = document.createElement('tr');
-          row.innerHTML = `
-            <td data-label="Name">${u.name || ""}</td>
-            <td data-label="Email">${u.email || ""}</td>
-            <td data-label="Approved">${u.approved ? "Yes" : "No"}</td>
-            <td data-label="Blocked">${u.blocked ? "Yes" : "No"}</td>
-            <td data-label="Max Devices"><input type="number" id="dev-${id}" value="${u.maxDevices || 1}"><br><small>${(u.devices || []).length} registered</small></td>
-            <td data-label="Start"><input type="date" id="start-${id}" value="${u.accessStart || ''}"></td>
-            <td data-label="End"><input type="date" id="end-${id}" value="${u.accessEnd || ''}"></td>
-            <td data-label="Actions">
-              <button class="btnSmall save" onclick="saveUser('${id}')">Save</button>
-              <button class="btnSmall approve" onclick="setApproved('${id}', true)">Approve</button>
-              <button class="btnSmall block" onclick="setBlocked('${id}', true)">Block</button>
-              <button class="btnSmall unblock" onclick="setBlocked('${id}', false)">Unblock</button>
-              <button class="btnSmall reset" onclick="resetPin('${id}')">Reset PIN</button>
-			  <button class="btnSmall block" onclick="forceLogout('${id}')">Force Logout</button>
-              <button class="btnSmall delete" onclick="deleteUser('${id}')">Delete</button>
-            </td>
-          `;
+          row.innerHTML =
+            '<td data-label="Name">' + (u.name || "") + '</td>' +
+            '<td data-label="Email">' + (u.email || "") + '</td>' +
+            '<td data-label="Approved">' + (u.approved ? "Yes" : "No") + '</td>' +
+            '<td data-label="Blocked">' + (u.blocked ? "Yes" : "No") + '</td>' +
+            '<td data-label="Max Devices"><input type="number" id="dev-' + id + '" value="' + (u.maxDevices || 1) + '"><br><small>' + ((u.devices || []).length) + ' registered</small></td>' +
+            '<td data-label="Start"><input type="date" id="start-' + id + '" value="' + (u.accessStart || '') + '"></td>' +
+            '<td data-label="End"><input type="date" id="end-' + id + '" value="' + (u.accessEnd || '') + '"></td>' +
+            '<td data-label="Actions">' +
+            '<button class="btnSmall save" onclick="saveUser(\'' + id + '\')">Save</button>' +
+            '<button class="btnSmall approve" onclick="setApproved(\'' + id + '\', true)">Approve</button>' +
+            '<button class="btnSmall block" onclick="setBlocked(\'' + id + '\', true)">Block</button>' +
+            '<button class="btnSmall unblock" onclick="setBlocked(\'' + id + '\', false)">Unblock</button>' +
+            '<button class="btnSmall reset" onclick="resetPin(\'' + id + '\')">Reset PIN</button>' +
+            '<button class="btnSmall block" onclick="forceLogout(\'' + id + '\')">Force Logout</button>' +
+            '<button class="btnSmall delete" onclick="deleteUser(\'' + id + '\')">Delete</button>' +
+            '</td>';
           tbody.appendChild(row);
         });
       });
     }
 
     function saveUser(id) {
-      const maxDevices = parseInt(document.getElementById(`dev-${id}`).value) || 1;
-      const start = document.getElementById(`start-${id}`).value;
-      const end = document.getElementById(`end-${id}`).value;
+      const maxDevices = parseInt(document.getElementById('dev-' + id).value) || 1;
+      const start = document.getElementById('start-' + id).value;
+      const end = document.getElementById('end-' + id).value;
       db.collection("users").doc(id).update({
         maxDevices: maxDevices,
         accessStart: start,
@@ -385,14 +450,14 @@ function adminLogout() {
       db.collection("users").doc(id).update({ blocked: value });
     }
 
-function forceLogout(id) {
-  if (confirm("Force logout this user from ALL devices and clear registered devices?")) {
-    db.collection("users").doc(id).update({
-      sessionVersion: firebase.firestore.FieldValue.increment(1),
-      devices: []
-    });
-  }
-}
+    function forceLogout(id) {
+      if (confirm("Force logout this user from ALL devices and clear registered devices?")) {
+        db.collection("users").doc(id).update({
+          sessionVersion: firebase.firestore.FieldValue.increment(1),
+          devices: []
+        });
+      }
+    }
 
     function resetPin(id) {
       const newPin = prompt("Enter new 6-digit PIN for this user:");
@@ -400,12 +465,125 @@ function forceLogout(id) {
         alert("PIN must be exactly 6 digits.");
         return;
       }
-      alert("Note: Resetting the login PIN requires a Cloud Function (admin SDK) since this can't be done from the browser alone. This button is a placeholder until that's set up — let Claude know when you're ready to add it.");
+      alert("Note: Resetting the login PIN requires a Cloud Function (admin SDK) since this can't be done from the browser alone.");
     }
 
     function deleteUser(id) {
-      if (confirm("Delete this user's access record? (Note: this removes their Firestore profile; deleting their login account fully requires a Cloud Function.)")) {
+      if (confirm("Delete this user's access record?")) {
         db.collection("users").doc(id).delete();
+      }
+    }
+
+    // ---- ROTATION SETTING ----
+    function loadRotationSetting() {
+      db.collection("settings").doc("quoteRotation").get().then(function(doc) {
+        if (doc.exists && doc.data().intervalHours) {
+          document.getElementById('rotationHours').value = doc.data().intervalHours;
+        }
+      });
+    }
+
+    function saveRotation() {
+      let hours = parseInt(document.getElementById('rotationHours').value);
+      if (!hours || hours < 1) hours = 1;
+      if (hours > 24) hours = 24;
+      document.getElementById('rotationHours').value = hours;
+      db.collection("settings").doc("quoteRotation").set({ intervalHours: hours })
+        .then(function() {
+          const msg = document.getElementById('rotationSaved');
+          msg.innerText = "Saved!";
+          setTimeout(function() { msg.innerText = ""; }, 2000);
+        });
+    }
+
+    // ---- PERSON / QUOTES MANAGEMENT ----
+    function loadPersonBlock(personId) {
+      const container = document.getElementById(personId);
+
+      db.collection("quotePersons").doc(personId).get().then(function(doc) {
+        const data = doc.exists ? doc.data() : {};
+        renderPersonForm(personId, data.name || '', data.initials || '');
+      });
+
+      quotesListeners[personId] = db.collection("quotePersons").doc(personId)
+        .collection("quotes").onSnapshot(function(snapshot) {
+          const list = [];
+          snapshot.forEach(function(q) {
+            list.push({ id: q.id, text: q.data().text || '' });
+          });
+          renderQuoteList(personId, list);
+        });
+    }
+
+    function renderPersonForm(personId, name, initials) {
+      let formHtml =
+        '<h4>' + personId.toUpperCase() + '</h4>' +
+        '<input type="text" id="name-' + personId + '" placeholder="Full Name" value="' + name.replace(/"/g, '&quot;') + '">' +
+        '<input type="text" id="initials-' + personId + '" placeholder="Initials (e.g. MG)" maxlength="3" value="' + initials.replace(/"/g, '&quot;') + '">' +
+        '<button onclick="savePersonInfo(\'' + personId + '\')">Save Name/Initials</button>' +
+        '<br><br>' +
+        '<textarea id="newQuote-' + personId + '" placeholder="Type a new quote here (Bengali or English)"></textarea>' +
+        '<button onclick="addQuote(\'' + personId + '\')">Add Quote</button>' +
+        '<div id="quoteList-' + personId + '" style="margin-top:15px;"></div>';
+
+      document.getElementById(personId).innerHTML = formHtml;
+    }
+
+    function renderQuoteList(personId, list) {
+      const listDiv = document.getElementById('quoteList-' + personId);
+      if (!listDiv) return;
+
+      if (list.length === 0) {
+        listDiv.innerHTML = '<p style="color:#888; font-size:13px;">No quotes added yet.</p>';
+        return;
+      }
+
+      let html = '<p style="font-size:13px; color:#888; margin-bottom:8px;">' + list.length + ' quote(s):</p>';
+      list.forEach(function(q) {
+        html += '<div class="quoteRow"><span>' + q.text + '</span>' +
+          '<button class="btnSmall reset" onclick="editQuote(\'' + personId + '\', \'' + q.id + '\')">Edit</button>' +
+          '<button class="btnSmall delete" onclick="deleteQuote(\'' + personId + '\', \'' + q.id + '\')">Delete</button>' +
+          '</div>';
+      });
+      listDiv.innerHTML = html;
+    }
+
+    function savePersonInfo(personId) {
+      const name = document.getElementById('name-' + personId).value.trim();
+      const initials = document.getElementById('initials-' + personId).value.trim();
+      db.collection("quotePersons").doc(personId).set({
+        name: name,
+        initials: initials
+      }, { merge: true });
+    }
+
+    function addQuote(personId) {
+      const textArea = document.getElementById('newQuote-' + personId);
+      const text = textArea.value.trim();
+      if (!text) return;
+      db.collection("quotePersons").doc(personId).collection("quotes").add({
+        text: text,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(function() {
+        textArea.value = '';
+      });
+    }
+
+    function editQuote(personId, quoteId) {
+      const current = prompt("Edit quote text:");
+      if (current === null) return;
+      if (!current.trim()) {
+        alert("Quote cannot be empty.");
+        return;
+      }
+      db.collection("quotePersons").doc(personId).collection("quotes").doc(quoteId).update({
+        text: current.trim()
+      });
+    }
+
+    function deleteQuote(personId, quoteId) {
+      if (confirm("Delete this quote?")) {
+        db.collection("quotePersons").doc(personId).collection("quotes").doc(quoteId).delete();
       }
     }
   </script>

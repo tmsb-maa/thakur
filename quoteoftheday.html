@@ -84,19 +84,16 @@
   }
 
   .quoteCard {
-    display: flex;
-    align-items: center;
-    gap: 18px;
     background: #fff8f0;
     border: 1px solid #FFDDB0;
     border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 18px;
+    padding: 25px;
+    margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    text-align: center;
   }
 
   .avatar {
-    flex-shrink: 0;
     width: 120px;
     height: 120px;
     border-radius: 50%;
@@ -107,25 +104,50 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 auto 15px auto;
   }
 
   .quoteText {
     font-size: 32px;
     font-style: italic;
-    margin-bottom: 6px;
+    margin-bottom: 10px;
+    line-height: 1.4;
   }
 
   .quoteAuthor {
     font-size: 28px;
     font-weight: bold;
     color: #FF8C00;
+    margin-bottom: 15px;
+  }
+
+  .navRow {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .navBtn {
+    background-color: #FF8C00;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .navBtn:hover {
+    background-color: #e67c00;
   }
 
   @media (max-width: 480px) {
     #headerTitle { font-size: 16px; }
     #logoutBtn { width: 34px; height: 34px; font-size: 17px; }
-    .quoteCard { flex-direction: column; text-align: center; }
-    .quoteText { font-size: 15px; }
+    .avatar { width: 90px; height: 90px; font-size: 30px; }
+    .quoteText { font-size: 22px; }
+    .quoteAuthor { font-size: 18px; }
   }
 </style>
 </head>
@@ -141,31 +163,9 @@
     <p id="statusMsg">Checking access...</p>
 
     <div id="quoteContent">
-
-      <div class="quoteCard">
-        <div class="avatar">AE</div>
-        <div>
-          <p class="quoteText">"Imagination is more important than knowledge."</p>
-          <p class="quoteAuthor">Albert Einstein</p>
-        </div>
-      </div>
-
-      <div class="quoteCard">
-        <div class="avatar">AL</div>
-        <div>
-          <p class="quoteText">"The best way to predict the future is to create it."</p>
-          <p class="quoteAuthor">Abraham Lincoln</p>
-        </div>
-      </div>
-
-      <div class="quoteCard">
-        <div class="avatar">RT</div>
-        <div>
-          <p class="quoteText">"Where the mind is without fear and the head is held high."</p>
-          <p class="quoteAuthor">Rabindranath Tagore</p>
-        </div>
-      </div>
-
+      <div id="person1Card" class="quoteCard"></div>
+      <div id="person2Card" class="quoteCard"></div>
+      <div id="person3Card" class="quoteCard"></div>
     </div>
   </main>
 
@@ -192,6 +192,8 @@
 
     let profileListener = null;
     let localSessionVersion = null;
+    const PERSON_IDS = ["person1", "person2", "person3"];
+    const personState = {};
 
     function getDeviceId() {
       let id = localStorage.getItem('tmsb_device_id');
@@ -202,12 +204,101 @@
       return id;
     }
 
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return Math.abs(hash);
+    }
+
     function logoutUser() {
       if (profileListener) {
         profileListener();
         profileListener = null;
       }
       auth.signOut();
+    }
+
+    function renderPerson(personId) {
+      const state = personState[personId];
+      const card = document.getElementById(personId + 'Card');
+      if (!state) return;
+
+      if (!state.quotes || state.quotes.length === 0) {
+        card.innerHTML =
+          '<div class="avatar">' + (state.initials || '?') + '</div>' +
+          '<p class="quoteAuthor">' + (state.name || 'Not set up yet') + '</p>' +
+          '<p class="quoteText">No quotes added yet.</p>';
+        return;
+      }
+
+      const total = state.quotes.length;
+      let index = (state.baseIndex + state.manualOffset) % total;
+      if (index < 0) index += total;
+
+      const quoteText = state.quotes[index];
+
+      card.innerHTML =
+        '<div class="avatar">' + (state.initials || '?') + '</div>' +
+        '<p class="quoteText">&ldquo;' + quoteText + '&rdquo;</p>' +
+        '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
+        '<div class="navRow">' +
+        '<button class="navBtn" onclick="navPerson(\'' + personId + '\', -1)">&#8592;</button>' +
+        '<button class="navBtn" onclick="navPerson(\'' + personId + '\', 1)">&#8594;</button>' +
+        '</div>';
+    }
+
+    function navPerson(personId, direction) {
+      const state = personState[personId];
+      if (!state || !state.quotes || state.quotes.length === 0) return;
+      state.manualOffset += direction;
+      renderPerson(personId);
+    }
+
+    async function loadAllQuotes() {
+      const deviceId = getDeviceId();
+      const deviceHash = hashString(deviceId);
+
+      let intervalHours = 24;
+      try {
+        const settingsDoc = await db.collection("settings").doc("quoteRotation").get();
+        if (settingsDoc.exists && settingsDoc.data().intervalHours) {
+          intervalHours = settingsDoc.data().intervalHours;
+        }
+      } catch (e) {}
+
+      const timeSlot = Math.floor(Date.now() / (intervalHours * 3600000));
+
+      for (const personId of PERSON_IDS) {
+        try {
+          const personDoc = await db.collection("quotePersons").doc(personId).get();
+          const personData = personDoc.exists ? personDoc.data() : {};
+
+          const quotesSnap = await db.collection("quotePersons").doc(personId)
+            .collection("quotes").get();
+
+          const quotes = [];
+          quotesSnap.forEach(function(q) {
+            const text = q.data().text;
+            if (text) quotes.push(text);
+          });
+
+          personState[personId] = {
+            name: personData.name || '',
+            initials: personData.initials || '',
+            quotes: quotes,
+            baseIndex: quotes.length > 0 ? ((timeSlot + deviceHash) % quotes.length) : 0,
+            manualOffset: 0
+          };
+
+          renderPerson(personId);
+        } catch (e) {
+          personState[personId] = { name: '', initials: '?', quotes: [], baseIndex: 0, manualOffset: 0 };
+          renderPerson(personId);
+        }
+      }
     }
 
     auth.onAuthStateChanged(function(user) {
@@ -278,6 +369,7 @@
 
         statusMsg.style.display = 'none';
         quoteContent.style.display = 'block';
+        loadAllQuotes();
       });
     });
   </script>
