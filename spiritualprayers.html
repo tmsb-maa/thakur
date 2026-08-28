@@ -123,6 +123,109 @@
     margin-top: 4px;
   }
 
+  #playerView {
+    display: none;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  #playerBackBtn {
+    background-color: #757575;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+
+  #playerTitle {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #FF8C00;
+  }
+
+  #playerTitleBn {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #FF8C00;
+    margin-bottom: 20px;
+  }
+
+  #progressWrap {
+    background: #e0e0e0;
+    border-radius: 10px;
+    height: 20px;
+    width: 100%;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+
+  #progressFill {
+    background-color: #4CAF50;
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+  }
+
+  #timeRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+
+  #controlsRow {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .playerBtn {
+    background-color: #FF8C00;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 26px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  #stopBtn { background-color: #e53935; }
+
+  #lyricsBox {
+    border: 1px solid #FFDDB0;
+    background: #fff8f0;
+    border-radius: 10px;
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    font-size: 18px;
+    line-height: 1.8;
+    white-space: pre-line;
+    margin-bottom: 20px;
+  }
+
+  #downloadLyricsBtn {
+    background-color: #1E90FF;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto 30px auto;
+  }
+
   @media (max-width: 480px) {
     #headerTitle { font-size: 20px; }
     #logoutBtn { width: 34px; height: 34px; font-size: 17px; }
@@ -131,6 +234,7 @@
     #pageTitleBn { font-size: 18px; }
     .bar { font-size: 19px; }
     .barBengali { font-size: 19px; }
+    #lyricsBox { font-size: 16px; max-height: 300px; }
   }
 </style>
 </head>
@@ -146,13 +250,41 @@
     <p id="statusMsg">Checking access...</p>
 
     <div id="pageContent">
-      <p id="pageTitle">Spiritual Prayers</p>
-      <p id="pageTitleBn">আধ্যাত্মিক প্রার্থনাসমূহ</p>
+      <div id="tabListView">
+        <p id="pageTitle">Spiritual Prayers</p>
+        <p id="pageTitleBn">আধ্যাত্মিক প্রার্থনাসমূহ</p>
 
-      <div class="barContainer">
-        <div class="bar" style="background-color:#F5F0E6;">Khandana Bhava Bhandhana<span class="barBengali">খন্ডন ভব বন্ধন</span></div>
-        <div class="bar" style="background-color:#F5F0E6;">Guru Devo Doya Karo<span class="barBengali">গুরুদেব দয়া কর</span></div>
-        <div class="bar" style="background-color:#F5F0E6;">Sri Maa Durga Chandipath<span class="barBengali">শ্রী মা দূর্গা চন্ডীপাঠ</span></div>
+        <div class="barContainer">
+          <div class="bar" style="background-color:#F5F0E6;" onclick="openPrayer('khandana-bhava-bhandhana', 'Khandana Bhava Bhandhana', 'খন্ডন ভব বন্ধন')">Khandana Bhava Bhandhana<span class="barBengali">খন্ডন ভব বন্ধন</span></div>
+          <div class="bar" style="background-color:#F5F0E6;" onclick="openPrayer('guru-devo-doya-karo', 'Guru Devo Doya Karo', 'গুরুদেব দয়া কর')">Guru Devo Doya Karo<span class="barBengali">গুরুদেব দয়া কর</span></div>
+          <div class="bar" style="background-color:#F5F0E6;" onclick="openPrayer('maa-durga-chandipath-only', 'Sri Maa Durga Chandipath', 'শ্রী মা দূর্গা চন্ডীপাঠ')">Sri Maa Durga Chandipath<span class="barBengali">শ্রী মা দূর্গা চন্ডীপাঠ</span></div>
+        </div>
+      </div>
+
+      <div id="playerView">
+        <button id="playerBackBtn" onclick="closePrayer()">&#8592; Back to List</button>
+
+        <p id="playerTitle"></p>
+        <p id="playerTitleBn"></p>
+
+        <div id="progressWrap" onclick="seekAudio(event)">
+          <div id="progressFill"></div>
+        </div>
+        <div id="timeRow">
+          <span id="currentTimeLabel">0:00</span>
+          <span id="durationLabel">0:00</span>
+        </div>
+
+        <div id="controlsRow">
+          <button class="playerBtn" id="playPauseBtn" onclick="togglePlayPause()">Play</button>
+          <button class="playerBtn" id="stopBtn" onclick="stopAudio()">Stop</button>
+        </div>
+
+        <div id="lyricsBox">Loading lyrics...</div>
+
+        <button id="downloadLyricsBtn" onclick="downloadLyrics()">Download Lyrics (.txt)</button>
+
+        <audio id="audioPlayer"></audio>
       </div>
     </div>
   </main>
@@ -181,6 +313,8 @@
 
     let profileListener = null;
     let localSessionVersion = null;
+    let currentLyricsText = '';
+    let currentSongKey = '';
 
     function getDeviceId() {
       let id = localStorage.getItem('tmsb_device_id');
@@ -198,6 +332,112 @@
       }
       auth.signOut();
     }
+
+    function formatTime(sec) {
+      if (isNaN(sec)) return '0:00';
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function openPrayer(key, titleEn, titleBn) {
+      currentSongKey = key;
+      document.getElementById('tabListView').style.display = 'none';
+      document.getElementById('playerView').style.display = 'block';
+      document.getElementById('playerTitle').innerText = titleEn;
+      document.getElementById('playerTitleBn').innerText = titleBn;
+
+      const audio = document.getElementById('audioPlayer');
+      audio.pause();
+      audio.src = 'audio/' + key + '.mp3';
+      document.getElementById('playPauseBtn').innerText = 'Play';
+      document.getElementById('progressFill').style.width = '0%';
+      document.getElementById('currentTimeLabel').innerText = '0:00';
+      document.getElementById('durationLabel').innerText = '0:00';
+
+      const lyricsBox = document.getElementById('lyricsBox');
+      lyricsBox.innerText = 'Loading lyrics...';
+      currentLyricsText = '';
+
+      fetch('lyrics/' + key + '.json?t=' + Date.now())
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          currentLyricsText = data.lyrics || '';
+          lyricsBox.innerText = currentLyricsText || 'Lyrics not available.';
+        })
+        .catch(function() {
+          lyricsBox.innerText = 'Lyrics not available.';
+        });
+    }
+
+    function closePrayer() {
+      const audio = document.getElementById('audioPlayer');
+      audio.pause();
+      document.getElementById('playerView').style.display = 'none';
+      document.getElementById('tabListView').style.display = 'block';
+    }
+
+    function togglePlayPause() {
+      const audio = document.getElementById('audioPlayer');
+      const btn = document.getElementById('playPauseBtn');
+      if (audio.paused) {
+        audio.play();
+        btn.innerText = 'Pause';
+      } else {
+        audio.pause();
+        btn.innerText = 'Play';
+      }
+    }
+
+    function stopAudio() {
+      const audio = document.getElementById('audioPlayer');
+      audio.pause();
+      audio.currentTime = 0;
+      document.getElementById('playPauseBtn').innerText = 'Play';
+    }
+
+    function seekAudio(e) {
+      const audio = document.getElementById('audioPlayer');
+      if (!audio.duration) return;
+      const wrap = document.getElementById('progressWrap');
+      const rect = wrap.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const ratio = clickX / rect.width;
+      audio.currentTime = ratio * audio.duration;
+    }
+
+    function downloadLyrics() {
+      if (!currentLyricsText) {
+        alert('Lyrics not loaded yet.');
+        return;
+      }
+      const blob = new Blob([currentLyricsText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = currentSongKey + '.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const audio = document.getElementById('audioPlayer');
+      audio.addEventListener('timeupdate', function() {
+        if (audio.duration) {
+          const pct = (audio.currentTime / audio.duration) * 100;
+          document.getElementById('progressFill').style.width = pct + '%';
+          document.getElementById('currentTimeLabel').innerText = formatTime(audio.currentTime);
+        }
+      });
+      audio.addEventListener('loadedmetadata', function() {
+        document.getElementById('durationLabel').innerText = formatTime(audio.duration);
+      });
+      audio.addEventListener('ended', function() {
+        document.getElementById('playPauseBtn').innerText = 'Play';
+      });
+    });
 
     auth.onAuthStateChanged(function(user) {
       const statusMsg = document.getElementById('statusMsg');
