@@ -127,13 +127,20 @@
 
   .bar {
     width: 100%;
-    color: #000000;
+    color: #FFFFFF;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 22px;
     padding: 18px 0;
     margin-bottom: 1px;
     cursor: pointer;
     text-align: center;
+  }
+
+  .barBengali {
+    display: block;
+    font-size: 16px;
+    font-weight: normal;
+    margin-top: 4px;
   }
 
   main h2 {
@@ -230,7 +237,7 @@
     <button id="installPwaBtn" style="display:none; width:100%; max-width:320px; margin:20px auto 0 auto; padding:18px; background-color:#FF8C00; color:#fff; border:none; border-radius:10px; font-size:18px; font-weight:bold; cursor:pointer;">Install PWA</button>
 
     <div class="barContainer" id="barContainer">
-      <div class="bar" style="background-color:#4CAF50;" onclick="window.location.href='quoteoftheday.html'">Quote of the Day</div>
+      <div class="bar" style="background-color:#4CAF50;" onclick="window.location.href='quoteoftheday.html'">Quote / Advisories<span class="barBengali">বাণী / উপদেশাবলী</span></div>
     </div>
 
   </main>
