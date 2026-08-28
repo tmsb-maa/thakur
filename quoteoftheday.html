@@ -230,7 +230,7 @@
 
       if (!state.quotes || state.quotes.length === 0) {
           card.innerHTML =
-          '<img class="avatar" src="' + personId + '.png" alt="' + (state.name || '') + '">' +
+          '<img class="avatar" src="images/' + personId + '.png" alt="' + (state.name || '') + '">' +
           '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
         (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '') +
           '<p class="quoteText">No quotes added yet.</p>';
@@ -244,7 +244,7 @@
       const quoteText = state.quotes[index];
 
         card.innerHTML =
-        '<img class="avatar" src="' + personId + '.png" alt="' + (state.name || '') + '">' +
+          '<img class="avatar" src="images/' + personId + '.png" alt="' + (state.name || '') + '">' +
         '<p class="quoteText">&ldquo;' + quoteText + '&rdquo;</p>' +
         '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
         (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '') +
@@ -266,9 +266,9 @@
       container.innerHTML = '';
 
       const personFiles = [
-        { key: 'thakursriramakrishna', file: 'thakursriramakrishna.json' },
-        { key: 'srimaasaradadevi', file: 'srimaasaradadevi.json' },
-        { key: 'swamivivekananda', file: 'swamivivekananda.json' }
+        { key: 'thakursriramakrishna', file: 'json/thakursriramakrishna.json' },
+        { key: 'srimaasaradadevi', file: 'json/srimaasaradadevi.json' },
+        { key: 'swamivivekananda', file: 'json/swamivivekananda.json' }
       ];
 
       const deviceId = getDeviceId();
