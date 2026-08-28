@@ -178,7 +178,12 @@
         '<button class="btnRed" onclick="removePerson()">Remove Person</button>' +
         '</div>';
 
-      html += '<div class="filenamePreview">Will save as: ' + (makeFilename(person.name) || '(type a name first)') + '.json</div>';
+            html += '<div class="filenamePreview">Will save as: ' + (makeFilename(person.name) || '(type a name first)') + '.json</div>';
+
+      html += '<div style="margin-top:12px;">' +
+        '<button class="btnGreen" onclick="addQuote()">+ Add Quote</button>' +
+        '<span style="margin-left:10px; color:#888; font-size:13px;">' + person.quotes.length + ' quote(s)</span>' +
+        '</div>';
 
       html += '<div id="quotesList" style="margin-top:12px;">';
       person.quotes.forEach(function(q, qIndex) {
@@ -188,9 +193,6 @@
           '</div>';
       });
       html += '</div>';
-
-      html += '<button class="btnGreen" onclick="addQuote()">+ Add Quote</button>' +
-        '<span style="margin-left:10px; color:#888; font-size:13px;">' + person.quotes.length + ' quote(s)</span>';
 
       block.innerHTML = html;
       container.appendChild(block);
@@ -217,7 +219,7 @@
     }
 
     function addQuote() {
-      person.quotes.push('');
+      person.quotes.unshift('');
       saveDraft();
       render();
     }
