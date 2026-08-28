@@ -106,8 +106,16 @@
     color: red;
   }
 
-  #logoutBtn, #barContainer {
+  #logoutBtn, #barContainer, #authBox {
     display: none;
+  }
+
+  #checkingMsg {
+    text-align: center;
+    font-size: 16px;
+    color: #FF8C00;
+    font-weight: bold;
+    margin-top: 60px;
   }
 
   .barContainer {
@@ -185,6 +193,8 @@
   </header>
 
   <main>
+
+    <p id="checkingMsg">Checking access...</p>
 
     <div id="authBox">
       <h3 id="authTitle">Login</h3>
@@ -377,6 +387,7 @@
       const authBox = document.getElementById('authBox');
       const logoutBtn = document.getElementById('logoutBtn');
       const barContainer = document.getElementById('barContainer');
+      const checkingMsg = document.getElementById('checkingMsg');
 
       if (profileListener) {
         profileListener();
@@ -438,12 +449,14 @@
             });
           }
 
+          checkingMsg.style.display = 'none';
           authBox.style.display = 'none';
           logoutBtn.style.display = 'flex';
           barContainer.style.display = 'flex';
           document.getElementById('authError').innerText = "";
         });
       } else {
+        checkingMsg.style.display = 'none';
         authBox.style.display = 'block';
         logoutBtn.style.display = 'none';
         barContainer.style.display = 'none';
