@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spiritual Prayers - TMS Library</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#FF8C00">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+
+  header, footer {
+    background-color: #FF8C00;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    font-size: 20px;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #backBtn {
+    background: none;
+    border: none;
+    color: #000000;
+    font-size: 26px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 10px;
+  }
+
+  #headerTitle {
+    flex: 1;
+    text-align: center;
+    font-size: 22px;
+  }
+
+  #logoutBtn {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    font-size: 20px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  main {
+    flex: 1;
+    background-color: #FFFFFF;
+    padding: 30px 20px;
+  }
+
+  #statusMsg {
+    text-align: center;
+    font-size: 16px;
+    color: #FF8C00;
+    font-weight: bold;
+    margin-top: 60px;
+  }
+
+  #pageContent {
+    display: none;
+  }
+
+  #pageTitle {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #FF8C00;
+    margin-bottom: 5px;
+  }
+
+  #pageTitleBn {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #FF8C00;
+    margin-bottom: 25px;
+  }
+
+  .barContainer {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bar {
+    width: 100%;
+    color: #000000;
+    font-weight: bold;
+    font-size: 22px;
+    padding: 18px 0;
+    margin-bottom: 20px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  .barBengali {
+    display: block;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 4px;
+  }
+
+  @media (max-width: 480px) {
+    #headerTitle { font-size: 20px; }
+    #logoutBtn { width: 34px; height: 34px; font-size: 17px; }
+    footer p { font-size: 18px; }
+    #pageTitle { font-size: 20px; }
+    #pageTitleBn { font-size: 18px; }
+    .bar { font-size: 19px; }
+    .barBengali { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <button id="backBtn" onclick="history.back()">&#8592;</button>
+    <h1 id="headerTitle">TMS Library</h1>
+    <button id="logoutBtn" onclick="logoutUser()">⏻</button>
+  </header>
+
+  <main>
+    <p id="statusMsg">Checking access...</p>
+
+    <div id="pageContent">
+      <p id="pageTitle">Spiritual Prayers</p>
+      <p id="pageTitleBn">আধ্যাত্মিক প্রার্থনাসমূহ</p>
+
+      <div class="barContainer">
+        <div class="bar" style="background-color:#F5F0E6;">Khandana Bhava Bhandhana<span class="barBengali">খন্ডন ভব বন্ধন</span></div>
+        <div class="bar" style="background-color:#F5F0E6;">Guru Devo Doya Karo<span class="barBengali">গুরুদেব দয়া কর</span></div>
+        <div class="bar" style="background-color:#F5F0E6;">Sri Maa Durga Chandipath<span class="barBengali">শ্রী মা দূর্গা চন্ডীপাঠ</span></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Completely private library.</p>
+    <p>Call:+91-9830894559</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqmiTPNCbx2Kd9PKZdaKYrm_tKdR7gqzc",
+      authDomain: "tmsb-online-library.firebaseapp.com",
+      projectId: "tmsb-online-library",
+      storageBucket: "tmsb-online-library.firebasestorage.app",
+      messagingSenderId: "305360233952",
+      appId: "1:305360233952:web:3c92404970ac61c6143785"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let profileListener = null;
+    let localSessionVersion = null;
+
+    function getDeviceId() {
+      let id = localStorage.getItem('tmsb_device_id');
+      if (!id) {
+        id = 'dev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('tmsb_device_id', id);
+      }
+      return id;
+    }
+
+    function logoutUser() {
+      if (profileListener) {
+        profileListener();
+        profileListener = null;
+      }
+      auth.signOut();
+    }
+
+    auth.onAuthStateChanged(function(user) {
+      const statusMsg = document.getElementById('statusMsg');
+      const pageContent = document.getElementById('pageContent');
+
+      if (profileListener) {
+        profileListener();
+        profileListener = null;
+      }
+
+      if (!user) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      profileListener = db.collection("users").doc(user.uid).onSnapshot(function(doc) {
+        if (!doc.exists) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        const data = doc.data();
+        const today = new Date().toISOString().split('T')[0];
+
+        if (!data.approved) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        if (data.blocked) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        if (data.accessStart && today < data.accessStart) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        if (data.accessEnd && today > data.accessEnd) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+
+        if (localSessionVersion === null) {
+          localSessionVersion = data.sessionVersion || 0;
+        } else if (data.sessionVersion !== localSessionVersion) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+
+        const deviceId = getDeviceId();
+        const devices = data.devices || [];
+
+        if (!devices.includes(deviceId)) {
+          if (devices.length >= (data.maxDevices || 1)) {
+            auth.signOut();
+            window.location.href = 'index.html';
+            return;
+          }
+          db.collection("users").doc(user.uid).update({
+            devices: firebase.firestore.FieldValue.arrayUnion(deviceId)
+          });
+        }
+
+        statusMsg.style.display = 'none';
+        pageContent.style.display = 'block';
+      });
+    });
+  </script>
+
+</body>
+</html>
