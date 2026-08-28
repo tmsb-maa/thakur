@@ -344,6 +344,7 @@
       currentSongKey = key;
       document.getElementById('tabListView').style.display = 'none';
       document.getElementById('playerView').style.display = 'block';
+      history.pushState({ view: 'player' }, '', '#' + key);
       document.getElementById('playerTitle').innerText = titleEn;
       document.getElementById('playerTitleBn').innerText = titleBn;
 
@@ -376,6 +377,16 @@
       document.getElementById('playerView').style.display = 'none';
       document.getElementById('tabListView').style.display = 'block';
     }
+
+    window.addEventListener('popstate', function(e) {
+      const playerView = document.getElementById('playerView');
+      if (playerView.style.display === 'block') {
+        const audio = document.getElementById('audioPlayer');
+        audio.pause();
+        playerView.style.display = 'none';
+        document.getElementById('tabListView').style.display = 'block';
+      }
+    });
 
     function togglePlayPause() {
       const audio = document.getElementById('audioPlayer');
