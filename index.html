@@ -336,6 +336,17 @@
         preview.value = '';
       }
     }
+	
+	    function formatNameInput() {
+      const field = document.getElementById('signupName');
+      const cursorPos = field.selectionStart;
+      const before = field.value;
+      field.value = before.replace(/\b\w/g, function(c) { return c.toUpperCase(); })
+                           .replace(/\B\w/g, function(c) { return c.toLowerCase(); });
+      field.setSelectionRange(cursorPos, cursorPos);
+    }
+
+    document.getElementById('signupName').addEventListener('input', formatNameInput);
 
     document.getElementById('signupName').addEventListener('blur', updateUserIdPreview);
     document.getElementById('signupPhone').addEventListener('blur', updateUserIdPreview);
