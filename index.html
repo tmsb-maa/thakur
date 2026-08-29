@@ -207,8 +207,8 @@
       <h3 id="authTitle">Login</h3>
 
       <div id="loginFields">
-        <input type="email" id="emailInput" placeholder="Email">
-        <input type="password" id="passwordInput" placeholder="Password">
+        <input type="text" id="userIdInput" placeholder="User ID">
+        <input type="password" id="passwordInput" placeholder="6-digit PIN">
         <button onclick="loginUser()">Login</button>
       </div>
 
@@ -218,8 +218,9 @@
 
       <div id="signupBox" style="display:none; margin-top:20px; border-top:1px solid #eee; padding-top:20px;">
         <h3>Create Account</h3>
-        <input type="text" id="signupName" placeholder="Full Name">
-        <input type="email" id="signupEmail" placeholder="Email">
+        <input type="text" id="signupName" placeholder="Full Name (e.g. John Mike)">
+        <input type="tel" id="signupPhone" placeholder="10-digit Phone Number" maxlength="10">
+        <input type="text" id="signupUserId" placeholder="User ID (auto-generated)" readonly style="background:#f0f0f0; color:#555;">
         <div style="position:relative;">
           <input type="text" id="signupPin" placeholder="6-digit PIN" maxlength="6">
           <span onclick="togglePin('signupPin')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
@@ -305,7 +306,41 @@
         .join(' ');
     }
 
-    function registerUser() {
+    function generateBaseUserId(rawName, phone, useFirst4) {
+      const firstName = rawName.trim().split(/\s+/)[0].toLowerCase();
+      const digits = useFirst4 ? phone.substring(0, 4) : phone.substring(6, 10);
+      return firstName + digits;
+    }
+
+    async function resolveUniqueUserId(rawName, phone) {
+      const candidate1 = generateBaseUserId(rawName, phone, false); // firstname + last4
+      let doc1 = await db.collection("users").where("userId", "==", candidate1).limit(1).get();
+      if (doc1.empty) return candidate1;
+
+      const candidate2 = generateBaseUserId(rawName, phone, true); // firstname + first4
+      let doc2 = await db.collection("users").where("userId", "==", candidate2).limit(1).get();
+      if (doc2.empty) return candidate2;
+
+      return candidate2 + phone.substring(9, 10); // firstname + first4 + last digit of phone
+    }
+
+    async function updateUserIdPreview() {
+      const rawName = document.getElementById('signupName').value;
+      const phone = document.getElementById('signupPhone').value.trim();
+      const preview = document.getElementById('signupUserId');
+      const nameParts = rawName.trim().split(/\s+/);
+
+      if (nameParts.length >= 2 && /^\d{10}$/.test(phone)) {
+        preview.value = await resolveUniqueUserId(rawName, phone);
+      } else {
+        preview.value = '';
+      }
+    }
+
+    document.getElementById('signupName').addEventListener('blur', updateUserIdPreview);
+    document.getElementById('signupPhone').addEventListener('blur', updateUserIdPreview);
+	
+    async function registerUser() {
       const errorBox = document.getElementById('signupError');
       errorBox.innerText = '';
 
@@ -319,18 +354,18 @@
         }
       }
 
-      const rawName = document.getElementById('signupName').value;
-      const email = document.getElementById('signupEmail').value.trim();
+            const rawName = document.getElementById('signupName').value;
+      const phone = document.getElementById('signupPhone').value.trim();
       const pin = document.getElementById('signupPin').value.trim();
       const pinConfirm = document.getElementById('signupPinConfirm').value.trim();
 
-      if (!rawName.trim()) {
-        errorBox.innerText = 'Please enter your full name.';
+      const nameParts = rawName.trim().split(/\s+/);
+      if (!/^[A-Za-z\s]+$/.test(rawName.trim()) || nameParts.length < 2) {
+        errorBox.innerText = 'Please enter your full name (first and last name).';
         return;
       }
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailPattern.test(email)) {
-        errorBox.innerText = 'Please enter a valid email address.';
+      if (!/^\d{10}$/.test(phone)) {
+        errorBox.innerText = 'Phone number must be exactly 10 digits.';
         return;
       }
       if (!/^\d{6}$/.test(pin)) {
@@ -343,14 +378,17 @@
       }
 
       const name = toTitleCase(rawName);
+      const userId = await resolveUniqueUserId(rawName, phone);
+      const pseudoEmail = userId + '@tms-library.in';
 
       const secondaryApp = firebase.initializeApp(firebaseConfig, "SignupSecondary_" + Date.now());
 
-      secondaryApp.auth().createUserWithEmailAndPassword(email, pin)
+      secondaryApp.auth().createUserWithEmailAndPassword(pseudoEmail, pin)
         .then(function(cred) {
           return secondaryApp.firestore().collection("users").doc(cred.user.uid).set({
             name: name,
-            email: email,
+            phone: phone,
+            userId: userId,
             approved: false,
             blocked: false,
             maxDevices: 2,
@@ -375,9 +413,10 @@
     }
 
     function loginUser() {
-      const email = document.getElementById('emailInput').value;
-      const password = document.getElementById('passwordInput').value;
-      auth.signInWithEmailAndPassword(email, password)
+      const userId = document.getElementById('userIdInput').value.trim().toLowerCase();
+      const pin = document.getElementById('passwordInput').value;
+      const pseudoEmail = userId + '@tms-library.in';
+      auth.signInWithEmailAndPassword(pseudoEmail, pin)
         .catch(function(error) {
           document.getElementById('authError').innerText = error.message;
         });
