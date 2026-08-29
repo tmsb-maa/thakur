@@ -229,7 +229,6 @@
         <h3>Create Account</h3>
         <input type="text" id="signupName" placeholder="Full Name (e.g. John Mike)">
         <input type="tel" id="signupPhone" placeholder="10-digit Phone Number" maxlength="10">
-        <input type="text" id="signupUserId" placeholder="User ID (auto-generated)" readonly style="background:#f0f0f0; color:#555;">
         <div style="position:relative;">
           <input type="text" id="signupPin" placeholder="6-digit PIN" maxlength="6">
           <span onclick="togglePin('signupPin')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
@@ -332,27 +331,6 @@
 
       return candidate2 + phone.substring(9, 10); // firstname + first4 + last digit of phone
     }
-
-    async function updateUserIdPreview() {
-      const rawName = document.getElementById('signupName').value;
-      const phone = document.getElementById('signupPhone').value.trim();
-      const preview = document.getElementById('signupUserId');
-      const nameParts = rawName.trim().split(/\s+/);
-
-      if (nameParts.length >= 2 && /^\d{10}$/.test(phone)) {
-        if (!auth.currentUser) {
-          try {
-            await auth.signInAnonymously();
-          } catch (e) {
-            preview.value = '';
-            return;
-          }
-        }
-        preview.value = await resolveUniqueUserId(rawName, phone);
-      } else {
-        preview.value = '';
-      }
-    }
 	
 	    function formatNameInput() {
       const field = document.getElementById('signupName');
@@ -405,39 +383,42 @@
         return;
       }
 
-      const name = toTitleCase(rawName);
-      const userId = await resolveUniqueUserId(rawName, phone);
-      const pseudoEmail = userId + '@tms-library.in';
+            const name = toTitleCase(rawName);
+      const tempEmail = phone + '@tms-library.in';
 
       const secondaryApp = firebase.initializeApp(firebaseConfig, "SignupSecondary_" + Date.now());
+      let userId;
 
-      secondaryApp.auth().createUserWithEmailAndPassword(pseudoEmail, pin)
-        .then(function(cred) {
-          return secondaryApp.firestore().collection("users").doc(cred.user.uid).set({
-            name: name,
-            phone: phone,
-            userId: userId,
-            approved: false,
-            blocked: false,
-            maxDevices: 2,
-            accessStart: "",
-            accessEnd: "",
-            sessionVersion: 0,
-            devices: []
-          });
-        })
-        .then(function() {
-          return secondaryApp.auth().signOut();
-        })
-        .then(function() {
-          secondaryApp.delete();
-          localStorage.setItem('tmsb_signup_done', Date.now().toString());
-          document.getElementById('authBox').innerHTML = '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:30px 10px;">Please call Admin to get authorized your account: +91-9830894559. Thanks.</p>';
-        })
-        .catch(function(error) {
-          errorBox.innerText = error.message;
-          try { secondaryApp.delete(); } catch (e) {}
+      try {
+        const cred = await secondaryApp.auth().createUserWithEmailAndPassword(tempEmail, pin);
+        userId = await resolveUniqueUserId(rawName, phone);
+        const finalEmail = userId + '@tms-library.in';
+
+        await cred.user.updateEmail(finalEmail);
+
+        await secondaryApp.firestore().collection("users").doc(cred.user.uid).set({
+          name: name,
+          phone: phone,
+          userId: userId,
+          approved: false,
+          blocked: false,
+          maxDevices: 2,
+          accessStart: "",
+          accessEnd: "",
+          sessionVersion: 0,
+          devices: []
         });
+
+        await secondaryApp.auth().signOut();
+        secondaryApp.delete();
+        localStorage.setItem('tmsb_signup_done', Date.now().toString());
+        document.getElementById('authBox').innerHTML =
+          '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:20px 10px;">Your User ID is: <span style="font-size:22px;">' + userId + '</span></p>' +
+          '<p style="font-size:16px; text-align:center; padding:0 10px 20px;">Please save this User ID. Call Admin to get your account authorized: +91-9830894559. Thanks.</p>';
+      } catch (error) {
+        errorBox.innerText = error.message;
+        try { secondaryApp.delete(); } catch (e) {}
+      }
     }
 
     function loginUser() {
