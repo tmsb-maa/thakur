@@ -358,8 +358,9 @@
     const db = firebase.firestore();
 
     let profileListener = null;
-    let localSessionVersion = null;
     let currentUserData = null;
+    let deviceWasRegistered = false;
+    let selfInitiatedPinChange = false;
 
     function getDeviceId() {
       let id = localStorage.getItem('tmsb_device_id');
@@ -527,7 +528,7 @@
       const pseudoEmail = userId + '@tms-library.in';
       auth.signInWithEmailAndPassword(pseudoEmail, pin)
         .catch(function(error) {
-          document.getElementById('authError').innerText = error.message;
+          document.getElementById('authError').innerText = "Invalid Credentials";
         });
     }
 
@@ -544,6 +545,18 @@
       const menu = document.getElementById('userMenu');
       menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
     }
+
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('userMenu');
+      const btn = document.getElementById('personBtn');
+      if (menu.style.display === 'block' && !menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+
+    window.addEventListener('popstate', function() {
+      document.getElementById('userMenu').style.display = 'none';
+    });
 
     function openProfile() {
       if (!currentUserData) return;
@@ -592,6 +605,7 @@
 
       user.updatePassword(newPin)
         .then(function() {
+          selfInitiatedPinChange = true;
           return db.collection("users").doc(user.uid).update({
             sessionVersion: firebase.firestore.FieldValue.increment(1),
             devices: []
@@ -664,23 +678,26 @@
             return;
           }
 
-          if (localSessionVersion === null) {
-            localSessionVersion = data.sessionVersion || 0;
-          } else if (data.sessionVersion !== localSessionVersion) {
-            document.getElementById('authError').innerText = "You have been logged out by admin.";
-            auth.signOut();
-            return;
-          }
-
           const deviceId = getDeviceId();
           const devices = data.devices || [];
 
-          if (!devices.includes(deviceId)) {
+          if (devices.includes(deviceId)) {
+            deviceWasRegistered = true;
+          } else if (deviceWasRegistered) {
+            document.getElementById('authError').innerText = selfInitiatedPinChange
+              ? "PIN changed successfully. Please login with your new PIN."
+              : "You have been logged out.";
+            selfInitiatedPinChange = false;
+            deviceWasRegistered = false;
+            auth.signOut();
+            return;
+          } else {
             let updatedDevices = devices.slice();
             if (updatedDevices.length >= (data.maxDevices || 1)) {
               updatedDevices.shift();
             }
             updatedDevices.push(deviceId);
+            deviceWasRegistered = true;
             db.collection("users").doc(user.uid).update({
               devices: updatedDevices
             }).catch(function(error) {
@@ -704,7 +721,7 @@
         document.getElementById('profileModal').style.display = 'none';
         document.getElementById('changePinModal').style.display = 'none';
         barContainer.style.display = 'none';
-        localSessionVersion = null;
+        deviceWasRegistered = false;
         currentUserData = null;
       }
     });
