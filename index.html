@@ -380,19 +380,39 @@
         return;
       }
 
-            const name = toTitleCase(rawName);
-      const tempEmail = phone + '@tms-library.in';
+      const name = toTitleCase(rawName);
+      const firstName = rawName.trim().split(/\s+/)[0].toLowerCase();
+      const candidates = [
+        firstName + phone.substring(6, 10),
+        firstName + phone.substring(0, 4),
+        firstName + phone.substring(0, 4) + phone.substring(9, 10)
+      ];
 
       const secondaryApp = firebase.initializeApp(firebaseConfig, "SignupSecondary_" + Date.now());
-      let userId;
+      let cred = null;
+      let userId = null;
+
+      for (const candidate of candidates) {
+        try {
+          cred = await secondaryApp.auth().createUserWithEmailAndPassword(candidate + '@tms-library.in', pin);
+          userId = candidate;
+          break;
+        } catch (err) {
+          if (err.code !== 'auth/email-already-in-use') {
+            errorBox.innerText = err.message;
+            try { secondaryApp.delete(); } catch (e) {}
+            return;
+          }
+        }
+      }
+
+      if (!cred) {
+        errorBox.innerText = 'Could not generate a unique User ID. Please contact admin.';
+        try { secondaryApp.delete(); } catch (e) {}
+        return;
+      }
 
       try {
-        const cred = await secondaryApp.auth().createUserWithEmailAndPassword(tempEmail, pin);
-        userId = await resolveUniqueUserId(rawName, phone, secondaryApp.firestore());
-        const finalEmail = userId + '@tms-library.in';
-
-        await cred.user.updateEmail(finalEmail);
-
         await secondaryApp.firestore().collection("users").doc(cred.user.uid).set({
           name: name,
           phone: phone,
@@ -405,7 +425,6 @@
           sessionVersion: 0,
           devices: []
         });
-
         await secondaryApp.auth().signOut();
         secondaryApp.delete();
         localStorage.setItem('tmsb_signup_done', Date.now().toString());
