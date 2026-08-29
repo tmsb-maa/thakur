@@ -116,6 +116,8 @@
     flex: 1;
     background-color: #FFFFFF;
     padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
   }
 
   #statusMsg {
@@ -124,10 +126,6 @@
     color: #FF8C00;
     font-weight: bold;
     margin-top: 60px;
-  }
-
-  #pageContent {
-    display: none;
   }
 
   #pageTitle {
@@ -172,13 +170,20 @@
     margin-top: 4px;
   }
 
+  #pageContent {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+  }
+
   #playerView {
     display: none;
     flex-direction: column;
+    flex: 1;
     max-width: 700px;
     width: 100%;
     margin: 0 auto;
-    min-height: calc(100vh - 250px);
   }
 
   #playerBackBtn {
@@ -276,7 +281,7 @@
     font-weight: bold;
     cursor: pointer;
     display: block;
-    margin: auto auto 10px auto;
+    margin: auto auto 0 auto;
   }
 
   @media (max-width: 480px) {
@@ -705,7 +710,7 @@
         currentUserData = data;
 
         statusMsg.style.display = 'none';
-        pageContent.style.display = 'block';
+        pageContent.style.display = 'flex';
       });
     });
   </script>
