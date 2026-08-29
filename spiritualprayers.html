@@ -174,8 +174,11 @@
 
   #playerView {
     display: none;
+    flex-direction: column;
     max-width: 700px;
+    width: 100%;
     margin: 0 auto;
+    min-height: calc(100vh - 250px);
   }
 
   #playerBackBtn {
@@ -273,7 +276,7 @@
     font-weight: bold;
     cursor: pointer;
     display: block;
-    margin: 0 auto 30px auto;
+    margin: auto auto 10px auto;
   }
 
   @media (max-width: 480px) {
@@ -526,7 +529,7 @@
     function openPrayer(key, titleEn, titleBn) {
       currentSongKey = key;
       document.getElementById('tabListView').style.display = 'none';
-      document.getElementById('playerView').style.display = 'block';
+      document.getElementById('playerView').style.display = 'flex';
       history.pushState({ view: 'player' }, '', '#' + key);
       document.getElementById('playerTitle').innerText = titleEn;
       document.getElementById('playerTitleBn').innerText = titleBn;
