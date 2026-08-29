@@ -262,12 +262,12 @@
     background: #fff8f0;
     border-radius: 10px;
     padding: 20px 8px;
-    max-height: 550px;
+    flex: 1;
     overflow-y: auto;
     font-size: 20px;
     line-height: 1.8;
     white-space: pre-line;
-    margin-bottom: 30px;
+    margin-bottom: 0;
     text-align: center;
   }
 
@@ -293,7 +293,7 @@
     #pageTitleBn { font-size: 18px; }
     .bar { font-size: 19px; }
     .barBengali { font-size: 19px; }
-    #lyricsBox { font-size: 16px; max-height: 420px; padding: 16px 5px; margin-bottom: 30px; }
+    #lyricsBox { font-size: 16px; padding: 16px 5px; margin-bottom: 0; }
     .userMenuItem { font-size: 18px; padding: 16px; }
     .tmsModalBox { max-width: 92%; padding: 25px 20px; }
     .tmsModalBox h2, .tmsModalBox h3 { font-size: 22px; }
@@ -354,8 +354,6 @@
         </div>
 
         <div id="lyricsBox">Loading lyrics...</div>
-
-        <button id="downloadLyricsBtn" onclick="downloadLyrics()">Download Lyrics (.txt)</button>
 
         <audio id="audioPlayer"></audio>
       </div>
@@ -572,7 +570,7 @@
     window.addEventListener('popstate', function(e) {
       document.getElementById('userMenu').style.display = 'none';
       const playerView = document.getElementById('playerView');
-      if (playerView.style.display === 'block') {
+      if (playerView.style.display === 'flex') {
         const audio = document.getElementById('audioPlayer');
         audio.pause();
         playerView.style.display = 'none';
