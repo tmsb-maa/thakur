@@ -32,13 +32,18 @@
   }
 
   #backBtn {
-    background: none;
+    background-color: #FFFFFF;
     border: none;
-    color: #000000;
-    font-size: 26px;
-    font-weight: bold;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    padding: 0 10px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   }
 
   #headerTitle {
@@ -194,6 +199,7 @@
   @media (max-width: 480px) {
     #headerTitle { font-size: 20px; }
     #personBtn { width: 40px; height: 40px; }
+    #backBtn { width: 40px; height: 40px; }
     .avatar { width: 90px; height: 90px; font-size: 30px; }
     .quoteText { font-size: 22px; }
     .quoteAuthor { font-size: 18px; }
@@ -209,7 +215,9 @@
 <body>
 
   <header>
-    <button id="backBtn" onclick="history.back()">&#8592;</button>
+    <button id="backBtn" onclick="history.back()">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FF8C00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
     <h1 id="headerTitle">TMS Library</h1>
     <button id="personBtn" onclick="toggleUserMenu()">
       <svg viewBox="0 0 24 24" width="24" height="24" fill="#FF8C00"><circle cx="12" cy="8" r="4.2"/><path d="M4.5 20c0-4.4 3.8-6.5 7.5-6.5s7.5 2.1 7.5 6.5"/></svg>
