@@ -430,7 +430,7 @@
         localStorage.setItem('tmsb_signup_done', Date.now().toString());
         document.getElementById('authBox').innerHTML =
           '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:20px 10px;">Your User ID is: <span style="font-size:22px;">' + userId + '</span></p>' +
-          '<p style="font-size:16px; text-align:center; padding:0 10px 20px;">Please save this User ID. Call Admin to get your account authorized: +91-9830894559. Thanks.</p>';
+          '<p style="font-size:16px; text-align:center; padding:0 10px 20px;">Please save this User ID.<br>Call Admin to get your account authorized:<br>+91-9830894559.<br>Thanks.</p>';
       } catch (error) {
         errorBox.innerText = error.message;
         try { secondaryApp.delete(); } catch (e) {}
