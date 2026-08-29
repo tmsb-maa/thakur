@@ -320,13 +320,13 @@
       return firstName + digits;
     }
 
-    async function resolveUniqueUserId(rawName, phone) {
+    async function resolveUniqueUserId(rawName, phone, firestoreDb) {
       const candidate1 = generateBaseUserId(rawName, phone, false); // firstname + last4
-      let doc1 = await db.collection("users").where("userId", "==", candidate1).limit(1).get();
+      let doc1 = await firestoreDb.collection("users").where("userId", "==", candidate1).limit(1).get();
       if (doc1.empty) return candidate1;
 
       const candidate2 = generateBaseUserId(rawName, phone, true); // firstname + first4
-      let doc2 = await db.collection("users").where("userId", "==", candidate2).limit(1).get();
+      let doc2 = await firestoreDb.collection("users").where("userId", "==", candidate2).limit(1).get();
       if (doc2.empty) return candidate2;
 
       return candidate2 + phone.substring(9, 10); // firstname + first4 + last digit of phone
@@ -388,7 +388,7 @@
 
       try {
         const cred = await secondaryApp.auth().createUserWithEmailAndPassword(tempEmail, pin);
-        userId = await resolveUniqueUserId(rawName, phone);
+        userId = await resolveUniqueUserId(rawName, phone, secondaryApp.firestore());
         const finalEmail = userId + '@tms-library.in';
 
         await cred.user.updateEmail(finalEmail);
