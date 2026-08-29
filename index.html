@@ -341,10 +341,7 @@
       field.setSelectionRange(cursorPos, cursorPos);
     }
 
-    document.getElementById('signupName').addEventListener('input', formatNameInput);
-
-    document.getElementById('signupName').addEventListener('blur', updateUserIdPreview);
-    document.getElementById('signupPhone').addEventListener('blur', updateUserIdPreview);
+        document.getElementById('signupName').addEventListener('input', formatNameInput);
 	
     async function registerUser() {
       const errorBox = document.getElementById('signupError');
