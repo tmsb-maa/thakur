@@ -127,57 +127,62 @@
     margin-top: 5px;
   }
 
-  #createUserBox input {
-    padding: 10px;
-    margin: 5px 5px 5px 0;
+    #createUserBox input {
+    width: 100%;
+    padding: 14px;
+    margin: 6px 0;
     border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
+    border-radius: 8px;
+    font-size: 16px;
   }
 
   #createUserBox button {
-    padding: 10px 18px;
+    width: 100%;
+    padding: 14px 18px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     background-color: #4CAF50;
     color: #fff;
     font-weight: bold;
+    font-size: 16px;
     cursor: pointer;
-    margin-top: 5px;
+    margin-top: 8px;
   }
 
-  table {
+    table {
     width: 100%;
     border-collapse: collapse;
     background: #fff;
-    font-size: 13px;
+    font-size: 15px;
   }
 
   th, td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 14px;
     text-align: left;
     vertical-align: middle;
   }
 
   th { background-color: #FF8C00; color: #000; }
 
-  td input {
-    width: 90px;
-    padding: 5px;
+    td input {
+    width: 100%;
+    max-width: 140px;
+    padding: 10px;
+    font-size: 15px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
   }
 
   .btnSmall {
-    padding: 6px 10px;
+    padding: 12px 14px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     color: #fff;
     font-weight: bold;
     cursor: pointer;
-    font-size: 12px;
-    margin: 2px;
+    font-size: 15px;
+    margin: 4px 0;
   }
 
   .approve { background-color: #4CAF50; }
@@ -194,7 +199,8 @@
       border: none;
       border-bottom: 1px solid #eee;
       position: relative;
-      padding-left: 45%;
+      padding: 14px 14px 14px 45%;
+      font-size: 15px;
     }
     td::before {
       content: attr(data-label);
@@ -204,7 +210,18 @@
       color: #FF8C00;
     }
     tr { border: 1px solid #ddd; margin-bottom: 12px; border-radius: 8px; overflow: hidden; }
+    td[data-label="Actions"] {
+      padding-left: 14px;
+    }
+    td[data-label="Actions"] .btnSmall {
+      display: block;
+      width: 100%;
+      margin: 6px 0;
+      padding: 14px;
+      font-size: 16px;
+    }
   }
+  
 </style>
 </head>
 <body>
@@ -267,7 +284,7 @@
     <div id="createUserBox">
       <h3>Create New User</h3>
       <input type="text" id="newName" placeholder="Full Name">
-      <input type="email" id="newEmail" placeholder="Email">
+      <input type="tel" id="newPhone" placeholder="10-digit Phone Number" maxlength="10">
       <input type="text" id="newPin" placeholder="6-digit PIN" maxlength="6">
       <input type="number" id="newMaxDevices" placeholder="Max Devices" value="1">
       <input type="date" id="newStart">
@@ -281,7 +298,8 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Email</th>
+          <th>Phone</th>
+          <th>User ID</th>
           <th>Approved</th>
           <th>Blocked</th>
           <th>Max Devices</th>
@@ -313,6 +331,13 @@
     const db = firebase.firestore();
 
     const ADMIN_EMAIL = "gtti.computer@gmail.com";
+
+    function toTitleCaseAdmin(str) {
+      return str.trim().toLowerCase().split(' ')
+        .filter(function(w) { return w.length > 0; })
+        .map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1); })
+        .join(' ');
+    }
     let usersListener = null;
 
     function adminLogout() {
@@ -354,9 +379,9 @@
     });
 
     // ---- CREATE USER ----
-    function createUser() {
-      const name = document.getElementById('newName').value.trim();
-      const email = document.getElementById('newEmail').value.trim();
+        async function createUser() {
+      const rawName = document.getElementById('newName').value.trim();
+      const phone = document.getElementById('newPhone').value.trim();
       const pin = document.getElementById('newPin').value.trim();
       const maxDevices = parseInt(document.getElementById('newMaxDevices').value) || 1;
       const start = document.getElementById('newStart').value;
@@ -364,39 +389,76 @@
       const errorBox = document.getElementById('createError');
       errorBox.innerText = "";
 
-      if (!name || !email || pin.length !== 6 || !/^\d{6}$/.test(pin)) {
-        errorBox.innerText = "Please fill all fields. PIN must be exactly 6 digits.";
+      const nameParts = rawName.split(/\s+/);
+      if (!/^[A-Za-z\s]+$/.test(rawName) || nameParts.length < 2) {
+        errorBox.innerText = "Please enter full name (first and last name).";
+        return;
+      }
+      if (!/^\d{10}$/.test(phone)) {
+        errorBox.innerText = "Phone number must be exactly 10 digits.";
+        return;
+      }
+      if (!/^\d{6}$/.test(pin)) {
+        errorBox.innerText = "PIN must be exactly 6 digits.";
         return;
       }
 
+      const firstName = nameParts[0].toLowerCase();
+      const candidates = [
+        firstName + phone.substring(6, 10),
+        firstName + phone.substring(0, 4),
+        firstName + phone.substring(0, 4) + phone.substring(9, 10)
+      ];
+
       const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary_" + Date.now());
-      secondaryApp.auth().createUserWithEmailAndPassword(email, pin)
-        .then(function(cred) {
-          return db.collection("users").doc(cred.user.uid).set({
-            name: name,
-            email: email,
-            approved: true,
-            blocked: false,
-            maxDevices: maxDevices,
-            accessStart: start,
-            accessEnd: end,
-            sessionVersion: 0,
-            devices: []
-          });
-        })
-        .then(function() {
-          secondaryApp.auth().signOut();
-          secondaryApp.delete();
-          document.getElementById('newName').value = "";
-          document.getElementById('newEmail').value = "";
-          document.getElementById('newPin').value = "";
-          document.getElementById('newMaxDevices').value = "1";
-          document.getElementById('newStart').value = "";
-          document.getElementById('newEnd').value = "";
-        })
-        .catch(function(error) {
-          errorBox.innerText = error.message;
+      let cred = null;
+      let userId = null;
+
+      for (const candidate of candidates) {
+        try {
+          cred = await secondaryApp.auth().createUserWithEmailAndPassword(candidate + '@tms-library.in', pin);
+          userId = candidate;
+          break;
+        } catch (err) {
+          if (err.code !== 'auth/email-already-in-use') {
+            errorBox.innerText = err.message;
+            try { secondaryApp.delete(); } catch (e) {}
+            return;
+          }
+        }
+      }
+
+      if (!cred) {
+        errorBox.innerText = "Could not generate a unique User ID for this user.";
+        try { secondaryApp.delete(); } catch (e) {}
+        return;
+      }
+
+      try {
+        await db.collection("users").doc(cred.user.uid).set({
+          name: toTitleCaseAdmin(rawName),
+          phone: phone,
+          userId: userId,
+          approved: true,
+          blocked: false,
+          maxDevices: maxDevices,
+          accessStart: start,
+          accessEnd: end,
+          sessionVersion: 0,
+          devices: []
         });
+        await secondaryApp.auth().signOut();
+        secondaryApp.delete();
+        document.getElementById('newName').value = "";
+        document.getElementById('newPhone').value = "";
+        document.getElementById('newPin').value = "";
+        document.getElementById('newMaxDevices').value = "1";
+        document.getElementById('newStart').value = "";
+        document.getElementById('newEnd').value = "";
+      } catch (error) {
+        errorBox.innerText = error.message;
+        try { secondaryApp.delete(); } catch (e) {}
+      }
     }
 
     function populateRotationDropdowns() {
@@ -471,7 +533,8 @@
           const row = document.createElement('tr');
           row.innerHTML =
             '<td data-label="Name">' + (u.name || "") + '</td>' +
-            '<td data-label="Email">' + (u.email || "") + '</td>' +
+            '<td data-label="Phone">' + (u.phone || "") + '</td>' +
+            '<td data-label="User ID">' + (u.userId || "") + '</td>' +
             '<td data-label="Approved">' + (u.approved ? "Yes" : "No") + '</td>' +
             '<td data-label="Blocked">' + (u.blocked ? "Yes" : "No") + '</td>' +
             '<td data-label="Max Devices"><input type="number" id="dev-' + id + '" value="' + (u.maxDevices || 1) + '"><br><small>' + ((u.devices || []).length) + ' registered</small></td>' +
