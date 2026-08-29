@@ -28,6 +28,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
   }
 
   #backBtn {
@@ -106,7 +107,7 @@
     color: red;
   }
 
-  #logoutBtn, #barContainer, #authBox {
+  #personBtn, #barContainer, #authBox {
     display: none;
   }
 
@@ -149,21 +150,64 @@
     margin-bottom: 20px;
   }
 
-  #logoutBtn {
-    background-color: #FF0000;
-    color: #FFFFFF;
+  #personBtn {
+    background-color: #FFFFFF;
     border: none;
     border-radius: 50%;
-    width: 38px;
-    height: 38px;
+    width: 42px;
+    height: 42px;
     padding: 0;
-    font-size: 20px;
-    line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+
+  #userMenu {
+    position: absolute;
+    top: 62px;
+    right: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    overflow: hidden;
+    z-index: 1000;
+    min-width: 180px;
+    display: none;
+  }
+
+  .userMenuItem {
+    padding: 16px 20px;
+    font-size: 17px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+  }
+
+  .userMenuItem:last-child { border-bottom: none; }
+  .userMenuItem:hover { background: #FFF3E0; }
+
+  .tmsModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.55);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tmsModalBox {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px 25px;
+    max-width: 340px;
+    width: 90%;
+    text-align: center;
   }
 
     @media (max-width: 480px) {
@@ -197,7 +241,13 @@
     }
     .barBengali { font-size: 24px; }
     footer p { font-size: 19px; }
+    #personBtn { width: 40px; height: 40px; }
+    .userMenuItem { font-size: 18px; padding: 16px; }
+    .tmsModalBox { max-width: 92%; padding: 25px 20px; }
+    .tmsModalBox h2, .tmsModalBox h3 { font-size: 22px; }
+    .tmsModalBox p { font-size: 17px; }
   }
+  
 </style>
 </head>
 <body>
@@ -205,7 +255,14 @@
 <header>
     <button id="backBtn" onclick="history.back()" style="display:none;">&#8592;</button>
     <h1 id="headerTitle">TMS Library</h1>
-    <button id="logoutBtn" onclick="logoutUser()">⏻</button>
+    <button id="personBtn" onclick="toggleUserMenu()">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="#FF8C00"><circle cx="12" cy="8" r="4.2"/><path d="M4.5 20c0-4.4 3.8-6.5 7.5-6.5s7.5 2.1 7.5 6.5"/></svg>
+    </button>
+    <div id="userMenu">
+      <div class="userMenuItem" onclick="openProfile()">Profile</div>
+      <div class="userMenuItem" onclick="openChangePin()">Change PIN</div>
+      <div class="userMenuItem" onclick="logoutUser()">Logout</div>
+    </div>
   </header>
 
   <main>
@@ -250,6 +307,31 @@
 	        <div class="bar" style="background-color:#1E90FF;" onclick="window.location.href='spiritualprayers.html'">Spiritual Prayers<span class="barBengali">আধ্যাত্মিক প্রার্থনাসমূহ</span></div>
     </div>
 
+    <div class="tmsModal" id="changePinModal">
+      <div class="tmsModalBox">
+        <h3 style="color:#FF8C00; font-size:22px; margin-bottom:20px;">Change PIN</h3>
+        <input type="text" id="newPinInput" placeholder="New PIN" maxlength="6" style="width:100%; padding:14px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px; font-size:17px;">
+        <input type="text" id="confirmPinInput" placeholder="Confirm PIN" maxlength="6" style="width:100%; padding:14px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px; font-size:17px;">
+        <p id="changePinError" style="color:red; font-size:15px; margin-bottom:10px;"></p>
+        <button onclick="submitChangePin()" style="width:100%; padding:14px; background:#FF8C00; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer; margin-bottom:10px;">Submit</button>
+        <button onclick="closeChangePin()" style="width:100%; padding:14px; background:#ccc; color:#333; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer;">Cancel</button>
+      </div>
+    </div>
+
+    <div class="tmsModal" id="profileModal">
+      <div class="tmsModalBox">
+        <h2 style="color:#FF8C00; font-size:24px; font-weight:bold; margin-bottom:20px;">TMS Library</h2>
+        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">Name: <span id="profileName"></span></p>
+        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">Phone No: <span id="profilePhone"></span></p>
+        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">No. of Devices: <span id="profileDevices"></span></p>
+        <p style="font-size:18px; font-weight:bold; margin-bottom:20px;">Access Period: <span id="profileAccessStart"></span> - <span id="profileAccessEnd"></span></p>
+        <button onclick="downloadProfilePdf()" style="width:100%; padding:14px; background:#4CAF50; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer; margin-bottom:15px;">Download PDF</button>
+        <p style="font-weight:bold; font-size:16px; margin-bottom:5px;">Completely private library.</p>
+        <p style="font-weight:bold; font-size:16px; margin-bottom:15px;">Call:+91-9830894559</p>
+        <button onclick="closeProfile()" style="width:100%; padding:12px; background:#ccc; color:#333; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Close</button>
+      </div>
+    </div>
+
   </main>
 
   <footer>
@@ -260,6 +342,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
     const firebaseConfig = {
@@ -276,6 +359,7 @@
 
     let profileListener = null;
     let localSessionVersion = null;
+    let currentUserData = null;
 
     function getDeviceId() {
       let id = localStorage.getItem('tmsb_device_id');
@@ -448,6 +532,7 @@
     }
 
     function logoutUser() {
+      document.getElementById('userMenu').style.display = 'none';
       if (profileListener) {
         profileListener();
         profileListener = null;
@@ -455,9 +540,91 @@
       auth.signOut();
     }
 
+    function toggleUserMenu() {
+      const menu = document.getElementById('userMenu');
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function openProfile() {
+      if (!currentUserData) return;
+      document.getElementById('profileName').innerText = currentUserData.name || "-";
+      document.getElementById('profilePhone').innerText = currentUserData.phone || "-";
+      document.getElementById('profileDevices').innerText = ((currentUserData.devices || []).length) + " / " + (currentUserData.maxDevices || 0);
+      document.getElementById('profileAccessStart').innerText = currentUserData.accessStart ? currentUserData.accessStart : "-";
+      document.getElementById('profileAccessEnd').innerText = currentUserData.accessEnd ? currentUserData.accessEnd : "-";
+      document.getElementById('userMenu').style.display = 'none';
+      document.getElementById('profileModal').style.display = 'flex';
+    }
+
+    function closeProfile() {
+      document.getElementById('profileModal').style.display = 'none';
+    }
+
+    function openChangePin() {
+      document.getElementById('newPinInput').value = '';
+      document.getElementById('confirmPinInput').value = '';
+      document.getElementById('changePinError').innerText = '';
+      document.getElementById('userMenu').style.display = 'none';
+      document.getElementById('changePinModal').style.display = 'flex';
+    }
+
+    function closeChangePin() {
+      document.getElementById('changePinModal').style.display = 'none';
+    }
+
+    function submitChangePin() {
+      const errorBox = document.getElementById('changePinError');
+      errorBox.innerText = '';
+      const newPin = document.getElementById('newPinInput').value.trim();
+      const confirmPin = document.getElementById('confirmPinInput').value.trim();
+
+      if (!/^\d{6}$/.test(newPin)) {
+        errorBox.innerText = 'PIN must be exactly 6 digits.';
+        return;
+      }
+      if (newPin !== confirmPin) {
+        errorBox.innerText = 'New PIN and Confirm PIN do not match.';
+        return;
+      }
+
+      const user = auth.currentUser;
+      if (!user) return;
+
+      user.updatePassword(newPin)
+        .then(function() {
+          return db.collection("users").doc(user.uid).update({
+            sessionVersion: firebase.firestore.FieldValue.increment(1),
+            devices: []
+          });
+        })
+        .catch(function(error) {
+          errorBox.innerText = error.message;
+        });
+    }
+
+    function downloadProfilePdf() {
+      if (!currentUserData) return;
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(18);
+      doc.text("TMS Library", 105, 20, { align: "center" });
+      doc.setFontSize(14);
+      doc.text("Name: " + (currentUserData.name || "-"), 20, 40);
+      doc.text("Phone No: " + (currentUserData.phone || "-"), 20, 50);
+      doc.text("No. of Devices: " + ((currentUserData.devices || []).length) + " / " + (currentUserData.maxDevices || 0), 20, 60);
+      doc.text("Access Period: " + (currentUserData.accessStart ? currentUserData.accessStart : "-") + " - " + (currentUserData.accessEnd ? currentUserData.accessEnd : "-"), 20, 70);
+      doc.setFontSize(12);
+      doc.text("Completely private library.", 105, 90, { align: "center" });
+      doc.text("Call:+91-9830894559", 105, 100, { align: "center" });
+
+      const timestamp = Date.now();
+      const filename = (currentUserData.userId || "user") + "_" + (currentUserData.phone || "phone") + "_" + timestamp + ".pdf";
+      doc.save(filename);
+    }
+
     auth.onAuthStateChanged(function(user) {
       const authBox = document.getElementById('authBox');
-      const logoutBtn = document.getElementById('logoutBtn');
+      const personBtn = document.getElementById('personBtn');
       const barContainer = document.getElementById('barContainer');
       const checkingMsg = document.getElementById('checkingMsg');
 
@@ -509,30 +676,36 @@
           const devices = data.devices || [];
 
           if (!devices.includes(deviceId)) {
-            if (devices.length >= (data.maxDevices || 1)) {
-              document.getElementById('authError').innerText = "Device limit reached. Contact admin.";
-              auth.signOut();
-              return;
+            let updatedDevices = devices.slice();
+            if (updatedDevices.length >= (data.maxDevices || 1)) {
+              updatedDevices.shift();
             }
+            updatedDevices.push(deviceId);
             db.collection("users").doc(user.uid).update({
-              devices: firebase.firestore.FieldValue.arrayUnion(deviceId)
+              devices: updatedDevices
             }).catch(function(error) {
               alert("Device registration failed: " + error.message);
             });
           }
 
+          currentUserData = data;
+
           checkingMsg.style.display = 'none';
           authBox.style.display = 'none';
-          logoutBtn.style.display = 'flex';
+          personBtn.style.display = 'flex';
           barContainer.style.display = 'flex';
           document.getElementById('authError').innerText = "";
         });
       } else {
         checkingMsg.style.display = 'none';
         authBox.style.display = 'block';
-        logoutBtn.style.display = 'none';
+        personBtn.style.display = 'none';
+        document.getElementById('userMenu').style.display = 'none';
+        document.getElementById('profileModal').style.display = 'none';
+        document.getElementById('changePinModal').style.display = 'none';
         barContainer.style.display = 'none';
         localSessionVersion = null;
+        currentUserData = null;
       }
     });
   </script>
