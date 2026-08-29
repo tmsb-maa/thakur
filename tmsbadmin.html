@@ -358,6 +358,16 @@
         .map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1); })
         .join(' ');
     }
+
+    function formatNameInputAdmin() {
+      const field = document.getElementById('newName');
+      const cursorPos = field.selectionStart;
+      field.value = field.value.replace(/\b\w/g, function(c) { return c.toUpperCase(); })
+                                .replace(/\B\w/g, function(c) { return c.toLowerCase(); });
+      field.setSelectionRange(cursorPos, cursorPos);
+    }
+
+    document.getElementById('newName').addEventListener('input', formatNameInputAdmin);
     let usersListener = null;
 
     function adminLogout() {
