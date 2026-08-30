@@ -154,6 +154,81 @@
     line-height: 1.4;
   }
 
+  #monthNavRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+
+  #prevMonthBtn, #nextMonthBtn {
+    background-color: #FFFFFF;
+    border: 2px solid #FF8C00;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  #monthHeading {
+    flex: 1;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #FF8C00;
+  }
+
+  #monthContent {
+    border: 1px solid #FFDDB0;
+    background: #fff8f0;
+    border-radius: 12px;
+    padding: 20px 14px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .calDateBlock {
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #FFDDB0;
+  }
+
+  .calDateBlock:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .calDateHeading {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 6px;
+  }
+
+  .calDateEnglish {
+    font-size: 15px;
+    color: #888;
+    margin-bottom: 10px;
+  }
+
+  .calDateLine {
+    font-size: 19px;
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .calEmptyMsg {
+    text-align: center;
+    font-size: 18px;
+    color: #999;
+    padding: 30px 10px;
+  }
+
   @media (max-width: 480px) {
     #headerTitle { font-size: 20px; }
     #backBtn { width: 40px; height: 40px; }
@@ -161,6 +236,10 @@
     footer p { font-size: 18px; }
     #englishDate { font-size: 26px; }
     #bengaliDate { font-size: 28px; }
+    #monthHeading { font-size: 20px; }
+    #prevMonthBtn, #nextMonthBtn { width: 36px; height: 36px; }
+    .calDateHeading { font-size: 18px; }
+    .calDateLine { font-size: 17px; }
     .userMenuItem { font-size: 18px; padding: 16px; }
     .tmsModalBox { max-width: 92%; padding: 25px 20px; }
     .tmsModalBox h2, .tmsModalBox h3 { font-size: 22px; }
@@ -191,6 +270,18 @@
     <div id="calendarContent">
       <p id="englishDate"></p>
       <p id="bengaliDate"></p>
+
+      <div id="monthNavRow">
+        <button id="prevMonthBtn" onclick="changeMonth(-1)">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#FF8C00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <p id="monthHeading"></p>
+        <button id="nextMonthBtn" onclick="changeMonth(1)">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#FF8C00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+
+      <div id="monthContent">Loading...</div>
     </div>
 
     <div class="tmsModal" id="changePinModal">
@@ -435,6 +526,55 @@
       document.getElementById('bengaliDate').innerHTML = weekdayBn + ', ' + dayBn + ' ' + monthBn + '<br>' + yearBn + ' বঙ্গাব্দ';
     }
 
+    const bengaliMonthFiles = ['boishak','jaisthya','asharh','shrabon','bhadro','ashshin','kartik','ogrohayon','poush','magh','falgun','choitro'];
+    let viewMonthIndex = 0;
+
+    async function loadMonthContent(index) {
+      const wrapped = ((index % 12) + 12) % 12;
+      viewMonthIndex = wrapped;
+
+      document.getElementById('monthHeading').innerText = bengaliMonths[wrapped];
+      const contentBox = document.getElementById('monthContent');
+      contentBox.innerHTML = 'Loading...';
+
+      try {
+        const response = await fetch('calendar/calendar-' + bengaliMonthFiles[wrapped] + '.json?t=' + Date.now());
+        const data = await response.json();
+        renderMonthContent(data);
+      } catch (e) {
+        contentBox.innerHTML = '<p class="calEmptyMsg">No entries yet for this month.</p>';
+      }
+    }
+
+    function renderMonthContent(data) {
+      const contentBox = document.getElementById('monthContent');
+      const dateKeys = Object.keys(data).map(Number).sort(function(a, b) { return a - b; });
+
+      const blocks = [];
+      for (const dateNum of dateKeys) {
+        const entry = data[dateNum];
+        if (!entry || !entry.lines || entry.lines.length === 0) continue;
+
+        const dayBn = toBengaliNumber(dateNum) + bengaliDateSuffix(dateNum);
+        let html = '<div class="calDateBlock">';
+        html += '<div class="calDateHeading">' + dayBn + ' ' + bengaliMonths[viewMonthIndex] + '</div>';
+        if (entry.english) {
+          html += '<div class="calDateEnglish">' + entry.english + '</div>';
+        }
+        for (const line of entry.lines) {
+          html += '<div class="calDateLine">' + line + '</div>';
+        }
+        html += '</div>';
+        blocks.push(html);
+      }
+
+      contentBox.innerHTML = blocks.length > 0 ? blocks.join('') : '<p class="calEmptyMsg">No entries yet for this month.</p>';
+    }
+
+    function changeMonth(direction) {
+      loadMonthContent(viewMonthIndex + direction);
+    }
+
     function scheduleMidnightRefresh() {
       const now = new Date();
       const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
@@ -517,6 +657,9 @@
 
         renderCalendar();
         scheduleMidnightRefresh();
+
+        const currentBengaliMonth = gregorianToBengali(new Date()).month;
+        loadMonthContent(currentBengaliMonth);
       });
     });
   </script>
