@@ -432,7 +432,7 @@
       const monthBn = bengaliMonths[bengali.month];
       const yearBn = toBengaliNumber(bengali.year);
 
-      document.getElementById('bengaliDate').innerText = weekdayBn + ', ' + dayBn + ' ' + monthBn + ' ' + yearBn + ' বঙ্গাব্দ';
+      document.getElementById('bengaliDate').innerHTML = weekdayBn + ', ' + dayBn + ' ' + monthBn + '<br>' + yearBn + ' বঙ্গাব্দ';
     }
 
     function scheduleMidnightRefresh() {
