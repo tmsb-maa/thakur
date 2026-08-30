@@ -178,7 +178,7 @@
   #monthHeading {
     flex: 1;
     text-align: center;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: bold;
     color: #FF8C00;
   }
@@ -217,7 +217,7 @@
   }
 
   .calDateLine {
-    font-size: 19px;
+    font-size: 20px;
     line-height: 1.6;
     margin-bottom: 6px;
   }
@@ -236,10 +236,10 @@
     footer p { font-size: 18px; }
     #englishDate { font-size: 26px; }
     #bengaliDate { font-size: 28px; }
-    #monthHeading { font-size: 20px; }
+    #monthHeading { font-size: 22px; }
     #prevMonthBtn, #nextMonthBtn { width: 36px; height: 36px; }
     .calDateHeading { font-size: 18px; }
-    .calDateLine { font-size: 17px; }
+    .calDateLine { font-size: 18px; }
     .userMenuItem { font-size: 18px; padding: 16px; }
     .tmsModalBox { max-width: 92%; padding: 25px 20px; }
     .tmsModalBox h2, .tmsModalBox h3 { font-size: 22px; }
@@ -557,10 +557,8 @@
 
         const dayBn = toBengaliNumber(dateNum) + bengaliDateSuffix(dateNum);
         let html = '<div class="calDateBlock">';
-        html += '<div class="calDateHeading">' + dayBn + ' ' + bengaliMonths[viewMonthIndex] + '</div>';
-        if (entry.english) {
-          html += '<div class="calDateEnglish">' + entry.english + '</div>';
-        }
+        html += '<div class="calDateHeading">' + dayBn + ' ' + bengaliMonths[viewMonthIndex] +
+          (entry.english ? ' <span style="color:#000;">(' + entry.english + ')</span>' : '') + '</div>';
         for (const line of entry.lines) {
           html += '<div class="calDateLine">' + line + '</div>';
         }
