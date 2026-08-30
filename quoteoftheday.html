@@ -175,26 +175,6 @@
     margin-top: -10px;
     margin-bottom: 15px;
   }
-  .navRow {
-    display: flex;
-    justify-content: space-between;
-  }
-
-      .navBtn {
-    background-color: #FF8C00;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 20px;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    pointer-events: auto;
-  }
-
-  .navBtn:hover {
-    background-color: #e67c00;
-  }
 
   @media (max-width: 480px) {
     #headerTitle { font-size: 20px; }
@@ -433,18 +413,7 @@
           '<img class="avatar" src="images/' + personId + '.png" alt="' + (state.name || '') + '">' +
         '<p class="quoteText">&ldquo;' + quoteText + '&rdquo;</p>' +
         '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
-        (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '') +
-        '<div class="navRow">' +
-        '<button class="navBtn" onclick="navPerson(\'' + personId + '\', -1)">&#8592;</button>' +
-        '<button class="navBtn" onclick="navPerson(\'' + personId + '\', 1)">&#8594;</button>' +
-        '</div>';
-    }
-
-    function navPerson(personId, direction) {
-      const state = personState[personId];
-      if (!state || !state.quotes || state.quotes.length === 0) return;
-      state.manualOffset += direction;
-      renderPerson(personId);
+        (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '');
     }
 
         async function loadQuotesFromJson() {
