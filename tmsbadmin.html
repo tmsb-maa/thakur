@@ -470,6 +470,7 @@
           phone: phone,
           userId: userId,
           approved: true,
+          approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
           blocked: false,
           maxDevices: maxDevices,
           accessStart: start,
@@ -596,7 +597,18 @@
     }
 
     function setApproved(id, value) {
-      db.collection("users").doc(id).update({ approved: value });
+      if (!value) {
+        db.collection("users").doc(id).update({ approved: false });
+        return;
+      }
+      db.collection("users").doc(id).get().then(function(doc) {
+        const data = doc.data() || {};
+        const update = { approved: true };
+        if (!data.approvedAt) {
+          update.approvedAt = firebase.firestore.FieldValue.serverTimestamp();
+        }
+        db.collection("users").doc(id).update(update);
+      });
     }
 
     function setBlocked(id, value) {

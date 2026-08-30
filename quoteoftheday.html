@@ -416,7 +416,7 @@
         (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '');
     }
 
-        async function loadQuotesFromJson() {
+    async function loadQuotesFromJson(approvedAtMillis) {
       const container = document.getElementById('quoteContent');
       container.innerHTML = '';
 
@@ -446,7 +446,7 @@
 
         const quotes = personData.quotes || [];
         const intervalHours = personData.rotationHours || 24;
-        const timeSlot = Math.floor(Date.now() / (intervalHours * 3600000));
+        const timeSlot = Math.floor((Date.now() - approvedAtMillis) / (intervalHours * 3600000));
 
           personState[p.key] = {
           name: personData.name || '',
@@ -534,7 +534,8 @@
         quoteContent.style.display = 'block';
 
         if (!quotesLoaded) {
-          loadQuotesFromJson();
+          const approvedAtMillis = data.approvedAt ? data.approvedAt.toMillis() : Date.now();
+          loadQuotesFromJson(approvedAtMillis);
         }
       });
     });
