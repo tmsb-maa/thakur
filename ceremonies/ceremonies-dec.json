@@ -12,12 +12,16 @@
   "3": {
     "english": "3-Dec-2026",
     "weekday": "Thursday",
-    "lines": []
+    "lines": [
+      "কৃষ্ণপক্ষ একাদশী শুরুঃ সন্ধ্যে&nbsp;7:33 PM"
+    ]
   },
   "4": {
     "english": "4-Dec-2026",
     "weekday": "Friday",
-    "lines": []
+    "lines": [
+      "কৃষ্ণপক্ষ একাদশী শেষঃ রাত&nbsp;11:44 PM"
+    ]
   },
   "5": {
     "english": "5-Dec-2026",
@@ -96,12 +100,16 @@
   "19": {
     "english": "19-Dec-2026",
     "weekday": "Saturday",
-    "lines": []
+    "lines": [
+      "শুক্লপক্ষ একাদশী শুরুঃ রাত&nbsp;10:09 PM"
+    ]
   },
   "20": {
     "english": "20-Dec-2026",
     "weekday": "Sunday",
-    "lines": []
+    "lines": [
+      "শুক্লপক্ষ একাদশী শেষঃ রাত&nbsp;8:14 PM"
+    ]
   },
   "21": {
     "english": "21-Dec-2026",
