@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMS Lyrics Editor (Offline)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 15px; width: 100%; }
+
+  header {
+    background-color: #FF8C00;
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+    padding: 18px;
+    font-size: 18px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+  }
+
+  .topBar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    width: 100%;
+  }
+
+  .topBar input[type="file"] { width: 100%; }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .btnPrimary { background-color: #FF8C00; color: #fff; }
+  .btnGreen { background-color: #4CAF50; color: #fff; }
+  .btnRed { background-color: #e53935; color: #fff; }
+  .btnGray { background-color: #757575; color: #fff; }
+
+  .songBlock {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    width: 100%;
+  }
+
+  .songBlock label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 6px;
+    margin-top: 12px;
+  }
+
+  .songBlock input, .songBlock textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+  }
+
+  .songBlock textarea {
+    min-height: 300px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .filenamePreview {
+    font-size: 13px;
+    color: #888;
+    margin-top: 6px;
+    word-break: break-all;
+  }
+
+  .statusMsg {
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    color: green;
+  }
+
+  #addSongBtn { margin-top: 15px; }
+</style>
+</head>
+<body>
+
+  <header>TMS Lyrics Editor &mdash; Offline Tool</header>
+
+  <div class="topBar">
+    <button class="btnGray" onclick="document.getElementById('importFile').click()">Import song's json</button>
+    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importJson(event)">
+    <button class="btnGreen" onclick="exportJson()">Export / Save json</button>
+    <button class="btnRed" onclick="clearAll()">Clear Everything</button>
+  </div>
+
+  <p id="statusMsg" class="statusMsg"></p>
+
+  <div id="songContainer"></div>
+
+  <button id="addSongBtn" class="btnPrimary" onclick="addSong()">+ Add New Song</button>
+
+  <script>
+    let song = null; // null = nothing added yet; otherwise { title, titleBengali, lyrics }
+
+    function saveDraft() {
+      if (song) {
+        localStorage.setItem('tms_lyrics_draft', JSON.stringify(song));
+      } else {
+        localStorage.removeItem('tms_lyrics_draft');
+      }
+    }
+
+    function loadDraft() {
+      const saved = localStorage.getItem('tms_lyrics_draft');
+      if (saved) {
+        try {
+          song = JSON.parse(saved);
+        } catch (e) {
+          song = null;
+        }
+      }
+      render();
+    }
+
+    function makeFilename(title) {
+      return (title || '').toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function render() {
+      const container = document.getElementById('songContainer');
+      const addBtn = document.getElementById('addSongBtn');
+      container.innerHTML = '';
+
+      if (!song) {
+        addBtn.style.display = 'block';
+        return;
+      }
+
+      addBtn.style.display = 'none';
+
+      const block = document.createElement('div');
+      block.className = 'songBlock';
+
+      let html = '<label>Title (English)</label>' +
+        '<input type="text" placeholder="e.g. Khandana Bhava Bhandhana" value="' + escapeHtml(song.title) + '" onchange="updateField(\'title\', this.value)">' +
+
+        '<label>Title (Bengali)</label>' +
+        '<input type="text" placeholder="e.g. খন্ডন ভব বন্ধন" value="' + escapeHtml(song.titleBengali || '') + '" onchange="updateField(\'titleBengali\', this.value)">' +
+
+        '<div class="filenamePreview" id="filenamePreview">Will save as: ' + (makeFilename(song.title) || '(type a title first)') + '.json</div>' +
+
+        '<label>Lyrics</label>' +
+        '<textarea placeholder="Type or paste the full lyrics here, or paste the whole song at once..." oninput="updateField(\'lyrics\', this.value)">' + escapeHtml(song.lyrics || '') + '</textarea>' +
+
+        '<button class="btnRed" style="margin-top:15px;" onclick="removeSong()">Remove Song</button>';
+
+      block.innerHTML = html;
+      container.appendChild(block);
+    }
+
+    function addSong() {
+      song = { title: '', titleBengali: '', lyrics: '' };
+      saveDraft();
+      render();
+    }
+
+    function removeSong() {
+      if (confirm('Remove this song from the editor? (This does not delete anything already uploaded to GitHub.)')) {
+        song = null;
+        saveDraft();
+        render();
+      }
+    }
+
+    function updateField(field, value) {
+      song[field] = value;
+      saveDraft();
+      if (field === 'title') {
+        document.getElementById('filenamePreview').innerText = 'Will save as: ' + (makeFilename(song.title) || '(type a title first)') + '.json';
+      }
+    }
+
+    function exportJson() {
+      if (!song) {
+        alert('Add or import a song first.');
+        return;
+      }
+      const filename = makeFilename(song.title);
+      if (!filename) {
+        alert('Please type the title first.');
+        return;
+      }
+
+      const blob = new Blob([JSON.stringify(song, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      const status = document.getElementById('statusMsg');
+      status.innerText = filename + '.json downloaded! Now upload this file to your GitHub repo lyrics folder.';
+      setTimeout(function() { status.innerText = ''; }, 5000);
+    }
+
+    function importJson(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          song = {
+            title: imported.title || '',
+            titleBengali: imported.titleBengali || '',
+            lyrics: imported.lyrics || ''
+          };
+          saveDraft();
+          render();
+          const status = document.getElementById('statusMsg');
+          status.innerText = 'Imported successfully! You can continue editing.';
+          setTimeout(function() { status.innerText = ''; }, 4000);
+        } catch (err) {
+          alert('Could not read this file. Please make sure it is a valid song json file.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function clearAll() {
+      if (confirm('This will erase everything currently in the editor (not any file already uploaded to GitHub). Continue?')) {
+        song = null;
+        localStorage.removeItem('tms_lyrics_draft');
+        render();
+      }
+    }
+
+    loadDraft();
+  </script>
+
+</body>
+</html>
