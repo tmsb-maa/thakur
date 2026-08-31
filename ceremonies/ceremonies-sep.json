@@ -27,12 +27,16 @@
   "6": {
     "english": "6-Sep-2026",
     "weekday": "Sunday",
-    "lines": []
+    "lines": [
+      "অজা একাদশী শুরুঃ সন্ধ্যা&nbsp;7:29 PM"
+    ]
   },
   "7": {
     "english": "7-Sep-2026",
     "weekday": "Monday",
-    "lines": []
+    "lines": [
+      "অজা একাদশী শেষঃ বিকেল&nbsp;5:03 PM"
+    ]
   },
   "8": {
     "english": "8-Sep-2026",
@@ -42,7 +46,9 @@
   "9": {
     "english": "9-Sep-2026",
     "weekday": "Wednesday",
-    "lines": []
+    "lines": [
+      "মাসিক শিবরাত্রি - কৃষ্ণপক্ষ"
+    ]
   },
   "10": {
     "english": "10-Sep-2026",
@@ -71,7 +77,9 @@
   "14": {
     "english": "14-Sep-2026",
     "weekday": "Monday",
-    "lines": []
+    "lines": [
+      "গণেশ চতুর্থী (গণেশ পূজা)"
+    ]
   },
   "15": {
     "english": "15-Sep-2026",
@@ -86,7 +94,9 @@
   "17": {
     "english": "17-Sep-2026",
     "weekday": "Thursday",
-    "lines": []
+    "lines": [
+      "বাবা বিশ্বকর্মা পূজা"
+    ]
   },
   "18": {
     "english": "18-Sep-2026",
@@ -106,12 +116,16 @@
   "21": {
     "english": "21-Sep-2026",
     "weekday": "Monday",
-    "lines": []
+    "lines": [
+      "পার্শ্ব একাদশী শুরুঃ রাত&nbsp;8:00 PM"
+    ]
   },
   "22": {
     "english": "22-Sep-2026",
     "weekday": "Tuesday",
-    "lines": []
+    "lines": [
+      "পার্শ্ব একাদশী শেষঃ রাত&nbsp;9:43 PM"
+    ]
   },
   "23": {
     "english": "23-Sep-2026",
@@ -127,7 +141,8 @@
     "english": "25-Sep-2026",
     "weekday": "Friday",
     "lines": [
-      "পূর্ণিমা তিথি শুরুঃ রাত 11:06 PM"
+      "পূর্ণিমা তিথি শুরুঃ রাত 11:06 PM",
+      "অনন্ত চতুর্দশী - শুক্লপক্ষ&nbsp;"
     ]
   },
   "26": {
