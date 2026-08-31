@@ -27,30 +27,38 @@
   "6": {
     "english": "6-Oct-2026",
     "weekday": "Tuesday",
-    "lines": []
+    "lines": [
+      "ইন্দিরা একাদশী শুরুঃ রাত&nbsp;2:07 AM"
+    ]
   },
   "7": {
     "english": "7-Oct-2026",
     "weekday": "Wednesday",
-    "lines": []
+    "lines": [
+      "ইন্দিরা একাদশী শেষঃ রাত&nbsp;12:34 AM"
+    ]
   },
   "8": {
     "english": "8-Oct-2026",
     "weekday": "Thursday",
-    "lines": []
+    "lines": [
+      "চতুর্দশী (কৃষ্ণপক্ষ) শুরুঃ রাত 10:16 PM"
+    ]
   },
   "9": {
     "english": "9-Oct-2026",
     "weekday": "Friday",
     "lines": [
-      "অমাবস্যা তিথি শুরুঃ রাত 09:35 PM"
+      "অমাবস্যা তিথি শুরুঃ রাত 09:35 PM",
+      "চতুর্দশী (কৃষ্ণপক্ষ) শেষঃ রাত 9:36 PM"
     ]
   },
   "10": {
     "english": "10-Oct-2026",
     "weekday": "Saturday",
     "lines": [
-      "অমাবস্যা তিথি শেষঃ রাত 09:19 PM"
+      "অমাবস্যা তিথি শেষঃ রাত 09:19 PM",
+      "মহালয়াঃ পূর্বপুরুষের প্রতি তর্পণ।<div>পিতৃপক্ষের শেষ এবং দেবীপক্ষের শুরু</div>"
     ]
   },
   "11": {
@@ -71,22 +79,30 @@
   "14": {
     "english": "14-Oct-2026",
     "weekday": "Wednesday",
-    "lines": []
+    "lines": [
+      "মহাচতুর্থী&nbsp;"
+    ]
   },
   "15": {
     "english": "15-Oct-2026",
     "weekday": "Thursday",
-    "lines": []
+    "lines": [
+      "মহাপঞ্চমী&nbsp;"
+    ]
   },
   "16": {
     "english": "16-Oct-2026",
     "weekday": "Friday",
-    "lines": []
+    "lines": [
+      "মহাষষ্ঠী"
+    ]
   },
   "17": {
     "english": "17-Oct-2026",
     "weekday": "Saturday",
-    "lines": []
+    "lines": [
+      "মহাসপ্তমী&nbsp;"
+    ]
   },
   "18": {
     "english": "18-Oct-2026",
@@ -96,22 +112,31 @@
   "19": {
     "english": "19-Oct-2026",
     "weekday": "Monday",
-    "lines": []
+    "lines": [
+      "মহাঅষ্টমী&nbsp;"
+    ]
   },
   "20": {
     "english": "20-Oct-2026",
     "weekday": "Tuesday",
-    "lines": []
+    "lines": [
+      "মহানবমী&nbsp;"
+    ]
   },
   "21": {
     "english": "21-Oct-2026",
     "weekday": "Wednesday",
-    "lines": []
+    "lines": [
+      "পাপানকুশ একাদশী শুরুঃ দুপুর&nbsp;2:11 PM"
+    ]
   },
   "22": {
     "english": "22-Oct-2026",
     "weekday": "Thursday",
-    "lines": []
+    "lines": [
+      "পাপানকুশ একাদশী শেষঃ দুপুর&nbsp;2:47 PM",
+      "বিজয়া দশমী&nbsp;"
+    ]
   },
   "23": {
     "english": "23-Oct-2026",
@@ -121,13 +146,17 @@
   "24": {
     "english": "24-Oct-2026",
     "weekday": "Saturday",
-    "lines": []
+    "lines": [
+      "চতুর্দশী (শুক্লপক্ষ) শুরুঃ দুপুর&nbsp;1:37 PM"
+    ]
   },
   "25": {
     "english": "25-Oct-2026",
     "weekday": "Sunday",
     "lines": [
-      "পূর্ণিমা তিথি শুরুঃ সকাল&nbsp;11:55 AM"
+      "পূর্ণিমা তিথি শুরুঃ সকাল&nbsp;11:55 AM",
+      "চতুর্দশী (শুক্লপক্ষ) শেষঃ সকাল 11:56 AM",
+      "কোজাগরী লক্ষী পূজা শুরুঃ সকাল&nbsp;11:56 AM"
     ]
   },
   "26": {
