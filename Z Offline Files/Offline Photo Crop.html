@@ -274,6 +274,19 @@
             border-color: #00ff88;
         }
 
+        .filesize-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 0 20px;
+        }
+
+        .filesize-row input:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
         /* responsive */
         @media (max-width: 600px) {
             .container {
@@ -296,14 +309,21 @@
 <div class="container">
     <h2>📷 4:5 Crop Tool</h2>
     <p style="color:#888; margin-top:-8px; margin-bottom:12px;">
-        <span class="ratio-badge" id="ratioBadge">3″ × 3.75″ (4:5)</span> &nbsp; green frame
+        <span class="ratio-badge" id="ratioBadge">1.5″ × 1.875″ (4:5)</span> &nbsp; green frame
     </p>
 
     <div class="size-selector" id="sizeSelector">
-        <button class="size-btn active" data-w="3" data-h="3.75">3″ × 3.75″</button>
+        <button class="size-btn active" data-w="1.5" data-h="1.875">1.5″ × 1.875″</button>
+        <button class="size-btn" data-w="3" data-h="3.75">3″ × 3.75″</button>
         <button class="size-btn" data-w="4" data-h="5">4″ × 5″</button>
         <button class="size-btn" data-w="6" data-h="7.5">6″ × 7.5″</button>
         <button class="size-btn" data-w="8" data-h="10">8″ × 10″</button>
+    </div>
+
+    <div class="filesize-row" id="filesizeRow">
+        <label for="targetKbInput" style="color:#ccc; font-size:14px;">🎯 Target file size (KB):</label>
+        <input type="number" id="targetKbInput" placeholder="e.g. 400" min="10" step="10"
+               style="width:100px; padding:6px 10px; border-radius:20px; border:1px solid #3a3a3a; background:#2a2a2a; color:#eee;">
     </div>
 
     <div class="upload-area">
@@ -355,6 +375,7 @@
         const orientationBtn = document.getElementById('orientationBtn');
         const sizeSelector = document.getElementById('sizeSelector');
         const ratioBadge = document.getElementById('ratioBadge');
+        const targetKbInput = document.getElementById('targetKbInput');
         const resetBtn = document.getElementById('resetBtn');
         const cropBtn = document.getElementById('cropBtn');
         const downloadBtn = document.getElementById('downloadBtn');
@@ -380,10 +401,40 @@
         // ----- Output (export) resolution -----
         // All presets keep the exact 4:5 ratio; only physical size changes.
         const OUTPUT_DPI = 300; // try 150 (web/screen), 300 (print), 600 (very high-res)
-        let OUTPUT_WIDTH_IN = 3;
-        let OUTPUT_HEIGHT_IN = 3.75;
+        let OUTPUT_WIDTH_IN = 1.5;
+        let OUTPUT_HEIGHT_IN = 1.875;
 
-               // ----- Embed real DPI metadata into a PNG so Photoshop shows correct inches -----
+               // ----- Iteratively downscale a PNG until it's under the target byte size -----
+        // (PNG is lossless, so shrinking pixel dimensions is the only reliable lever.)
+        async function compressPngToTarget(sourceCanvas, targetBytes) {
+            let scale = 1.0;
+            let workCanvas = sourceCanvas;
+            let blob = await new Promise(res => workCanvas.toBlob(res, 'image/png'));
+
+            if (!targetBytes || blob.size <= targetBytes) {
+                return { blob, canvas: workCanvas, scale: 1.0, hitTarget: true };
+            }
+
+            const minScale = 0.15; // safety floor so it never collapses to nothing
+            while (blob.size > targetBytes && scale > minScale) {
+                scale -= 0.05;
+                const w = Math.max(1, Math.round(sourceCanvas.width * scale));
+                const h = Math.max(1, Math.round(sourceCanvas.height * scale));
+                const tmp = document.createElement('canvas');
+                tmp.width = w;
+                tmp.height = h;
+                const tctx = tmp.getContext('2d');
+                tctx.imageSmoothingEnabled = true;
+                tctx.imageSmoothingQuality = 'high';
+                tctx.drawImage(sourceCanvas, 0, 0, w, h);
+                blob = await new Promise(res => tmp.toBlob(res, 'image/png'));
+                workCanvas = tmp;
+            }
+
+            return { blob, canvas: workCanvas, scale, hitTarget: blob.size <= targetBytes };
+        }
+
+        // ----- Embed real DPI metadata into a PNG so Photoshop shows correct inches -----
         function crc32(buf) {
             let table = crc32._table;
             if (!table) {
@@ -703,15 +754,27 @@
             // We'll also enable the download button.
             window._croppedCanvas = cropCanvas;
 
-            cropCanvas.toBlob(async function(blob) {
-                const dpiBlob = await addDpiToPngBlob(blob, OUTPUT_DPI);
+            (async function() {
+                const targetKb = parseFloat(targetKbInput.value);
+                const targetBytes = (targetKb && targetKb > 0) ? targetKb * 1024 : null;
+
+                const result = await compressPngToTarget(cropCanvas, targetBytes);
+                const effectiveDpi = Math.round(OUTPUT_DPI * result.scale); // shrinks if we had to downscale
+                const dpiBlob = await addDpiToPngBlob(result.blob, effectiveDpi);
+
+                window._croppedCanvas = result.canvas;
                 window._croppedBlobUrl = URL.createObjectURL(dpiBlob);
-                statusDiv.innerHTML = `
-                    ✂️ Cropped! (${outW}×${outH} px @ ${OUTPUT_DPI} DPI, true size embedded) — 
-                    <a href="${window._croppedBlobUrl}" download="cropped_4x5.png" style="color:#4fc3f7;">preview</a> &nbsp;
-                    <span style="color:#aaa;">(click preview to view)</span>
-                `;
-            }, 'image/png');
+
+                const kbSize = (dpiBlob.size / 1024).toFixed(0);
+                let msg = `✂️ Cropped! (${result.canvas.width}×${result.canvas.height} px @ ${effectiveDpi} DPI, ${kbSize} KB) — `;
+                msg += `<a href="${window._croppedBlobUrl}" download="cropped_4x5.png" style="color:#4fc3f7;">preview</a> &nbsp;`;
+                msg += `<span style="color:#aaa;">(click preview to view)</span>`;
+
+                if (targetBytes && !result.hitTarget) {
+                    msg += `<br><span style="font-size:13px; color:#f5a623;">⚠️ Couldn't reach ${targetKb}KB without shrinking too far — got as close as possible (${kbSize}KB).</span>`;
+                }
+                statusDiv.innerHTML = msg;
+            })();
 
             downloadBtn.disabled = false;
             cropBtn.disabled = true; // prevent re-crop unless reset or reload
@@ -733,7 +796,9 @@
             link.click();
             document.body.removeChild(link);
 
-            statusDiv.innerHTML = `💾 Downloaded! (${cropCanvas.width}×${cropCanvas.height} px, ${OUTPUT_DPI} DPI embedded)`;
+            fetch(window._croppedBlobUrl).then(r => r.blob()).then(b => {
+                statusDiv.innerHTML = `💾 Downloaded! (${cropCanvas.width}×${cropCanvas.height} px, ${(b.size/1024).toFixed(0)} KB)`;
+            });
         }
 
         // ----- Resize canvas to fit wrapper (responsive) -----
