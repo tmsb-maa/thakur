@@ -383,6 +383,50 @@
         let OUTPUT_WIDTH_IN = 3;
         let OUTPUT_HEIGHT_IN = 3.75;
 
+               // ----- Embed real DPI metadata into a PNG so Photoshop shows correct inches -----
+        function crc32(buf) {
+            let table = crc32._table;
+            if (!table) {
+                table = crc32._table = [];
+                for (let n = 0; n < 256; n++) {
+                    let c = n;
+                    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+                    table[n] = c;
+                }
+            }
+            let crc = 0xFFFFFFFF;
+            for (let i = 0; i < buf.length; i++) crc = (crc >>> 8) ^ table[(crc ^ buf[i]) & 0xFF];
+            return (crc ^ 0xFFFFFFFF) >>> 0;
+        }
+
+        function buildPhysChunk(dpi) {
+            const ppm = Math.round(dpi / 0.0254); // pixels per meter
+            const body = new Uint8Array(4 + 9); // 'pHYs' + 9 bytes data
+            const dv = new DataView(body.buffer);
+            body.set([0x70, 0x48, 0x59, 0x73], 0); // "pHYs"
+            dv.setUint32(4, ppm);
+            dv.setUint32(8, ppm);
+            body[12] = 1; // unit: meters
+            const crc = crc32(body);
+            const chunk = new Uint8Array(4 + body.length + 4);
+            const cdv = new DataView(chunk.buffer);
+            cdv.setUint32(0, 9); // data length
+            chunk.set(body, 4);
+            cdv.setUint32(4 + body.length, crc);
+            return chunk;
+        }
+
+        async function addDpiToPngBlob(blob, dpi) {
+            const buf = new Uint8Array(await blob.arrayBuffer());
+            const ihdrEnd = 8 + 4 + 4 + 13 + 4; // signature + IHDR chunk
+            const phys = buildPhysChunk(dpi);
+            const out = new Uint8Array(buf.length + phys.length);
+            out.set(buf.subarray(0, ihdrEnd), 0);
+            out.set(phys, ihdrEnd);
+            out.set(buf.subarray(ihdrEnd), ihdrEnd + phys.length);
+            return new Blob([out], { type: 'image/png' });
+        }
+
         // ----- Handle size preset button clicks -----
         function selectSize(btn) {
             const w = parseFloat(btn.dataset.w);
@@ -659,13 +703,15 @@
             // We'll also enable the download button.
             window._croppedCanvas = cropCanvas;
 
-            // Show preview in status as a small thumbnail
-            const dataURL = cropCanvas.toDataURL('image/png');
-            statusDiv.innerHTML = `
-                ✂️ Cropped! (${outW}×${outH} px @ ${OUTPUT_DPI} DPI) — 
-                <a href="${dataURL}" download="cropped_4x5.png" style="color:#4fc3f7;">preview</a> &nbsp;
-                <span style="color:#aaa;">(click preview to view)</span>
-            `;
+            cropCanvas.toBlob(async function(blob) {
+                const dpiBlob = await addDpiToPngBlob(blob, OUTPUT_DPI);
+                window._croppedBlobUrl = URL.createObjectURL(dpiBlob);
+                statusDiv.innerHTML = `
+                    ✂️ Cropped! (${outW}×${outH} px @ ${OUTPUT_DPI} DPI, true size embedded) — 
+                    <a href="${window._croppedBlobUrl}" download="cropped_4x5.png" style="color:#4fc3f7;">preview</a> &nbsp;
+                    <span style="color:#aaa;">(click preview to view)</span>
+                `;
+            }, 'image/png');
 
             downloadBtn.disabled = false;
             cropBtn.disabled = true; // prevent re-crop unless reset or reload
@@ -674,7 +720,7 @@
 
         // ----- Download cropped image as PNG -----
         function downloadCropped() {
-            if (!window._croppedCanvas) {
+            if (!window._croppedBlobUrl) {
                 statusDiv.innerHTML = '⚠️ Nothing to download. Please crop first.';
                 return;
             }
@@ -682,12 +728,12 @@
             const cropCanvas = window._croppedCanvas;
             const link = document.createElement('a');
             link.download = 'cropped_4x5.png';
-            link.href = cropCanvas.toDataURL('image/png');
+            link.href = window._croppedBlobUrl;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
 
-            statusDiv.innerHTML = `💾 Downloaded! (${cropCanvas.width}×${cropCanvas.height} px)`;
+            statusDiv.innerHTML = `💾 Downloaded! (${cropCanvas.width}×${cropCanvas.height} px, ${OUTPUT_DPI} DPI embedded)`;
         }
 
         // ----- Resize canvas to fit wrapper (responsive) -----
