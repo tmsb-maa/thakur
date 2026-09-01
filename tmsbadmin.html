@@ -270,31 +270,23 @@
   <button id="installAdminBtn" style="display:none; width:90%; max-width:320px; margin:20px auto; padding:18px; background-color:#FF8C00; color:#fff; border:none; border-radius:10px; font-size:18px; font-weight:bold; cursor:pointer;">Install TMS Admin App</button>
   
   <div id="panel">
+    <input type="text" id="userSearchBox" placeholder="Search by Name, Phone or User ID" oninput="renderUserTable()" style="width:100%; padding:14px; margin-bottom:20px; border:2px solid #FF8C00; border-radius:8px; font-size:16px;">
+
     <div id="rotationBox" style="background:#fff; border:2px solid #FF8C00; border-radius:10px; padding:20px; margin-bottom:25px;">
-            <h3 style="color:#FF8C00; margin-bottom:15px; font-size:20px;">Set Quote Rotation Timing</h3>
+      <h3 style="color:#FF8C00; margin-bottom:15px; font-size:20px;">Set Quote Rotation Timing</h3>
 
-      <div style="margin-bottom:12px;">
-        <label style="font-size:16px;"><b>TMS Quote:</b></label><br>
-        <select id="rotation-tmsquote" style="padding:12px; margin-top:5px; font-size:16px;"></select>
-        <button class="btnSmall save" onclick="saveRotation('tmsquote', 'rotation-tmsquote')">Save</button>
-      </div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:140px;">
+          <label style="font-size:16px;"><b>TMS Quote:</b></label><br>
+          <select id="rotation-tmsquote" style="padding:12px; margin-top:5px; font-size:16px; width:100%;"></select>
+          <button class="btnSmall save" onclick="saveRotation('tmsquote', 'rotation-tmsquote')" style="width:100%;">Save</button>
+        </div>
 
-      <div style="margin-bottom:12px;">
-        <label style="font-size:16px;"><b>Page 2 (coming soon):</b></label><br>
-        <select id="rotation-page2" style="padding:12px; margin-top:5px; font-size:16px;"></select>
-        <button class="btnSmall save" onclick="saveRotation('page2', 'rotation-page2')">Save</button>
-      </div>
-
-      <div style="margin-bottom:12px;">
-        <label style="font-size:16px;"><b>Page 3 (coming soon):</b></label><br>
-        <select id="rotation-page3" style="padding:12px; margin-top:5px; font-size:16px;"></select>
-        <button class="btnSmall save" onclick="saveRotation('page3', 'rotation-page3')">Save</button>
-      </div>
-
-      <div>
-        <label style="font-size:16px;"><b>Page 4 (coming soon):</b></label><br>
-        <select id="rotation-page4" style="padding:12px; margin-top:5px; font-size:16px;"></select>
-        <button class="btnSmall save" onclick="saveRotation('page4', 'rotation-page4')">Save</button>
+        <div style="flex:1; min-width:140px;">
+          <label style="font-size:16px;"><b>Page 2 (waiting):</b></label><br>
+          <select id="rotation-page2" style="padding:12px; margin-top:5px; font-size:16px; width:100%;"></select>
+          <button class="btnSmall save" onclick="saveRotation('page2', 'rotation-page2')" style="width:100%;">Save</button>
+        </div>
       </div>
 
       <p id="rotationStatus" style="color:green; font-weight:bold; margin-top:10px; font-size:16px;"></p>
@@ -512,7 +504,7 @@
     }
 
     function populateRotationDropdowns() {
-      const ids = ['rotation-tmsquote', 'rotation-page2', 'rotation-page3', 'rotation-page4'];
+      const ids = ['rotation-tmsquote', 'rotation-page2'];
       ids.forEach(function(id) {
         const select = document.getElementById(id);
         select.innerHTML = '';
@@ -530,8 +522,6 @@
         const data = doc.exists ? doc.data() : {};
         if (data.tmsquote) document.getElementById('rotation-tmsquote').value = data.tmsquote;
         if (data.page2) document.getElementById('rotation-page2').value = data.page2;
-        if (data.page3) document.getElementById('rotation-page3').value = data.page3;
-        if (data.page4) document.getElementById('rotation-page4').value = data.page4;
       });
     }
 
@@ -589,12 +579,22 @@
       document.getElementById('statBlocked').innerText = blockedCount;
 
       let visibleCount = 0;
+      const searchBox = document.getElementById('userSearchBox');
+      const searchTerm = searchBox ? searchBox.value.trim().toLowerCase() : '';
 
       snapshot.forEach(function(doc) {
         const u = doc.data();
         const id = doc.id;
-        const wantApproved = (currentUserFilter === 'approved');
-        if (!!u.approved !== wantApproved) return;
+
+        if (searchTerm) {
+          const matches = (u.name || '').toLowerCase().indexOf(searchTerm) !== -1 ||
+                           (u.phone || '').toLowerCase().indexOf(searchTerm) !== -1 ||
+                           (u.userId || '').toLowerCase().indexOf(searchTerm) !== -1;
+          if (!matches) return;
+        } else {
+          const wantApproved = (currentUserFilter === 'approved');
+          if (!!u.approved !== wantApproved) return;
+        }
 
         visibleCount++;
         const row = document.createElement('tr');
@@ -604,14 +604,15 @@
           '<td data-label="User ID">' + (u.userId || "") + '</td>' +
           '<td data-label="Approved">' + (u.approved ? "Yes" : "No") + '</td>' +
           '<td data-label="Blocked">' + (u.blocked ? "Yes" : "No") + '</td>' +
-          '<td data-label="Max Devices"><input type="number" id="dev-' + id + '" value="' + (u.maxDevices || 1) + '"><br><small>' + ((u.devices || []).length) + ' registered</small></td>' +
+          '<td data-label="Allowed"><input type="number" id="dev-' + id + '" value="' + (u.maxDevices || 1) + '"><div style="margin-top:8px; font-weight:bold; color:#333;">Logged in:</div><div>' + ((u.devices || []).length) + '</div></td>' +
           '<td data-label="Start"><input type="date" id="start-' + id + '" value="' + (u.accessStart || '') + '"></td>' +
           '<td data-label="End"><input type="date" id="end-' + id + '" value="' + (u.accessEnd || '') + '"></td>' +
           '<td data-label="Actions">' +
           '<button class="btnSmall save" onclick="saveUser(\'' + id + '\')">Save</button>' +
-          '<button class="btnSmall approve" onclick="setApproved(\'' + id + '\', true)">Approve</button>' +
-          '<button class="btnSmall block" onclick="setBlocked(\'' + id + '\', true)">Block</button>' +
-          '<button class="btnSmall unblock" onclick="setBlocked(\'' + id + '\', false)">Unblock</button>' +
+          '<button class="btnSmall approve" onclick="setApproved(\'' + id + '\', true)"' + (u.approved ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Approve</button>' +
+          '<button class="btnSmall block" onclick="setApproved(\'' + id + '\', false)"' + (!u.approved ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Disapprove</button>' +
+          '<button class="btnSmall block" onclick="setBlocked(\'' + id + '\', true)"' + (u.blocked ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Block</button>' +
+          '<button class="btnSmall unblock" onclick="setBlocked(\'' + id + '\', false)"' + (!u.blocked ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Unblock</button>' +
           '<button class="btnSmall reset" onclick="resetPin(\'' + id + '\')">Reset PIN</button>' +
           '<button class="btnSmall block" onclick="forceLogout(\'' + id + '\')">Force Logout</button>' +
           '<button class="btnSmall delete" onclick="deleteUser(\'' + id + '\')">Delete</button>' +
@@ -620,7 +621,11 @@
       });
 
       if (visibleCount === 0) {
-        noUsersMsg.innerText = (currentUserFilter === 'pending') ? "No Pending User(s)" : "No Approved User(s)";
+        if (searchTerm) {
+          noUsersMsg.innerText = "No matching user found";
+        } else {
+          noUsersMsg.innerText = (currentUserFilter === 'pending') ? "No Pending User(s)" : "No Approved User(s)";
+        }
         noUsersMsg.style.display = 'block';
       } else {
         noUsersMsg.style.display = 'none';
