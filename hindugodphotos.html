@@ -177,6 +177,16 @@
     width: 100%;
   }
 
+  #lightboxSpinner {
+    border: 5px solid rgba(255,255,255,0.25);
+    border-top: 5px solid #FF8C00;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    animation: tmsSpin 0.8s linear infinite;
+  }
+  @keyframes tmsSpin { to { transform: rotate(360deg); } }
+
   #lightbox {
     display: none;
     position: fixed;
@@ -283,10 +293,11 @@
       </div>
     </div>
 
-    <div id="lightbox">
-      <button id="lightboxClose" onclick="closeLightbox()">&times;</button>
-      <button id="lightboxPrev" onclick="lightboxPrevImg()">&#10094;</button>
-      <img id="lightboxImg" src="" alt="">
+  <div id="lightbox">
+    <button id="lightboxClose" onclick="closeLightbox()">&times;</button>
+    <button id="lightboxPrev" onclick="lightboxPrevImg()">&#10094;</button>
+    <div id="lightboxSpinner" style="display:none;"></div>
+    <img id="lightboxImg" src="" alt="">
       <button id="lightboxNext" onclick="lightboxNextImg()">&#10095;</button>
     </div>
 
@@ -469,35 +480,75 @@
     let currentGodIndex = 0;
     let lightboxOpen = false;
 
+    const godImageCache = {};
+
     function openGodFolder(folderKey, titleEn, titleBn) {
       currentGodFolder = folderKey;
-      currentGodImages = [];
       currentGodIndex = 0;
-      detectGodImages(folderKey, 1);
+
+      if (godImageCache[folderKey]) {
+        currentGodImages = godImageCache[folderKey];
+        openLightboxUI(false);
+        return;
+      }
+
+      currentGodImages = [];
+      openLightboxUI(true);
+      detectGodImagesParallel(folderKey);
     }
 
-    function detectGodImages(folderKey, num) {
-      const folderNum = godFolderNumbers[folderKey];
-      const path = 'hindugodphotos/' + folderNum + ' ' + folderKey + '/' + folderKey + '-' + num + '.png';
-      const img = new Image();
-      img.onload = function() {
-        currentGodImages.push(path);
-        detectGodImages(folderKey, num + 1);
-      };
-      img.onerror = function() {
-        if (currentGodImages.length > 0) {
-          currentGodIndex = 0;
-          showLightbox();
-        }
-      };
-      img.src = path;
-    }
-
-    function showLightbox() {
-      document.getElementById('lightboxImg').src = currentGodImages[currentGodIndex];
+    function openLightboxUI(loading) {
+      document.getElementById('lightboxSpinner').style.display = loading ? 'block' : 'none';
+      document.getElementById('lightboxImg').style.display = loading ? 'none' : 'block';
       document.getElementById('lightbox').style.display = 'flex';
       lightboxOpen = true;
       history.pushState({ view: 'lightbox' }, '', '#' + currentGodFolder);
+
+      if (!loading) {
+        document.getElementById('lightboxImg').src = currentGodImages[currentGodIndex];
+      }
+    }
+
+    const MAX_PROBE_IMAGES = 60;
+
+    function detectGodImagesParallel(folderKey) {
+      const folderNum = godFolderNumbers[folderKey];
+      const probes = [];
+
+      for (let i = 1; i <= MAX_PROBE_IMAGES; i++) {
+        const path = 'hindugodphotos/' + folderNum + ' ' + folderKey + '/' + folderKey + '-' + i + '.png';
+        probes.push(new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve({ i: i, path: path, ok: true });
+          img.onerror = () => resolve({ i: i, path: path, ok: false });
+          img.src = path;
+        }));
+      }
+
+      Promise.all(probes).then(function(results) {
+        results.sort(function(a, b) { return a.i - b.i; });
+        const images = [];
+        for (let j = 0; j < results.length; j++) {
+          if (results[j].ok) {
+            images.push(results[j].path);
+          } else {
+            break;
+          }
+        }
+
+        if (images.length === 0) {
+          closeLightbox();
+          return;
+        }
+
+        godImageCache[folderKey] = images;
+        currentGodImages = images;
+        currentGodIndex = 0;
+
+        document.getElementById('lightboxSpinner').style.display = 'none';
+        document.getElementById('lightboxImg').style.display = 'block';
+        document.getElementById('lightboxImg').src = currentGodImages[currentGodIndex];
+      });
     }
 
     function closeLightbox() {
