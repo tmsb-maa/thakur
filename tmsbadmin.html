@@ -187,6 +187,10 @@
     border-radius: 6px;
   }
 
+  td input[type="date"] {
+    max-width: 100%;
+  }
+
   .btnSmall {
     padding: 12px 14px;
     border: none;
@@ -604,7 +608,8 @@
           '<td data-label="User ID">' + (u.userId || "") + '</td>' +
           '<td data-label="Approved">' + (u.approved ? "Yes" : "No") + '</td>' +
           '<td data-label="Blocked">' + (u.blocked ? "Yes" : "No") + '</td>' +
-          '<td data-label="Allowed"><input type="number" id="dev-' + id + '" value="' + (u.maxDevices || 1) + '"><div style="margin-top:8px; font-weight:bold; color:#333;">Logged in:</div><div>' + ((u.devices || []).length) + '</div></td>' +
+          '<td data-label="Allowed"><input type="number" id="dev-' + id + '" value="' + (u.maxDevices || 1) + '"></td>' +
+          '<td data-label="Logged in">' + ((u.devices || []).length) + '</td>' +
           '<td data-label="Start"><input type="date" id="start-' + id + '" value="' + (u.accessStart || '') + '"></td>' +
           '<td data-label="End"><input type="date" id="end-' + id + '" value="' + (u.accessEnd || '') + '"></td>' +
           '<td data-label="Actions">' +
