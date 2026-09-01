@@ -135,6 +135,11 @@
     margin-top: 5px;
   }
 
+  .statCardActive {
+    background-color: #FFF3E0;
+    border-width: 3px;
+  }
+
     #createUserBox input {
     width: 100%;
     padding: 14px;
@@ -296,8 +301,8 @@
     </div>
 
     <div id="statsGrid">
-      <div class="statCard"><div class="statNumber" id="statApproved">0</div><div class="statLabel">Approved Users</div></div>
-      <div class="statCard"><div class="statNumber" id="statPending">0</div><div class="statLabel">Pending Users</div></div>
+      <div class="statCard statCardActive" id="cardApproved" onclick="setUserFilter('approved')" style="cursor:pointer;"><div class="statNumber" id="statApproved">0</div><div class="statLabel">Approved Users</div></div>
+      <div class="statCard" id="cardPending" onclick="setUserFilter('pending')" style="cursor:pointer;"><div class="statNumber" id="statPending">0</div><div class="statLabel">Pending Users</div></div>
       <div class="statCard"><div class="statNumber" id="statTotalLic">0</div><div class="statLabel">Total Licenses</div></div>
       <div class="statCard"><div class="statNumber" id="statActiveLic">0</div><div class="statLabel">Active Licenses</div></div>
       <div class="statCard"><div class="statNumber" id="statInactiveLic">0</div><div class="statLabel">Inactive Licenses</div></div>
@@ -316,6 +321,8 @@
       <button onclick="createUser()">Create &amp; Approve User</button>
       <p id="createError" style="color:red; font-size:16px;"></p>
     </div>
+
+    <p id="noUsersMsg" style="display:none; text-align:center; font-size:18px; font-weight:bold; color:#777; padding:20px;"></p>
 
     <table>
       <thead>
@@ -372,6 +379,15 @@
 
     document.getElementById('newName').addEventListener('input', formatNameInputAdmin);
     let usersListener = null;
+    let currentUserFilter = 'approved';
+    let latestUsersSnapshot = null;
+
+    function setUserFilter(filter) {
+      currentUserFilter = filter;
+      document.getElementById('cardApproved').classList.toggle('statCardActive', filter === 'approved');
+      document.getElementById('cardPending').classList.toggle('statCardActive', filter === 'pending');
+      renderUserTable();
+    }
 
     function adminLogout() {
       if (usersListener) {
@@ -532,60 +548,83 @@
     }
 	
     // ---- LOAD USERS ----
+    // ---- LOAD USERS ----
     function loadUsers() {
       usersListener = db.collection("users").onSnapshot(function(snapshot) {
-        const tbody = document.getElementById('userTableBody');
-        tbody.innerHTML = "";
-
-        let approvedCount = 0;
-        let pendingCount = 0;
-        let blockedCount = 0;
-        let totalLicenses = 0;
-        let activeLicenses = 0;
-
-        snapshot.forEach(function(doc) {
-          const u = doc.data();
-          if (u.approved) {
-            approvedCount++;
-            totalLicenses += (u.maxDevices || 0);
-            activeLicenses += ((u.devices || []).length);
-          } else {
-            pendingCount++;
-          }
-          if (u.blocked) blockedCount++;
-        });
-
-        document.getElementById('statApproved').innerText = approvedCount;
-        document.getElementById('statPending').innerText = pendingCount;
-        document.getElementById('statTotalLic').innerText = totalLicenses;
-        document.getElementById('statActiveLic').innerText = activeLicenses;
-        document.getElementById('statInactiveLic').innerText = (totalLicenses - activeLicenses);
-        document.getElementById('statBlocked').innerText = blockedCount;
-        snapshot.forEach(function(doc) {
-          const u = doc.data();
-          const id = doc.id;
-          const row = document.createElement('tr');
-          row.innerHTML =
-            '<td data-label="Name">' + (u.name || "") + '</td>' +
-            '<td data-label="Phone">' + (u.phone || "") + '</td>' +
-            '<td data-label="User ID">' + (u.userId || "") + '</td>' +
-            '<td data-label="Approved">' + (u.approved ? "Yes" : "No") + '</td>' +
-            '<td data-label="Blocked">' + (u.blocked ? "Yes" : "No") + '</td>' +
-            '<td data-label="Max Devices"><input type="number" id="dev-' + id + '" value="' + (u.maxDevices || 1) + '"><br><small>' + ((u.devices || []).length) + ' registered</small></td>' +
-            '<td data-label="Start"><input type="date" id="start-' + id + '" value="' + (u.accessStart || '') + '"></td>' +
-            '<td data-label="End"><input type="date" id="end-' + id + '" value="' + (u.accessEnd || '') + '"></td>' +
-            '<td data-label="Actions">' +
-            '<button class="btnSmall save" onclick="saveUser(\'' + id + '\')">Save</button>' +
-            '<button class="btnSmall approve" onclick="setApproved(\'' + id + '\', true)">Approve</button>' +
-            '<button class="btnSmall block" onclick="setBlocked(\'' + id + '\', true)">Block</button>' +
-            '<button class="btnSmall unblock" onclick="setBlocked(\'' + id + '\', false)">Unblock</button>' +
-            '<button class="btnSmall reset" onclick="resetPin(\'' + id + '\')">Reset PIN</button>' +
-            '<button class="btnSmall block" onclick="forceLogout(\'' + id + '\')">Force Logout</button>' +
-            '<button class="btnSmall delete" onclick="deleteUser(\'' + id + '\')">Delete</button>' +
-            '</td>';
-          tbody.appendChild(row);
-        });
+        latestUsersSnapshot = snapshot;
+        renderUserTable();
       });
+    }
+
+    function renderUserTable() {
+      if (!latestUsersSnapshot) return;
+      const snapshot = latestUsersSnapshot;
+      const tbody = document.getElementById('userTableBody');
+      const noUsersMsg = document.getElementById('noUsersMsg');
+      tbody.innerHTML = "";
+
+      let approvedCount = 0;
+      let pendingCount = 0;
+      let blockedCount = 0;
+      let totalLicenses = 0;
+      let activeLicenses = 0;
+
+      snapshot.forEach(function(doc) {
+        const u = doc.data();
+        if (u.approved) {
+          approvedCount++;
+          totalLicenses += (u.maxDevices || 0);
+          activeLicenses += ((u.devices || []).length);
+        } else {
+          pendingCount++;
+        }
+        if (u.blocked) blockedCount++;
+      });
+
+      document.getElementById('statApproved').innerText = approvedCount;
+      document.getElementById('statPending').innerText = pendingCount;
+      document.getElementById('statTotalLic').innerText = totalLicenses;
+      document.getElementById('statActiveLic').innerText = activeLicenses;
+      document.getElementById('statInactiveLic').innerText = (totalLicenses - activeLicenses);
+      document.getElementById('statBlocked').innerText = blockedCount;
+
+      let visibleCount = 0;
+
+      snapshot.forEach(function(doc) {
+        const u = doc.data();
+        const id = doc.id;
+        const wantApproved = (currentUserFilter === 'approved');
+        if (!!u.approved !== wantApproved) return;
+
+        visibleCount++;
+        const row = document.createElement('tr');
+        row.innerHTML =
+          '<td data-label="Name">' + (u.name || "") + '</td>' +
+          '<td data-label="Phone">' + (u.phone || "") + '</td>' +
+          '<td data-label="User ID">' + (u.userId || "") + '</td>' +
+          '<td data-label="Approved">' + (u.approved ? "Yes" : "No") + '</td>' +
+          '<td data-label="Blocked">' + (u.blocked ? "Yes" : "No") + '</td>' +
+          '<td data-label="Max Devices"><input type="number" id="dev-' + id + '" value="' + (u.maxDevices || 1) + '"><br><small>' + ((u.devices || []).length) + ' registered</small></td>' +
+          '<td data-label="Start"><input type="date" id="start-' + id + '" value="' + (u.accessStart || '') + '"></td>' +
+          '<td data-label="End"><input type="date" id="end-' + id + '" value="' + (u.accessEnd || '') + '"></td>' +
+          '<td data-label="Actions">' +
+          '<button class="btnSmall save" onclick="saveUser(\'' + id + '\')">Save</button>' +
+          '<button class="btnSmall approve" onclick="setApproved(\'' + id + '\', true)">Approve</button>' +
+          '<button class="btnSmall block" onclick="setBlocked(\'' + id + '\', true)">Block</button>' +
+          '<button class="btnSmall unblock" onclick="setBlocked(\'' + id + '\', false)">Unblock</button>' +
+          '<button class="btnSmall reset" onclick="resetPin(\'' + id + '\')">Reset PIN</button>' +
+          '<button class="btnSmall block" onclick="forceLogout(\'' + id + '\')">Force Logout</button>' +
+          '<button class="btnSmall delete" onclick="deleteUser(\'' + id + '\')">Delete</button>' +
+          '</td>';
+        tbody.appendChild(row);
+      });
+
+      if (visibleCount === 0) {
+        noUsersMsg.innerText = (currentUserFilter === 'pending') ? "No Pending User(s)" : "No Approved User(s)";
+        noUsersMsg.style.display = 'block';
+      } else {
+        noUsersMsg.style.display = 'none';
+      }
     }
 
     function saveUser(id) {
