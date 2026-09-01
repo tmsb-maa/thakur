@@ -280,7 +280,7 @@
 
         <div class="barContainer">
           <div class="bar" style="background-color:#E6F0F5;" onclick="openGodFolder('thakursriramakrishna', 'Thakur Sri Ramakrishna', 'ঠাকুর শ্রী রামকৃষ্ণ')">Thakur Sri Ramakrishna<span class="barBengali">ঠাকুর শ্রী রামকৃষ্ণ</span></div>
-          <div class="bar" style="background-color:#E6F0F5;" onclick="openGodFolder('srimaasaradadevi', 'Sri Maa Sarada Devi', 'শ্রী মা সারদা দেবী')">Sri Maa Sarada Devi<span class="barBengali">শ্রী মা সারদা দেবী</span></div>
+          <div class="bar" style="background-color:#E6F0F5;" onclick="openGodFolder('srimasaradadevi', 'Sri Ma Sarada Devi', 'শ্রী মা সারদা দেবী')">Sri Ma Sarada Devi<span class="barBengali">শ্রী মা সারদা দেবী</span></div>
           <div class="bar" style="background-color:#E6F0F5;" onclick="openGodFolder('swamivivekananda', 'Swami Vivekananda', 'স্বামী বিবেকানন্দ')">Swami Vivekananda<span class="barBengali">স্বামী বিবেকানন্দ</span></div>
           <div class="bar" style="background-color:#E6F0F5;" onclick="openGodFolder('babalokenath', 'Baba Lokenath', 'বাবা লোকনাথ')">Baba Lokenath<span class="barBengali">বাবা লোকনাথ</span></div>
           <div class="bar" style="background-color:#E6F0F5;" onclick="openGodFolder('maakali', 'Maa Kali', 'মা কালী')">Maa Kali<span class="barBengali">মা কালী</span></div>
@@ -464,7 +464,7 @@
 
     const godFolderNumbers = {
       'thakursriramakrishna': 1,
-      'srimaasaradadevi': 2,
+      'srimasaradadevi': 2,
       'swamivivekananda': 3,
       'babalokenath': 4,
       'maakali': 5,
@@ -494,7 +494,7 @@
 
       currentGodImages = [];
       openLightboxUI(true);
-      detectGodImagesParallel(folderKey);
+      loadGodImagesProgressively(folderKey, 1);
     }
 
     function openLightboxUI(loading) {
@@ -509,46 +509,31 @@
       }
     }
 
-    const MAX_PROBE_IMAGES = 60;
-
-    function detectGodImagesParallel(folderKey) {
+    function loadGodImagesProgressively(folderKey, num) {
       const folderNum = godFolderNumbers[folderKey];
-      const probes = [];
+      const path = 'hindugodphotos/' + folderNum + ' ' + folderKey + '/' + folderKey + '-' + num + '.png';
+      const img = new Image();
 
-      for (let i = 1; i <= MAX_PROBE_IMAGES; i++) {
-        const path = 'hindugodphotos/' + folderNum + ' ' + folderKey + '/' + folderKey + '-' + i + '.png';
-        probes.push(new Promise((resolve) => {
-          const img = new Image();
-          img.onload = () => resolve({ i: i, path: path, ok: true });
-          img.onerror = () => resolve({ i: i, path: path, ok: false });
-          img.src = path;
-        }));
-      }
+      img.onload = function() {
+        currentGodImages.push(path);
 
-      Promise.all(probes).then(function(results) {
-        results.sort(function(a, b) { return a.i - b.i; });
-        const images = [];
-        for (let j = 0; j < results.length; j++) {
-          if (results[j].ok) {
-            images.push(results[j].path);
-          } else {
-            break;
-          }
+        if (num === 1) {
+          document.getElementById('lightboxSpinner').style.display = 'none';
+          document.getElementById('lightboxImg').style.display = 'block';
+          document.getElementById('lightboxImg').src = currentGodImages[0];
         }
 
-        if (images.length === 0) {
+        loadGodImagesProgressively(folderKey, num + 1);
+      };
+
+      img.onerror = function() {
+        godImageCache[folderKey] = currentGodImages.slice();
+        if (currentGodImages.length === 0) {
           closeLightbox();
-          return;
         }
+      };
 
-        godImageCache[folderKey] = images;
-        currentGodImages = images;
-        currentGodIndex = 0;
-
-        document.getElementById('lightboxSpinner').style.display = 'none';
-        document.getElementById('lightboxImg').style.display = 'block';
-        document.getElementById('lightboxImg').src = currentGodImages[currentGodIndex];
-      });
+      img.src = path;
     }
 
     function closeLightbox() {
