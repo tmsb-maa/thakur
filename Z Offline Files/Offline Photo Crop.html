@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4:5 Photo Cropper</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #2c2c2c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            background: #1e1e1e;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            color: #eee;
+            margin-top: 0;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .upload-area {
+            margin-bottom: 25px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .browse-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(76,175,80,0.3);
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .browse-btn:hover {
+            background: #66bb6a;
+            transform: scale(1.03);
+        }
+
+        .browse-btn:active {
+            transform: scale(0.96);
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            display: inline-block;
+            background: #111;
+            border-radius: 12px;
+            padding: 10px;
+            margin: 10px 0;
+            box-shadow: inset 0 0 0 1px #444;
+            touch-action: none; /* prevent scroll while dragging */
+        }
+
+        #imageCanvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            cursor: grab;
+            background: #222;
+            touch-action: none;
+        }
+
+        #imageCanvas:active {
+            cursor: grabbing;
+        }
+
+        .frame-overlay {
+            position: absolute;
+            border: 3px solid #00ff88;
+            box-shadow: 0 0 0 2px rgba(0,255,136,0.3), 0 0 20px rgba(0,255,136,0.2);
+            pointer-events: none; /* so we can drag the image underneath */
+            border-radius: 4px;
+            background: rgba(0,255,136,0.03);
+            /* size & position set by JS */
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0 10px;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .info-row span {
+            background: #2a2a2a;
+            padding: 6px 16px;
+            border-radius: 30px;
+            border: 1px solid #3a3a3a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 18px 0 5px;
+        }
+
+        .btn {
+            background: #3a3a3a;
+            color: #ddd;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
+            min-width: 130px;
+        }
+
+        .btn-primary {
+            background: #2196F3;
+            color: white;
+            box-shadow: 0 4px 12px rgba(33,150,243,0.3);
+        }
+
+        .btn-primary:hover {
+            background: #42a5f5;
+            transform: scale(1.02);
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+            box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+        }
+
+        .btn-success:hover {
+            background: #66bb6a;
+            transform: scale(1.02);
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+            box-shadow: 0 4px 12px rgba(231,76,60,0.3);
+        }
+
+        .btn-danger:hover {
+            background: #ef5350;
+            transform: scale(1.02);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            transform: none;
+        }
+
+        .status {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 15px;
+            border-top: 1px solid #333;
+            padding-top: 15px;
+            word-break: break-all;
+        }
+
+        .status a {
+            color: #4fc3f7;
+            text-decoration: none;
+        }
+
+        .status a:hover {
+            text-decoration: underline;
+        }
+
+        .ratio-badge {
+            background: #00ff88;
+            color: #000;
+            padding: 2px 14px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        /* responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px;
+            }
+            .action-buttons .btn {
+                min-width: 100px;
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+            .info-row {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📷 4:5 Crop Tool</h2>
+    <p style="color:#888; margin-top:-8px; margin-bottom:20px;">
+        <span class="ratio-badge">3″ × 3.75″ (4:5)</span> &nbsp; green frame
+    </p>
+
+    <div class="upload-area">
+        <input type="file" id="fileInput" accept="image/*" />
+        <button class="browse-btn" id="browseBtn">📂 Browse Image</button>
+    </div>
+
+    <div class="canvas-wrapper" id="canvasWrapper">
+        <canvas id="imageCanvas" width="600" height="500"></canvas>
+        <div class="frame-overlay" id="frameOverlay"></div>
+    </div>
+
+    <div class="info-row">
+        <span>🖱️ Drag image to reposition</span>
+        <span id="sizeInfo">0 × 0 px</span>
+        <span id="frameInfo">Frame: 4:5</span>
+    </div>
+
+    <div class="action-buttons">
+        <button class="btn btn-danger" id="resetBtn" disabled>↺ Reset</button>
+        <button class="btn btn-primary" id="cropBtn" disabled>✂️ Crop</button>
+        <button class="btn btn-success" id="downloadBtn" disabled>💾 Save as PNG</button>
+    </div>
+
+    <div class="status" id="status">
+        ⚡ Load an image to begin.
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ----- DOM refs -----
+        const canvas = document.getElementById('imageCanvas');
+        const ctx = canvas.getContext('2d');
+        const fileInput = document.getElementById('fileInput');
+        const browseBtn = document.getElementById('browseBtn');
+        const frameOverlay = document.getElementById('frameOverlay');
+        const wrapper = document.getElementById('canvasWrapper');
+        const resetBtn = document.getElementById('resetBtn');
+        const cropBtn = document.getElementById('cropBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statusDiv = document.getElementById('status');
+        const sizeInfo = document.getElementById('sizeInfo');
+        const frameInfo = document.getElementById('frameInfo');
+
+        // ----- State -----
+        let originalImage = null;          // the loaded Image object
+        let imgX = 0, imgY = 0;            // top-left corner of image in canvas coords
+        let imgScale = 1;                  // scale factor (canvas size / natural size)
+        let isDragging = false;
+        let dragStartX = 0, dragStartY = 0;
+        let dragStartImgX = 0, dragStartImgY = 0;
+        let canvasWidth = 600, canvasHeight = 500; // will be updated
+
+        // Frame ratio = 4:5  (width:height)
+        const FRAME_RATIO = 4 / 5; // 0.8
+        // We'll compute frame size based on canvas size, keeping ratio.
+
+        // ----- Helper: update frame overlay size & position -----
+        function updateFrameOverlay() {
+            const w = canvas.width;
+            const h = canvas.height;
+            // We want the frame to be as large as possible while maintaining 4:5
+            // and fitting inside canvas.
+            let frameW, frameH;
+            // try width first
+            frameW = w * 0.92;   // leave some margin
+            frameH = frameW / FRAME_RATIO; // since ratio = w/h => h = w/ratio
+            if (frameH > h * 0.92) {
+                // if height exceeds, use height as constraint
+                frameH = h * 0.92;
+                frameW = frameH * FRAME_RATIO;
+            }
+            // ensure integer pixels for crispness
+            frameW = Math.floor(frameW);
+            frameH = Math.floor(frameH);
+
+            // center the frame
+            const left = (w - frameW) / 2;
+            const top = (h - frameH) / 2;
+
+            frameOverlay.style.width = frameW + 'px';
+            frameOverlay.style.height = frameH + 'px';
+            frameOverlay.style.left = left + 'px';
+            frameOverlay.style.top = top + 'px';
+
+            // store frame geometry on canvas for later crop
+            canvas._frame = { x: left, y: top, w: frameW, h: frameH };
+
+            // update frame info
+            frameInfo.textContent = `Frame: ${frameW}×${frameH} px (4:5)`;
+        }
+
+        // ----- Redraw canvas (with current image position/scale) -----
+        function redraw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (!originalImage) {
+                // draw a subtle placeholder
+                ctx.fillStyle = '#2a2a2a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#555';
+                ctx.font = '18px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('Load an image to start', canvas.width/2, canvas.height/2);
+                return;
+            }
+
+            // Draw the image with current position and scale
+            ctx.drawImage(originalImage, imgX, imgY, originalImage.width * imgScale, originalImage.height * imgScale);
+
+            // update size info
+            const dispW = Math.round(originalImage.width * imgScale);
+            const dispH = Math.round(originalImage.height * imgScale);
+            sizeInfo.textContent = `${dispW} × ${dispH} px (displayed)`;
+
+            // frame overlay is updated separately via CSS, but we ensure it's on top
+        }
+
+        // ----- Fit image into canvas (centered, maintain aspect) -----
+        function fitImageToCanvas() {
+            if (!originalImage) return;
+
+            const natW = originalImage.width;
+            const natH = originalImage.height;
+            const cW = canvas.width;
+            const cH = canvas.height;
+
+            // scale so that image fits entirely in canvas (preserve aspect)
+            const scaleX = cW / natW;
+            const scaleY = cH / natH;
+            imgScale = Math.min(scaleX, scaleY) * 0.92; // leave some margin for frame
+
+            const dispW = natW * imgScale;
+            const dispH = natH * imgScale;
+
+            // center it
+            imgX = (cW - dispW) / 2;
+            imgY = (cH - dispH) / 2;
+
+            redraw();
+            updateFrameOverlay();
+            enableButtons(true);
+            statusDiv.innerHTML = '✅ Image loaded. Drag to position, then click <strong>Crop</strong>.';
+        }
+
+        // ----- Load image from file -----
+        function loadImage(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                statusDiv.innerHTML = '⚠️ Please select a valid image file.';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    originalImage = img;
+                    fitImageToCanvas();
+                    // reset drag state
+                    isDragging = false;
+                    resetBtn.disabled = false;
+                    cropBtn.disabled = false;
+                    downloadBtn.disabled = true; // only after crop
+                    statusDiv.innerHTML = `📸 Loaded: ${file.name} (${img.width}×${img.height})`;
+                };
+                img.onerror = function() {
+                    statusDiv.innerHTML = '❌ Failed to decode image. Try another file.';
+                };
+                img.src = e.target.result;
+            };
+            reader.onerror = function() {
+                statusDiv.innerHTML = '❌ Error reading file.';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ----- Enable/disable buttons -----
+        function enableButtons(enabled) {
+            const btns = [resetBtn, cropBtn];
+            btns.forEach(b => b.disabled = !enabled);
+            if (!enabled) {
+                downloadBtn.disabled = true;
+            }
+        }
+
+        // ----- Reset position (fit again) -----
+        function resetPosition() {
+            if (originalImage) {
+                fitImageToCanvas();
+                statusDiv.innerHTML = '↺ Position reset to center.';
+            }
+        }
+
+        // ----- Crop: capture the frame region and create a new canvas with 4:5 -----
+        function performCrop() {
+            if (!originalImage) {
+                statusDiv.innerHTML = '⚠️ No image loaded.';
+                return;
+            }
+
+            const frame = canvas._frame;
+            if (!frame) {
+                statusDiv.innerHTML = '⚠️ Frame not initialized.';
+                return;
+            }
+
+            // We need to extract the pixels from the canvas exactly as displayed,
+            // but the canvas may be scaled. However, we want to preserve quality.
+            // We'll use the canvas itself as source, but we must account for devicePixelRatio? 
+            // For simplicity, we use the canvas' current state. 
+            // The frame coordinates are in canvas pixel space.
+            const { x, y, w, h } = frame;
+
+            // Create a temporary canvas with exactly the frame size (4:5)
+            // but we want to keep the original image quality, so we'll sample from the displayed canvas.
+            // Actually the best way: use the original image and compute the corresponding region.
+            // But since the user can drag, the displayed image is a crop of the original.
+            // We'll extract from the canvas directly. That is straightforward.
+            // However, canvas may be downscaled. We'll use the canvas' internal resolution.
+            // We'll create a new canvas with the frame size in pixels (w x h) and draw the cropped region.
+            const cropCanvas = document.createElement('canvas');
+            cropCanvas.width = w;
+            cropCanvas.height = h;
+            const cropCtx = cropCanvas.getContext('2d');
+
+            // Draw the portion of the main canvas corresponding to the frame
+            // source: main canvas, destination: crop canvas
+            cropCtx.drawImage(canvas, x, y, w, h, 0, 0, w, h);
+
+            // Now we have the cropped image in cropCanvas.
+            // We'll store it for download, and also show a preview in status.
+            // We'll also enable the download button.
+            window._croppedCanvas = cropCanvas;
+
+            // Show preview in status as a small thumbnail
+            const dataURL = cropCanvas.toDataURL('image/png');
+            statusDiv.innerHTML = `
+                ✂️ Cropped! (${w}×${h} px) — 
+                <a href="${dataURL}" download="cropped_4x5.png" style="color:#4fc3f7;">preview</a> &nbsp;
+                <span style="color:#aaa;">(click preview to view)</span>
+            `;
+
+            downloadBtn.disabled = false;
+            cropBtn.disabled = true; // prevent re-crop unless reset or reload
+            statusDiv.innerHTML += `<br><span style="font-size:13px; color:#888;">💡 Click "Save as PNG" to download.</span>`;
+        }
+
+        // ----- Download cropped image as PNG -----
+        function downloadCropped() {
+            if (!window._croppedCanvas) {
+                statusDiv.innerHTML = '⚠️ Nothing to download. Please crop first.';
+                return;
+            }
+
+            const cropCanvas = window._croppedCanvas;
+            const link = document.createElement('a');
+            link.download = 'cropped_4x5.png';
+            link.href = cropCanvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            statusDiv.innerHTML = `💾 Downloaded! (${cropCanvas.width}×${cropCanvas.height} px)`;
+        }
+
+        // ----- Resize canvas to fit wrapper (responsive) -----
+        function resizeCanvas() {
+            // We'll keep canvas logical size fixed (600x500) but CSS will scale it.
+            // The frame overlay is positioned based on logical size.
+            // We need to update the frame overlay when wrapper size changes.
+            // But we also want to keep the image drawn correctly.
+            // We'll just call updateFrameOverlay and redraw.
+            if (originalImage) {
+                redraw();
+                updateFrameOverlay();
+            } else {
+                // just draw placeholder
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#2a2a2a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#555';
+                ctx.font = '18px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('Load an image to start', canvas.width/2, canvas.height/2);
+                updateFrameOverlay();
+            }
+        }
+
+        // ----- Mouse / Touch drag handlers -----
+        function handleDragStart(e) {
+            if (!originalImage) return;
+            e.preventDefault();
+
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;   // logical / CSS
+            const scaleY = canvas.height / rect.height;
+
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            // convert to canvas logical coords
+            const canvasX = (clientX - rect.left) * scaleX;
+            const canvasY = (clientY - rect.top) * scaleY;
+
+            // check if inside canvas
+            if (canvasX < 0 || canvasX > canvas.width || canvasY < 0 || canvasY > canvas.height) return;
+
+            isDragging = true;
+            dragStartX = canvasX;
+            dragStartY = canvasY;
+            dragStartImgX = imgX;
+            dragStartImgY = imgY;
+
+            canvas.style.cursor = 'grabbing';
+        }
+
+        function handleDragMove(e) {
+            if (!isDragging || !originalImage) return;
+            e.preventDefault();
+
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            let clientX, clientY;
+            if (e.touches) {
+                if (e.touches.length === 0) return;
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            const canvasX = (clientX - rect.left) * scaleX;
+            const canvasY = (clientY - rect.top) * scaleY;
+
+            const dx = canvasX - dragStartX;
+            const dy = canvasY - dragStartY;
+
+            imgX = dragStartImgX + dx;
+            imgY = dragStartImgY + dy;
+
+            redraw();
+            // frame overlay stays, no need to update
+        }
+
+        function handleDragEnd(e) {
+            if (isDragging) {
+                isDragging = false;
+                canvas.style.cursor = 'grab';
+                // re-enable crop if image loaded
+                if (originalImage) {
+                    cropBtn.disabled = false;
+                }
+            }
+        }
+
+        // ----- Setup event listeners -----
+        function init() {
+            // Set canvas size
+            canvas.width = 600;
+            canvas.height = 500;
+            canvasWidth = 600;
+            canvasHeight = 500;
+
+            // Draw placeholder
+            ctx.fillStyle = '#2a2a2a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#555';
+            ctx.font = '18px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Load an image to start', canvas.width/2, canvas.height/2);
+
+            // frame overlay initial
+            updateFrameOverlay();
+
+            // File input
+            browseBtn.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', function(e) {
+                if (this.files && this.files.length > 0) {
+                    loadImage(this.files[0]);
+                }
+                // reset so same file can be re-selected
+                this.value = '';
+            });
+
+            // Buttons
+            resetBtn.addEventListener('click', resetPosition);
+            cropBtn.addEventListener('click', performCrop);
+            downloadBtn.addEventListener('click', downloadCropped);
+
+            // Drag events (mouse)
+            canvas.addEventListener('mousedown', handleDragStart);
+            window.addEventListener('mousemove', handleDragMove);
+            window.addEventListener('mouseup', handleDragEnd);
+
+            // Touch events
+            canvas.addEventListener('touchstart', handleDragStart, { passive: false });
+            window.addEventListener('touchmove', handleDragMove, { passive: false });
+            window.addEventListener('touchend', handleDragEnd);
+            window.addEventListener('touchcancel', handleDragEnd);
+
+            // Prevent context menu on canvas
+            canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+            // On resize, update frame overlay (debounced)
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    updateFrameOverlay();
+                }, 200);
+            });
+
+            // Also re-apply frame when canvas size changes (but we keep fixed)
+            // For any reason if frame overlay gets out of sync, we can call updateFrameOverlay
+            // after a short delay. Also when image loads it's called.
+
+            // Disable download initially
+            downloadBtn.disabled = true;
+            cropBtn.disabled = true;
+            resetBtn.disabled = true;
+
+            statusDiv.innerHTML = '📂 Click "Browse Image" to load a photo.';
+        }
+
+        // Run init
+        init();
+    })();
+</script>
+
+</body>
+</html>
