@@ -102,6 +102,41 @@
             /* size & position set by JS */
         }
 
+        .zoom-controls {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 5;
+        }
+
+        .zoom-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: none;
+            background: #00ff88;
+            color: #000;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,255,136,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: 0.2s;
+        }
+
+        .zoom-btn:hover {
+            background: #33ffaa;
+            transform: scale(1.08);
+        }
+
+        .zoom-btn:active {
+            transform: scale(0.92);
+        }
+
         .info-row {
             display: flex;
             justify-content: space-between;
@@ -208,6 +243,37 @@
             letter-spacing: 0.5px;
         }
 
+        .size-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 0 0 20px;
+        }
+
+        .size-btn {
+            background: #2a2a2a;
+            color: #ccc;
+            border: 1px solid #3a3a3a;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .size-btn:hover {
+            border-color: #00ff88;
+            color: #fff;
+        }
+
+        .size-btn.active {
+            background: #00ff88;
+            color: #000;
+            border-color: #00ff88;
+        }
+
         /* responsive */
         @media (max-width: 600px) {
             .container {
@@ -229,9 +295,16 @@
 
 <div class="container">
     <h2>📷 4:5 Crop Tool</h2>
-    <p style="color:#888; margin-top:-8px; margin-bottom:20px;">
-        <span class="ratio-badge">3″ × 3.75″ (4:5)</span> &nbsp; green frame
+    <p style="color:#888; margin-top:-8px; margin-bottom:12px;">
+        <span class="ratio-badge" id="ratioBadge">3″ × 3.75″ (4:5)</span> &nbsp; green frame
     </p>
+
+    <div class="size-selector" id="sizeSelector">
+        <button class="size-btn active" data-w="3" data-h="3.75">3″ × 3.75″</button>
+        <button class="size-btn" data-w="4" data-h="5">4″ × 5″</button>
+        <button class="size-btn" data-w="6" data-h="7.5">6″ × 7.5″</button>
+        <button class="size-btn" data-w="8" data-h="10">8″ × 10″</button>
+    </div>
 
     <div class="upload-area">
         <input type="file" id="fileInput" accept="image/*" />
@@ -241,6 +314,10 @@
     <div class="canvas-wrapper" id="canvasWrapper">
         <canvas id="imageCanvas" width="600" height="500"></canvas>
         <div class="frame-overlay" id="frameOverlay"></div>
+        <div class="zoom-controls" id="zoomControls">
+            <button class="zoom-btn" id="zoomInBtn" title="Zoom in">+</button>
+            <button class="zoom-btn" id="zoomOutBtn" title="Zoom out">−</button>
+        </div>
     </div>
 
     <div class="info-row">
@@ -251,6 +328,8 @@
 
     <div class="action-buttons">
         <button class="btn btn-danger" id="resetBtn" disabled>↺ Reset</button>
+        <button class="btn" id="rotateBtn" disabled>⟳ Rotate</button>
+        <button class="btn" id="orientationBtn" disabled>⇄ Orientation</button>
         <button class="btn btn-primary" id="cropBtn" disabled>✂️ Crop</button>
         <button class="btn btn-success" id="downloadBtn" disabled>💾 Save as PNG</button>
     </div>
@@ -269,6 +348,13 @@
         const browseBtn = document.getElementById('browseBtn');
         const frameOverlay = document.getElementById('frameOverlay');
         const wrapper = document.getElementById('canvasWrapper');
+        const zoomControls = document.getElementById('zoomControls');
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+        const rotateBtn = document.getElementById('rotateBtn');
+        const orientationBtn = document.getElementById('orientationBtn');
+        const sizeSelector = document.getElementById('sizeSelector');
+        const ratioBadge = document.getElementById('ratioBadge');
         const resetBtn = document.getElementById('resetBtn');
         const cropBtn = document.getElementById('cropBtn');
         const downloadBtn = document.getElementById('downloadBtn');
@@ -280,14 +366,36 @@
         let originalImage = null;          // the loaded Image object
         let imgX = 0, imgY = 0;            // top-left corner of image in canvas coords
         let imgScale = 1;                  // scale factor (canvas size / natural size)
+        let imgRotation = 0;               // rotation in degrees (0/90/180/270)
         let isDragging = false;
         let dragStartX = 0, dragStartY = 0;
         let dragStartImgX = 0, dragStartImgY = 0;
         let canvasWidth = 600, canvasHeight = 500; // will be updated
 
-        // Frame ratio = 4:5  (width:height)
-        const FRAME_RATIO = 4 / 5; // 0.8
+        // Frame ratio = 4:5  (width:height), toggled by orientation button
+        let FRAME_RATIO = 4 / 5; // 0.8
+        let isPortrait = true;
         // We'll compute frame size based on canvas size, keeping ratio.
+
+        // ----- Output (export) resolution -----
+        // All presets keep the exact 4:5 ratio; only physical size changes.
+        const OUTPUT_DPI = 300; // try 150 (web/screen), 300 (print), 600 (very high-res)
+        let OUTPUT_WIDTH_IN = 3;
+        let OUTPUT_HEIGHT_IN = 3.75;
+
+        // ----- Handle size preset button clicks -----
+        function selectSize(btn) {
+            const w = parseFloat(btn.dataset.w);
+            const h = parseFloat(btn.dataset.h);
+            OUTPUT_WIDTH_IN = w;
+            OUTPUT_HEIGHT_IN = h;
+
+            sizeSelector.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            ratioBadge.textContent = `${w}″ × ${h}″ (4:5)`;
+
+            statusDiv.innerHTML = `📐 Output size set to ${w}″ × ${h}″ (4:5). Frame ratio unchanged.`;
+        }
 
         // ----- Helper: update frame overlay size & position -----
         function updateFrameOverlay() {
@@ -321,7 +429,48 @@
             canvas._frame = { x: left, y: top, w: frameW, h: frameH };
 
             // update frame info
-            frameInfo.textContent = `Frame: ${frameW}×${frameH} px (4:5)`;
+            frameInfo.textContent = `Frame: ${frameW}×${frameH} px (${isPortrait ? '4:5' : '5:4'})`;
+
+            updateZoomControlsPosition();
+        }
+
+        // ----- Position zoom +/- buttons vertically along the frame's right edge -----
+        function updateZoomControlsPosition() {
+            const frame = canvas._frame;
+            if (!frame) return;
+            const left = frame.x + frame.w + 14; // gap to the right of the green box
+            const top = frame.y + frame.h / 2 - 38; // vertically centered on the frame
+            zoomControls.style.left = left + 'px';
+            zoomControls.style.top = top + 'px';
+        }
+
+        // ----- Zoom in/out, keeping the canvas center fixed -----
+        function zoomImage(factor) {
+            if (!originalImage) return;
+            const cx = canvas.width / 2, cy = canvas.height / 2;
+            const oldScale = imgScale;
+            let newScale = Math.max(0.05, Math.min(oldScale * factor, 10));
+            const relX = (cx - imgX) / oldScale;
+            const relY = (cy - imgY) / oldScale;
+            imgX = cx - relX * newScale;
+            imgY = cy - relY * newScale;
+            imgScale = newScale;
+            redraw();
+        }
+
+        // ----- Rotate image 90° clockwise -----
+        function rotateImage() {
+            if (!originalImage) return;
+            imgRotation = (imgRotation + 90) % 360;
+            redraw();
+        }
+
+        // ----- Toggle frame between portrait (4:5) and landscape (5:4) -----
+        function toggleOrientation() {
+            isPortrait = !isPortrait;
+            FRAME_RATIO = isPortrait ? 4 / 5 : 5 / 4;
+            updateFrameOverlay();
+            statusDiv.innerHTML = isPortrait ? '📐 Frame set to Portrait (4:5).' : '📐 Frame set to Landscape (5:4).';
         }
 
         // ----- Redraw canvas (with current image position/scale) -----
@@ -340,13 +489,20 @@
                 return;
             }
 
-            // Draw the image with current position and scale
-            ctx.drawImage(originalImage, imgX, imgY, originalImage.width * imgScale, originalImage.height * imgScale);
+            // Draw the image with current position, scale, and rotation
+            const dispW = originalImage.width * imgScale;
+            const dispH = originalImage.height * imgScale;
+            const cx = imgX + dispW / 2;
+            const cy = imgY + dispH / 2;
+
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(imgRotation * Math.PI / 180);
+            ctx.drawImage(originalImage, -dispW / 2, -dispH / 2, dispW, dispH);
+            ctx.restore();
 
             // update size info
-            const dispW = Math.round(originalImage.width * imgScale);
-            const dispH = Math.round(originalImage.height * imgScale);
-            sizeInfo.textContent = `${dispW} × ${dispH} px (displayed)`;
+            sizeInfo.textContent = `${Math.round(dispW)} × ${Math.round(dispH)} px (displayed)`;
 
             // frame overlay is updated separately via CSS, but we ensure it's on top
         }
@@ -355,6 +511,7 @@
         function fitImageToCanvas() {
             if (!originalImage) return;
 
+            imgRotation = 0;
             const natW = originalImage.width;
             const natH = originalImage.height;
             const cW = canvas.width;
@@ -411,7 +568,7 @@
 
         // ----- Enable/disable buttons -----
         function enableButtons(enabled) {
-            const btns = [resetBtn, cropBtn];
+            const btns = [resetBtn, cropBtn, rotateBtn, orientationBtn];
             btns.forEach(b => b.disabled = !enabled);
             if (!enabled) {
                 downloadBtn.disabled = true;
@@ -426,7 +583,27 @@
             }
         }
 
-        // ----- Crop: capture the frame region and create a new canvas with 4:5 -----
+        // ----- Build a full-resolution canvas with rotation baked in -----
+        function getRotatedSourceCanvas() {
+            const natW = originalImage.width;
+            const natH = originalImage.height;
+            const swapped = (imgRotation % 180) !== 0; // 90 or 270
+            const rotW = swapped ? natH : natW;
+            const rotH = swapped ? natW : natH;
+
+            const rc = document.createElement('canvas');
+            rc.width = rotW;
+            rc.height = rotH;
+            const rctx = rc.getContext('2d');
+            rctx.save();
+            rctx.translate(rotW / 2, rotH / 2);
+            rctx.rotate(imgRotation * Math.PI / 180);
+            rctx.drawImage(originalImage, -natW / 2, -natH / 2, natW, natH);
+            rctx.restore();
+            return { canvas: rc, rotW, rotH };
+        }
+
+        // ----- Crop: capture the frame region at full/high resolution -----
         function performCrop() {
             if (!originalImage) {
                 statusDiv.innerHTML = '⚠️ No image loaded.';
@@ -438,29 +615,44 @@
                 statusDiv.innerHTML = '⚠️ Frame not initialized.';
                 return;
             }
-
-            // We need to extract the pixels from the canvas exactly as displayed,
-            // but the canvas may be scaled. However, we want to preserve quality.
-            // We'll use the canvas itself as source, but we must account for devicePixelRatio? 
-            // For simplicity, we use the canvas' current state. 
-            // The frame coordinates are in canvas pixel space.
             const { x, y, w, h } = frame;
 
-            // Create a temporary canvas with exactly the frame size (4:5)
-            // but we want to keep the original image quality, so we'll sample from the displayed canvas.
-            // Actually the best way: use the original image and compute the corresponding region.
-            // But since the user can drag, the displayed image is a crop of the original.
-            // We'll extract from the canvas directly. That is straightforward.
-            // However, canvas may be downscaled. We'll use the canvas' internal resolution.
-            // We'll create a new canvas with the frame size in pixels (w x h) and draw the cropped region.
-            const cropCanvas = document.createElement('canvas');
-            cropCanvas.width = w;
-            cropCanvas.height = h;
-            const cropCtx = cropCanvas.getContext('2d');
+            // Build a full-resolution version of the image with rotation baked in
+            const { canvas: rotCanvas, rotW, rotH } = getRotatedSourceCanvas();
 
-            // Draw the portion of the main canvas corresponding to the frame
-            // source: main canvas, destination: crop canvas
-            cropCtx.drawImage(canvas, x, y, w, h, 0, 0, w, h);
+            // Figure out where the rotated image's bounding box sits on the display canvas
+            const natW = originalImage.width;
+            const natH = originalImage.height;
+            const dispW = natW * imgScale;
+            const dispH = natH * imgScale;
+            const cx = imgX + dispW / 2;
+            const cy = imgY + dispH / 2;
+            const swapped = (imgRotation % 180) !== 0;
+            const rotDispW = swapped ? dispH : dispW;
+            const rotDispH = swapped ? dispW : dispH;
+            const rotLeft = cx - rotDispW / 2;
+            const rotTop = cy - rotDispH / 2;
+
+            // Map the on-screen frame rectangle into the rotated source's pixel space
+            const scaleFactor = rotW / rotDispW; // == 1 / imgScale
+            const srcX = (x - rotLeft) * scaleFactor;
+            const srcY = (y - rotTop) * scaleFactor;
+            const srcW = w * scaleFactor;
+            const srcH = h * scaleFactor;
+
+            // Output size: physical print size at OUTPUT_DPI (keeps the 4:5 / 5:4 ratio)
+            const outW = Math.round((isPortrait ? OUTPUT_WIDTH_IN : OUTPUT_HEIGHT_IN) * OUTPUT_DPI);
+            const outH = Math.round((isPortrait ? OUTPUT_HEIGHT_IN : OUTPUT_WIDTH_IN) * OUTPUT_DPI);
+
+            const cropCanvas = document.createElement('canvas');
+            cropCanvas.width = outW;
+            cropCanvas.height = outH;
+            const cropCtx = cropCanvas.getContext('2d');
+            cropCtx.imageSmoothingEnabled = true;
+            cropCtx.imageSmoothingQuality = 'high';
+
+            // Draw the mapped region from the full-resolution rotated source, scaled up to output size
+            cropCtx.drawImage(rotCanvas, srcX, srcY, srcW, srcH, 0, 0, outW, outH);
 
             // Now we have the cropped image in cropCanvas.
             // We'll store it for download, and also show a preview in status.
@@ -470,7 +662,7 @@
             // Show preview in status as a small thumbnail
             const dataURL = cropCanvas.toDataURL('image/png');
             statusDiv.innerHTML = `
-                ✂️ Cropped! (${w}×${h} px) — 
+                ✂️ Cropped! (${outW}×${outH} px @ ${OUTPUT_DPI} DPI) — 
                 <a href="${dataURL}" download="cropped_4x5.png" style="color:#4fc3f7;">preview</a> &nbsp;
                 <span style="color:#aaa;">(click preview to view)</span>
             `;
@@ -633,6 +825,14 @@
             resetBtn.addEventListener('click', resetPosition);
             cropBtn.addEventListener('click', performCrop);
             downloadBtn.addEventListener('click', downloadCropped);
+            zoomInBtn.addEventListener('click', () => zoomImage(1.1));
+            zoomOutBtn.addEventListener('click', () => zoomImage(1 / 1.1));
+            rotateBtn.addEventListener('click', rotateImage);
+            orientationBtn.addEventListener('click', toggleOrientation);
+
+            sizeSelector.querySelectorAll('.size-btn').forEach(btn => {
+                btn.addEventListener('click', () => selectSize(btn));
+            });
 
             // Drag events (mouse)
             canvas.addEventListener('mousedown', handleDragStart);
@@ -665,6 +865,8 @@
             downloadBtn.disabled = true;
             cropBtn.disabled = true;
             resetBtn.disabled = true;
+            rotateBtn.disabled = true;
+            orientationBtn.disabled = true;
 
             statusDiv.innerHTML = '📂 Click "Browse Image" to load a photo.';
         }
