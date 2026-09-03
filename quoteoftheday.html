@@ -286,6 +286,26 @@
       return Math.abs(hash);
     }
 
+    function seededRandom(seed) {
+      return function() {
+        seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+        let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function shuffledIndices(n, seed) {
+      const arr = [];
+      for (let i = 0; i < n; i++) arr.push(i);
+      const rand = seededRandom(seed);
+      for (let i = n - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+      }
+      return arr;
+    }
+
     function logoutUser() {
       document.getElementById('userMenu').style.display = 'none';
       if (profileListener) {
@@ -416,7 +436,7 @@
         (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '');
     }
 
-    async function loadQuotesFromJson(approvedAtMillis) {
+    async function loadQuotesFromJson() {
       const container = document.getElementById('quoteContent');
       container.innerHTML = '';
 
@@ -427,7 +447,6 @@
       ];
 
       const deviceId = getDeviceId();
-      const deviceHash = hashString(deviceId);
 
       for (const p of personFiles) {
         const card = document.createElement('div');
@@ -446,15 +465,18 @@
 
         const quotes = personData.quotes || [];
         const intervalHours = personData.rotationHours || 24;
-        const timeSlot = Math.floor((Date.now() - approvedAtMillis) / (intervalHours * 3600000));
+        const IST_OFFSET_MS = 5.5 * 3600000;
+        const timeSlot = Math.floor((Date.now() + IST_OFFSET_MS) / (intervalHours * 3600000));
+        const order = quotes.length > 0 ? shuffledIndices(quotes.length, hashString(deviceId + '_' + p.key)) : [];
 
           personState[p.key] = {
           name: personData.name || '',
           nameBengali: personData.nameBengali || '',
           initials: personData.initials || '',
           quotes: quotes,
-          baseIndex: quotes.length > 0 ? ((timeSlot + deviceHash) % quotes.length) : 0,
+          baseIndex: quotes.length > 0 ? order[timeSlot % quotes.length] : 0,
           manualOffset: 0
+        };
         };
 
         renderPerson(p.key);
@@ -534,8 +556,7 @@
         quoteContent.style.display = 'block';
 
         if (!quotesLoaded) {
-          const approvedAtMillis = data.approvedAt ? data.approvedAt.toMillis() : Date.now();
-          loadQuotesFromJson(approvedAtMillis);
+          loadQuotesFromJson();
         }
       });
     });
