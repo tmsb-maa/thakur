@@ -508,16 +508,17 @@
     }
 
     function populateRotationDropdowns() {
+      const validHours = [1, 2, 3, 4, 6, 8, 12, 24];
       const ids = ['rotation-tmsquote', 'rotation-page2'];
       ids.forEach(function(id) {
         const select = document.getElementById(id);
         select.innerHTML = '';
-        for (let h = 1; h <= 24; h++) {
+        validHours.forEach(function(h) {
           const opt = document.createElement('option');
           opt.value = h;
           opt.text = h + ' hr';
           select.appendChild(opt);
-        }
+        });
       });
     }
 
