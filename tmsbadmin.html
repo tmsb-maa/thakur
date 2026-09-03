@@ -72,27 +72,50 @@
 
   #adminError { color: red; font-size: 16px; margin-top: 10px; text-align: center; }
 
-  #adminLogoutBtn {
+  #personBtn {
     position: absolute;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    background-color: #e53935;
-    color: #fff;
+    background-color: #FFFFFF;
     border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: bold;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    font-size: 13px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   }
 
+  #userMenu {
+    position: absolute;
+    top: 62px;
+    right: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    overflow: hidden;
+    z-index: 1000;
+    min-width: 150px;
+    display: none;
+  }
+
+  .userMenuItem {
+    padding: 16px 20px;
+    font-size: 17px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+  }
+
+  .userMenuItem:hover { background: #FFF3E0; }
+
   @media (max-width: 480px) {
-    #adminLogoutBtn {
-      right: 10px;
-      padding: 6px 10px;
-      font-size: 12px;
-    }
+    #personBtn { right: 10px; width: 40px; height: 40px; }
+    .userMenuItem { font-size: 18px; padding: 16px; }
   }
 
   #panel { display: none; padding: 20px; max-width: 1000px; margin: 0 auto; }
@@ -260,7 +283,12 @@
 
   <header>
     TMS Admin
-    <button id="adminLogoutBtn" onclick="adminLogout()" style="display:none;">⏻</button>
+    <button id="personBtn" onclick="toggleAdminUserMenu()" style="display:none;">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="#FF8C00"><circle cx="12" cy="8" r="4.2"/><path d="M4.5 20c0-4.4 3.8-6.5 7.5-6.5s7.5 2.1 7.5 6.5"/></svg>
+    </button>
+    <div id="userMenu">
+      <div class="userMenuItem" onclick="adminLogout()">Logout</div>
+    </div>
   </header>
 
   <div id="adminLoginBox">
@@ -412,14 +440,28 @@
             if (user && user.email === ADMIN_EMAIL) {
         document.getElementById('adminLoginBox').style.display = 'none';
         document.getElementById('panel').style.display = 'block';
-        document.getElementById('adminLogoutBtn').style.display = 'block';
+        document.getElementById('personBtn').style.display = 'flex';
         populateRotationDropdowns();
         loadRotationSettings();
         loadUsers();
       } else {
         document.getElementById('adminLoginBox').style.display = 'block';
         document.getElementById('panel').style.display = 'none';
-        document.getElementById('adminLogoutBtn').style.display = 'none';
+        document.getElementById('personBtn').style.display = 'none';
+        document.getElementById('userMenu').style.display = 'none';
+      }
+    });
+
+    function toggleAdminUserMenu() {
+      const menu = document.getElementById('userMenu');
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('userMenu');
+      const btn = document.getElementById('personBtn');
+      if (menu.style.display === 'block' && !menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.style.display = 'none';
       }
     });
 
