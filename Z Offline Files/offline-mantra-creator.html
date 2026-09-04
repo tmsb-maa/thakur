@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMS Mantra Creator (Offline)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 15px; width: 100%; }
+
+  header {
+    background-color: #FF8C00;
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+    padding: 18px;
+    font-size: 18px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+  }
+
+  .topBar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    width: 100%;
+  }
+
+  .topBar input[type="file"] { width: 100%; }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .btnPrimary { background-color: #FF8C00; color: #fff; }
+  .btnGreen { background-color: #4CAF50; color: #fff; }
+  .btnRed { background-color: #e53935; color: #fff; }
+  .btnGray { background-color: #757575; color: #fff; }
+  .btnBlue { background-color: #1E90FF; color: #fff; }
+
+  .songBlock {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    width: 100%;
+  }
+
+  .songBlock label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 6px;
+    margin-top: 12px;
+  }
+
+  .songBlock input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+  }
+
+  .filenamePreview {
+    font-size: 13px;
+    color: #888;
+    margin-top: 6px;
+    word-break: break-all;
+  }
+
+  .statusMsg {
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    color: green;
+  }
+
+  #addSongBtn { margin-top: 15px; }
+
+  /* ---- Mobile-width preview wrapper ---- */
+  .mobilePreviewLabel {
+    font-size: 13px;
+    color: #888;
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+
+  .mobileFrame {
+    width: 480px;
+    max-width: 100%;
+    margin: 0 auto;
+    border: 2px solid #333;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .mobileFrameHeader {
+    background-color: #FF8C00;
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  /* ---- Formatting toolbar ---- */
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    padding: 8px;
+  }
+
+  .toolbar button {
+    width: auto;
+    padding: 8px 10px;
+    font-size: 14px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .toolbar button.active {
+    background: #FF8C00;
+    color: #fff;
+    border-color: #FF8C00;
+  }
+
+  .toolbar input[type="color"] {
+    width: 38px;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  #contentEditable {
+    border: 1px solid #ccc;
+    border-radius: 0 0 6px 6px;
+    padding: 16px 10px;
+    min-height: 300px;
+    font-size: 20px;
+    line-height: 1.8;
+    outline: none;
+    overflow-y: auto;
+  }
+
+  #contentEditable:empty:before {
+    content: attr(data-placeholder);
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+
+  <header>TMS Mantra Creator &mdash; Offline Tool</header>
+
+  <div class="topBar">
+    <button class="btnGray" onclick="document.getElementById('importFile').click()">Import mantra's json</button>
+    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importJson(event)">
+    <button class="btnGreen" id="saveBtn" style="display:none;" onclick="saveJson()">Save json</button>
+    <button class="btnBlue" onclick="exportJson()">Export json</button>
+    <button class="btnRed" onclick="clearAll()">Clear Everything</button>
+  </div>
+
+  <p id="statusMsg" class="statusMsg"></p>
+
+  <div id="songContainer"></div>
+
+  <button id="addSongBtn" class="btnPrimary" onclick="addSong()">+ Create New Mantra</button>
+
+  <script>
+    let song = null; // null = nothing added yet; otherwise { title, titleBengali, content }
+    let wasImported = false;
+    let savedRange = null;
+    let lastSizedSpan = null;
+
+    document.addEventListener('selectionchange', function() {
+      const editable = document.getElementById('contentEditable');
+      if (!editable) return;
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0) {
+        const range = sel.getRangeAt(0);
+        if (!range.collapsed && editable.contains(range.commonAncestorContainer)) {
+          savedRange = range.cloneRange();
+        }
+      }
+    });
+
+    function restoreSelection() {
+      if (savedRange) {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+      }
+    }
+
+    function saveDraft() {
+      if (song) {
+        localStorage.setItem('tms_mantra_draft', JSON.stringify({ song: song, wasImported: wasImported }));
+      } else {
+        localStorage.removeItem('tms_mantra_draft');
+      }
+    }
+
+    function loadDraft() {
+      const saved = localStorage.getItem('tms_mantra_draft');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          song = parsed.song;
+          wasImported = parsed.wasImported || false;
+        } catch (e) {
+          song = null;
+          wasImported = false;
+        }
+      }
+      render();
+    }
+
+    function makeFilename(title) {
+      return (title || '').toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function render() {
+      const container = document.getElementById('songContainer');
+      const addBtn = document.getElementById('addSongBtn');
+      const saveBtn = document.getElementById('saveBtn');
+      container.innerHTML = '';
+
+      if (!song) {
+        addBtn.style.display = 'block';
+        saveBtn.style.display = 'none';
+        return;
+      }
+
+      addBtn.style.display = 'none';
+      saveBtn.style.display = wasImported ? 'block' : 'none';
+
+      const block = document.createElement('div');
+      block.className = 'songBlock';
+
+      let html = '<label>Title (English)</label>' +
+        '<input type="text" id="titleInput" placeholder="e.g. Shri Shri Maa Kalir Panchali" value="' + escapeHtml(song.title) + '" onchange="updateTitle(this.value)">' +
+
+        '<label>Title (Bengali)</label>' +
+        '<input type="text" id="titleBnInput" placeholder="e.g. শ্রী শ্রী মা কালীর পাঁচালী" value="' + escapeHtml(song.titleBengali || '') + '" onchange="updateField(\'titleBengali\', this.value)">' +
+
+        '<div class="filenamePreview" id="filenamePreview">Will save as: ' + (makeFilename(song.title) || '(type a title first)') + '.json &mdash; upload to /mantras folder</div>' +
+
+        '<label>Content (mobile-width preview below)</label>' +
+        '<div class="mobilePreviewLabel">This box shows exactly how it will look on the phone (390px width).</div>' +
+
+        '<div class="mobileFrame">' +
+          '<div class="mobileFrameHeader" id="previewHeader">' + (escapeHtml(song.title) || 'Title') + '<br>' + (escapeHtml(song.titleBengali) || '') + '</div>' +
+          '<div class="toolbar">' +
+            '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'bold\')"><b>B</b></button>' +
+            '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'italic\')"><i>I</i></button>' +
+            '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'underline\')"><u>U</u></button>' +
+            '<input type="color" id="colorPicker" title="Font color" onchange="fmt(\'foreColor\', this.value)" value="#000000">' +
+            '<button type="button" onmousedown="event.preventDefault()" onclick="resizeSelection(1)">A+</button>' +
+            '<button type="button" onmousedown="event.preventDefault()" onclick="resizeSelection(-1)">A-</button>' +
+            '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'justifyLeft\')">Left</button>' +
+            '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'justifyCenter\')">Center</button>' +
+            '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'justifyRight\')">Right</button>' +
+            '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'justifyFull\')">Justify</button>' +
+          '</div>' +
+          '<div id="contentEditable" contenteditable="true" data-placeholder="Type or paste the mantra/panchali content here..." oninput="lastSizedSpan = null; updateContent();"></div>' +
+        '</div>' +
+
+        '<button class="btnRed" style="margin-top:15px;" onclick="removeSong()">Remove Mantra</button>';
+
+      block.innerHTML = html;
+      container.appendChild(block);
+
+      const editable = document.getElementById('contentEditable');
+      editable.innerHTML = song.content || '';
+      document.execCommand('styleWithCSS', false, true);
+    }
+
+    function addSong() {
+      song = { title: '', titleBengali: '', content: '' };
+      wasImported = false;
+      saveDraft();
+      render();
+    }
+
+    function removeSong() {
+      if (confirm('Remove this mantra from the editor? (This does not delete anything already uploaded to GitHub.)')) {
+        song = null;
+        wasImported = false;
+        saveDraft();
+        render();
+      }
+    }
+
+    function updateTitle(value) {
+      song.title = value;
+      document.getElementById('filenamePreview').innerText = 'Will save as: ' + (makeFilename(song.title) || '(type a title first)') + '.json — upload to /mantras folder';
+      document.getElementById('previewHeader').innerHTML = (escapeHtml(song.title) || 'Title') + '<br>' + (escapeHtml(song.titleBengali) || '');
+      saveDraft();
+    }
+
+    function updateField(field, value) {
+      song[field] = value;
+      if (field === 'titleBengali') {
+        document.getElementById('previewHeader').innerHTML = (escapeHtml(song.title) || 'Title') + '<br>' + (escapeHtml(song.titleBengali) || '');
+      }
+      saveDraft();
+    }
+
+    function updateContent() {
+      const editable = document.getElementById('contentEditable');
+      song.content = editable.innerHTML;
+      saveDraft();
+    }
+
+    function fmt(command, value) {
+      const editable = document.getElementById('contentEditable');
+      editable.focus();
+      restoreSelection();
+      document.execCommand(command, false, value || null);
+      updateContent();
+    }
+
+    function resizeSelection(delta) {
+      const editable = document.getElementById('contentEditable');
+      editable.focus();
+      restoreSelection();
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
+        const current = parseInt(window.getComputedStyle(editable).fontSize, 10) || 20;
+        editable.style.fontSize = (current + delta) + 'px';
+        updateContent();
+        return;
+      }
+      const range = selection.getRangeAt(0);
+
+      // If this is the same selection we already resized last click, just adjust it again
+      if (lastSizedSpan && editable.contains(lastSizedSpan)) {
+        const testRange = document.createRange();
+        testRange.selectNodeContents(lastSizedSpan);
+        if (range.startContainer === testRange.startContainer && range.startOffset === testRange.startOffset &&
+            range.endContainer === testRange.endContainer && range.endOffset === testRange.endOffset) {
+          const current = parseInt(window.getComputedStyle(lastSizedSpan).fontSize, 10) || 20;
+          lastSizedSpan.style.fontSize = (current + delta) + 'px';
+          selection.removeAllRanges();
+          selection.addRange(testRange);
+          savedRange = testRange.cloneRange();
+          updateContent();
+          return;
+        }
+      }
+
+      const startEl = range.startContainer.nodeType === 3 ? range.startContainer.parentElement : range.startContainer;
+      const current = parseInt(window.getComputedStyle(startEl).fontSize, 10) || 20;
+      const span = document.createElement('span');
+      span.style.fontSize = (current + delta) + 'px';
+      try {
+        range.surroundContents(span);
+      } catch (e) {
+        const content = range.extractContents();
+        span.appendChild(content);
+        range.insertNode(span);
+      }
+
+      const newRange = document.createRange();
+      newRange.selectNodeContents(span);
+      selection.removeAllRanges();
+      selection.addRange(newRange);
+      savedRange = newRange.cloneRange();
+      lastSizedSpan = span;
+      updateContent();
+    }
+
+    function saveJson() {
+      if (!song) return;
+      saveDraft();
+      const status = document.getElementById('statusMsg');
+      status.innerText = 'Saved in editor. Use Export to download the updated json file.';
+      setTimeout(function() { status.innerText = ''; }, 4000);
+    }
+
+    function exportJson() {
+      if (!song) {
+        alert('Create New or Import a mantra first.');
+        return;
+      }
+      const filename = makeFilename(song.title);
+      if (!filename) {
+        alert('Please type the title first.');
+        return;
+      }
+
+      const exportData = {
+        title: song.title,
+        titleBengali: song.titleBengali,
+        content: song.content
+      };
+
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      const status = document.getElementById('statusMsg');
+      status.innerText = filename + '.json downloaded! Now upload this file to your GitHub repo /mantras folder.';
+      setTimeout(function() { status.innerText = ''; }, 5000);
+    }
+
+    function importJson(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          song = {
+            title: imported.title || '',
+            titleBengali: imported.titleBengali || '',
+            content: imported.content || ''
+          };
+          wasImported = true;
+          saveDraft();
+          render();
+          const status = document.getElementById('statusMsg');
+          status.innerText = 'Imported successfully! All fields auto-filled. You can continue editing.';
+          setTimeout(function() { status.innerText = ''; }, 4000);
+        } catch (err) {
+          alert('Could not read this file. Please make sure it is a valid mantra json file.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function clearAll() {
+      if (confirm('This will erase everything currently in the editor (not any file already uploaded to GitHub). Continue?')) {
+        song = null;
+        wasImported = false;
+        localStorage.removeItem('tms_mantra_draft');
+        render();
+      }
+    }
+
+    loadDraft();
+  </script>
+
+</body>
+</html>
