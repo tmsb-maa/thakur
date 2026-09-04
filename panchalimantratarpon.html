@@ -177,35 +177,21 @@
     width: 100%;
   }
 
-  #playerView {
+  #contentView {
     display: none;
     flex-direction: column;
     flex: 1;
-    max-width: 700px;
     width: 100%;
-    margin: 0 auto;
   }
 
-  #playerBackBtn {
-    background-color: #757575;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 18px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-bottom: 20px;
-  }
-
-  #playerTitle {
+  #contentTitle {
     text-align: center;
     font-size: 22px;
     font-weight: bold;
     color: #FF8C00;
   }
 
-  #playerTitleBn {
+  #contentTitleBn {
     text-align: center;
     font-size: 20px;
     font-weight: bold;
@@ -213,75 +199,17 @@
     margin-bottom: 20px;
   }
 
-  #progressWrap {
-    background: #e0e0e0;
-    border-radius: 10px;
-    height: 20px;
-    width: 100%;
-    cursor: pointer;
-    margin-bottom: 8px;
-  }
-
-  #progressFill {
-    background-color: #4CAF50;
-    height: 100%;
-    width: 0%;
-    border-radius: 10px;
-  }
-
-  #timeRow {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 20px;
-  }
-
-  #controlsRow {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 25px;
-  }
-
-  .playerBtn {
-    background-color: #FF8C00;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 14px 26px;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  #stopBtn { background-color: #e53935; }
-
-  #lyricsBox {
+  #contentBox {
     border: 1px solid #FFDDB0;
     background: #fff8f0;
-    border-radius: 10px;
-    padding: 20px 8px;
+    border-radius: 0;
+    padding: 20px 16px;
     flex: 1;
     overflow-y: auto;
     font-size: 20px;
     line-height: 1.8;
-    white-space: pre-line;
+    width: 100%;
     margin-bottom: 0;
-    text-align: center;
-  }
-
-  #downloadLyricsBtn {
-    background-color: #1E90FF;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    display: block;
-    margin: auto auto 0 auto;
   }
 
   @media (max-width: 480px) {
@@ -293,7 +221,7 @@
     #pageTitleBn { font-size: 18px; }
     .bar { font-size: 19px; }
     .barBengali { font-size: 19px; }
-    #lyricsBox { font-size: 16px; padding: 16px 5px; margin-bottom: 0; }
+    #contentBox { font-size: 16px; padding: 16px 10px; margin-bottom: 0; }
     .userMenuItem { font-size: 18px; padding: 16px; }
     .tmsModalBox { max-width: 92%; padding: 25px 20px; }
     .tmsModalBox h2, .tmsModalBox h3 { font-size: 22px; }
@@ -333,26 +261,11 @@
         </div>
       </div>
 
-      <div id="playerView">
-        <p id="playerTitle"></p>
-        <p id="playerTitleBn"></p>
+      <div id="contentView">
+        <p id="contentTitle"></p>
+        <p id="contentTitleBn"></p>
 
-        <div id="progressWrap" onclick="seekAudio(event)">
-          <div id="progressFill"></div>
-        </div>
-        <div id="timeRow">
-          <span id="currentTimeLabel">0:00</span>
-          <span id="durationLabel">0:00</span>
-        </div>
-
-        <div id="controlsRow">
-          <button class="playerBtn" id="playPauseBtn" onclick="togglePlayPause()">Play</button>
-          <button class="playerBtn" id="stopBtn" onclick="stopAudio()">Stop</button>
-        </div>
-
-        <div id="lyricsBox">Loading lyrics...</div>
-
-        <audio id="audioPlayer"></audio>
+        <div id="contentBox">Loading...</div>
       </div>
     </div>
 
@@ -408,8 +321,7 @@
     let profileListener = null;
     let currentUserData = null;
     let deviceWasRegistered = false;
-    let currentLyricsText = '';
-    let currentSongKey = '';
+    let currentContentKey = '';
 
     function getDeviceId() {
       let id = localStorage.getItem('tmsb_device_id');
@@ -519,122 +431,39 @@
       doc.save(filename);
     }
 
-    function formatTime(sec) {
-      if (isNaN(sec)) return '0:00';
-      const m = Math.floor(sec / 60);
-      const s = Math.floor(sec % 60);
-      return m + ':' + (s < 10 ? '0' : '') + s;
-    }
-
     function openPrayer(key, titleEn, titleBn) {
-      currentSongKey = key;
+      currentContentKey = key;
       document.getElementById('tabListView').style.display = 'none';
-      document.getElementById('playerView').style.display = 'flex';
-      history.pushState({ view: 'player' }, '', '#' + key);
-      document.getElementById('playerTitle').innerText = titleEn;
-      document.getElementById('playerTitleBn').innerText = titleBn;
+      document.getElementById('contentView').style.display = 'flex';
+      history.pushState({ view: 'content' }, '', '#' + key);
+      document.getElementById('contentTitle').innerText = titleEn;
+      document.getElementById('contentTitleBn').innerText = titleBn;
 
-      const audio = document.getElementById('audioPlayer');
-      audio.pause();
-      audio.src = 'audio/' + key + '.mp3';
-      document.getElementById('playPauseBtn').innerText = 'Play';
-      document.getElementById('progressFill').style.width = '0%';
-      document.getElementById('currentTimeLabel').innerText = '0:00';
-      document.getElementById('durationLabel').innerText = '0:00';
+      const contentBox = document.getElementById('contentBox');
+      contentBox.innerText = 'Loading...';
 
-      const lyricsBox = document.getElementById('lyricsBox');
-      lyricsBox.innerText = 'Loading lyrics...';
-      currentLyricsText = '';
-
-      fetch('lyrics/' + key + '.json?t=' + Date.now())
+      fetch('mantras/' + key + '.json?t=' + Date.now())
         .then(function(res) { return res.json(); })
         .then(function(data) {
-          currentLyricsText = data.lyrics || '';
-          lyricsBox.innerText = currentLyricsText || 'Lyrics not available.';
+          contentBox.innerHTML = data.content || 'Content not available.';
         })
         .catch(function() {
-          lyricsBox.innerText = 'Lyrics not available.';
+          contentBox.innerText = 'Content not available.';
         });
     }
 
     function closePrayer() {
-      const audio = document.getElementById('audioPlayer');
-      audio.pause();
-      document.getElementById('playerView').style.display = 'none';
+      document.getElementById('contentView').style.display = 'none';
       document.getElementById('tabListView').style.display = 'block';
     }
 
     window.addEventListener('popstate', function(e) {
       document.getElementById('userMenu').style.display = 'none';
-      const playerView = document.getElementById('playerView');
-      if (playerView.style.display === 'flex') {
-        const audio = document.getElementById('audioPlayer');
-        audio.pause();
-        playerView.style.display = 'none';
+      const contentView = document.getElementById('contentView');
+      if (contentView.style.display === 'flex') {
+        contentView.style.display = 'none';
         document.getElementById('tabListView').style.display = 'block';
       }
-    });
-
-    function togglePlayPause() {
-      const audio = document.getElementById('audioPlayer');
-      const btn = document.getElementById('playPauseBtn');
-      if (audio.paused) {
-        audio.play();
-        btn.innerText = 'Pause';
-      } else {
-        audio.pause();
-        btn.innerText = 'Play';
-      }
-    }
-
-    function stopAudio() {
-      const audio = document.getElementById('audioPlayer');
-      audio.pause();
-      audio.currentTime = 0;
-      document.getElementById('playPauseBtn').innerText = 'Play';
-    }
-
-    function seekAudio(e) {
-      const audio = document.getElementById('audioPlayer');
-      if (!audio.duration) return;
-      const wrap = document.getElementById('progressWrap');
-      const rect = wrap.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const ratio = clickX / rect.width;
-      audio.currentTime = ratio * audio.duration;
-    }
-
-    function downloadLyrics() {
-      if (!currentLyricsText) {
-        alert('Lyrics not loaded yet.');
-        return;
-      }
-      const blob = new Blob([currentLyricsText], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = currentSongKey + '.txt';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      const audio = document.getElementById('audioPlayer');
-      audio.addEventListener('timeupdate', function() {
-        if (audio.duration) {
-          const pct = (audio.currentTime / audio.duration) * 100;
-          document.getElementById('progressFill').style.width = pct + '%';
-          document.getElementById('currentTimeLabel').innerText = formatTime(audio.currentTime);
-        }
-      });
-      audio.addEventListener('loadedmetadata', function() {
-        document.getElementById('durationLabel').innerText = formatTime(audio.duration);
-      });
-      audio.addEventListener('ended', function() {
-        document.getElementById('playPauseBtn').innerText = 'Play';
-      });
     });
 
     auth.onAuthStateChanged(function(user) {
