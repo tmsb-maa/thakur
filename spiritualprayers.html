@@ -608,17 +608,19 @@
     }
 
     window.addEventListener('popstate', function(e) {
-      document.getElementById('userMenu').style.display = 'none';
+      const userMenu = document.getElementById('userMenu');
+      if (userMenu) userMenu.style.display = 'none';
 
       const profileModal = document.getElementById('profileModal');
-      if (profileModal.style.display === 'flex') {
+      if (profileModal && profileModal.style.display === 'flex') {
         profileModal.style.display = 'none';
       }
 
       const contentView = document.getElementById('contentView');
-      if (contentView.style.display === 'flex') {
+      const tabListView = document.getElementById('tabListView');
+      if (contentView && contentView.style.display === 'flex') {
         contentView.style.display = 'none';
-        document.getElementById('tabListView').style.display = 'block';
+        if (tabListView) tabListView.style.display = 'block';
       }
     });
 
