@@ -112,6 +112,24 @@
     text-align: center;
   }
 
+  #profileModal .tmsModalBox {
+    max-width: 100%;
+    width: 100%;
+    padding: 30px 20px;
+    text-align: left;
+  }
+
+  #profileModal .tmsModalLogo {
+    display: block;
+    margin: 0 auto 15px auto;
+    width: 64px;
+    height: 64px;
+  }
+
+  #profileModal .tmsCenterLine {
+    text-align: center;
+  }
+
   main {
     flex: 1;
     background-color: #FFFFFF;
@@ -375,14 +393,15 @@
 
     <div class="tmsModal" id="profileModal">
       <div class="tmsModalBox">
-        <h2 style="color:#FF8C00; font-size:24px; font-weight:bold; margin-bottom:20px;">TMS Library</h2>
+        <img src="icon-192.png" alt="TMS Library" class="tmsModalLogo">
+        <h2 class="tmsCenterLine" style="color:#FF8C00; font-size:24px; font-weight:bold; margin-bottom:20px;">TMS Library</h2>
         <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">Name: <span id="profileName"></span></p>
         <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">Phone No: <span id="profilePhone"></span></p>
         <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">No. of Devices: <span id="profileDevices"></span></p>
-        <p style="font-size:18px; font-weight:bold; margin-bottom:20px;">Access Period: <span id="profileAccessStart"></span> - <span id="profileAccessEnd"></span></p>
-        <button onclick="downloadProfilePdf()" style="width:100%; padding:14px; background:#4CAF50; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer; margin-bottom:15px;">Download PDF</button>
-        <p style="font-weight:bold; font-size:16px; margin-bottom:5px;">Completely private library.</p>
-        <p style="font-weight:bold; font-size:16px; margin-bottom:15px;">Call:+91-9830894559</p>
+        <p style="font-size:18px; font-weight:bold; margin-bottom:35px;">Access Period : <span id="profileAccessWrap" style="display:inline-block; vertical-align:top;"></span></p>
+        <button onclick="downloadProfilePdf()" style="width:100%; padding:14px; background:#4CAF50; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer; margin-bottom:40px;">Download PDF</button>
+        <p class="tmsCenterLine" style="font-weight:bold; font-size:16px; margin-bottom:5px;">Completely private library.</p>
+        <p class="tmsCenterLine" style="font-weight:bold; font-size:16px; margin-bottom:15px;">Call:+91-9830894559</p>
         <button onclick="closeProfile()" style="width:100%; padding:12px; background:#ccc; color:#333; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Close</button>
       </div>
     </div>
@@ -448,19 +467,37 @@
       }
     });
 
+    function formatDisplayDate(dateStr) {
+      if (!dateStr) return "";
+      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+      const parts = dateStr.split("-");
+      if (parts.length !== 3) return dateStr;
+      const y = parts[0], m = parts[1], d = parts[2];
+      const mIdx = parseInt(m, 10) - 1;
+      if (mIdx < 0 || mIdx > 11) return dateStr;
+      return d + "-" + months[mIdx] + "-" + y;
+    }
+
     function openProfile() {
       if (!currentUserData) return;
       document.getElementById('profileName').innerText = currentUserData.name || "-";
       document.getElementById('profilePhone').innerText = currentUserData.phone || "-";
       document.getElementById('profileDevices').innerText = ((currentUserData.devices || []).length) + " / " + (currentUserData.maxDevices || 0);
-      document.getElementById('profileAccessStart').innerText = currentUserData.accessStart ? currentUserData.accessStart : "-";
-      document.getElementById('profileAccessEnd').innerText = currentUserData.accessEnd ? currentUserData.accessEnd : "-";
+
+      const startFmt = currentUserData.accessStart ? formatDisplayDate(currentUserData.accessStart) : "-";
+      const endFmt = currentUserData.accessEnd ? formatDisplayDate(currentUserData.accessEnd) : "";
+      document.getElementById('profileAccessWrap').innerHTML = endFmt ? (startFmt + " -<br>" + endFmt) : startFmt;
+
       document.getElementById('userMenu').style.display = 'none';
       document.getElementById('profileModal').style.display = 'flex';
+      history.pushState({ view: 'profileModal' }, '', '#profile');
     }
 
     function closeProfile() {
       document.getElementById('profileModal').style.display = 'none';
+      if (window.location.hash === '#profile') {
+        history.back();
+      }
     }
 
     function openChangePin() {
@@ -572,12 +609,25 @@
 
     window.addEventListener('popstate', function(e) {
       document.getElementById('userMenu').style.display = 'none';
-      const playerView = document.getElementById('playerView');
-      if (playerView.style.display === 'flex') {
-        const audio = document.getElementById('audioPlayer');
-        audio.pause();
-        playerView.style.display = 'none';
+
+      const profileModal = document.getElementById('profileModal');
+      if (profileModal.style.display === 'flex') {
+        profileModal.style.display = 'none';
+      }
+
+      const contentView = document.getElementById('contentView');
+      if (contentView.style.display === 'flex') {
+        contentView.style.display = 'none';
         document.getElementById('tabListView').style.display = 'block';
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const profileModal = document.getElementById('profileModal');
+        if (profileModal.style.display === 'flex') {
+          closeProfile();
+        }
       }
     });
 
