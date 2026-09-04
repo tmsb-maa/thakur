@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panchali / Mantra / Tarpon - TMS Library</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#FF8C00">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+
+  header, footer {
+    background-color: #FF8C00;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    font-size: 20px;
+  }
+
+    header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  #backBtn {
+    background-color: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+
+  #headerTitle {
+    flex: 1;
+    text-align: center;
+    font-size: 22px;
+  }
+
+  #personBtn {
+    background-color: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+
+  #userMenu {
+    position: absolute;
+    top: 62px;
+    right: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    overflow: hidden;
+    z-index: 1000;
+    min-width: 180px;
+    display: none;
+  }
+
+  .userMenuItem {
+    padding: 16px 20px;
+    font-size: 17px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+  }
+
+  .userMenuItem:last-child { border-bottom: none; }
+  .userMenuItem:hover { background: #FFF3E0; }
+
+  .tmsModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.55);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tmsModalBox {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px 25px;
+    max-width: 340px;
+    width: 90%;
+    text-align: center;
+  }
+
+  main {
+    flex: 1;
+    background-color: #FFFFFF;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #statusMsg {
+    text-align: center;
+    font-size: 16px;
+    color: #FF8C00;
+    font-weight: bold;
+    margin-top: 60px;
+  }
+
+  #pageTitle {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #FF8C00;
+    margin-bottom: 5px;
+  }
+
+  #pageTitleBn {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #FF8C00;
+    margin-bottom: 25px;
+  }
+
+  .barContainer {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bar {
+    width: 100%;
+    color: #000000;
+    font-weight: bold;
+    font-size: 22px;
+    padding: 18px 0;
+    margin-bottom: 20px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  .barBengali {
+    display: block;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 4px;
+  }
+
+  #pageContent {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+  }
+
+  #playerView {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  #playerBackBtn {
+    background-color: #757575;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+
+  #playerTitle {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #FF8C00;
+  }
+
+  #playerTitleBn {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #FF8C00;
+    margin-bottom: 20px;
+  }
+
+  #progressWrap {
+    background: #e0e0e0;
+    border-radius: 10px;
+    height: 20px;
+    width: 100%;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+
+  #progressFill {
+    background-color: #4CAF50;
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+  }
+
+  #timeRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+
+  #controlsRow {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .playerBtn {
+    background-color: #FF8C00;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 26px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  #stopBtn { background-color: #e53935; }
+
+  #lyricsBox {
+    border: 1px solid #FFDDB0;
+    background: #fff8f0;
+    border-radius: 10px;
+    padding: 20px 8px;
+    flex: 1;
+    overflow-y: auto;
+    font-size: 20px;
+    line-height: 1.8;
+    white-space: pre-line;
+    margin-bottom: 0;
+    text-align: center;
+  }
+
+  #downloadLyricsBtn {
+    background-color: #1E90FF;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    margin: auto auto 0 auto;
+  }
+
+  @media (max-width: 480px) {
+    #headerTitle { font-size: 20px; }
+    #backBtn { width: 40px; height: 40px; }
+    #personBtn { width: 40px; height: 40px; }
+    footer p { font-size: 18px; }
+    #pageTitle { font-size: 20px; }
+    #pageTitleBn { font-size: 18px; }
+    .bar { font-size: 19px; }
+    .barBengali { font-size: 19px; }
+    #lyricsBox { font-size: 16px; padding: 16px 5px; margin-bottom: 0; }
+    .userMenuItem { font-size: 18px; padding: 16px; }
+    .tmsModalBox { max-width: 92%; padding: 25px 20px; }
+    .tmsModalBox h2, .tmsModalBox h3 { font-size: 22px; }
+    .tmsModalBox p { font-size: 17px; }
+  }
+  
+</style>
+</head>
+<body>
+
+  <header>
+    <button id="backBtn" onclick="history.back()">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FF8C00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <h1 id="headerTitle">TMS Library</h1>
+    <button id="personBtn" onclick="toggleUserMenu()">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="#FF8C00"><circle cx="12" cy="8" r="4.2"/><path d="M4.5 20c0-4.4 3.8-6.5 7.5-6.5s7.5 2.1 7.5 6.5"/></svg>
+    </button>
+    <div id="userMenu">
+      <div class="userMenuItem" onclick="openProfile()">Profile</div>
+      <div class="userMenuItem" onclick="openChangePin()">Change PIN</div>
+      <div class="userMenuItem" onclick="logoutUser()">Logout</div>
+    </div>
+  </header>
+
+  <main>
+    <p id="statusMsg">Checking access...</p>
+
+    <div id="pageContent">
+      <div id="tabListView">
+        <p id="pageTitle">Panchali / Mantra / Tarpon</p>
+        <p id="pageTitleBn">পাঁচালী / মন্ত্র / তর্পণ</p>
+
+        <div class="barContainer">
+          <div class="bar" style="background-color:#FDE9D9;" onclick="openPrayer('mahalaya-tarpon', 'Mahalaya Tarpon', 'মহালয়া তর্পণ')">Mahalaya Tarpon<span class="barBengali">মহালয়া তর্পণ</span></div>
+          <div class="bar" style="background-color:#E3F2E1;" onclick="openPrayer('shri-shri-maa-kalir-panchali', 'Shri Shri Maa Kalir Panchali', 'শ্রী শ্রী মা কালীর পাঁচালী')">Shri Shri Maa Kalir Panchali<span class="barBengali">শ্রী শ্রী মা কালীর পাঁচালী</span></div>
+        </div>
+      </div>
+
+      <div id="playerView">
+        <p id="playerTitle"></p>
+        <p id="playerTitleBn"></p>
+
+        <div id="progressWrap" onclick="seekAudio(event)">
+          <div id="progressFill"></div>
+        </div>
+        <div id="timeRow">
+          <span id="currentTimeLabel">0:00</span>
+          <span id="durationLabel">0:00</span>
+        </div>
+
+        <div id="controlsRow">
+          <button class="playerBtn" id="playPauseBtn" onclick="togglePlayPause()">Play</button>
+          <button class="playerBtn" id="stopBtn" onclick="stopAudio()">Stop</button>
+        </div>
+
+        <div id="lyricsBox">Loading lyrics...</div>
+
+        <audio id="audioPlayer"></audio>
+      </div>
+    </div>
+
+    <div class="tmsModal" id="changePinModal">
+      <div class="tmsModalBox">
+        <h3 style="color:#FF8C00; font-size:22px; margin-bottom:20px;">Change PIN</h3>
+        <input type="text" id="newPinInput" placeholder="New PIN" maxlength="6" style="width:100%; padding:14px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px; font-size:17px;">
+        <input type="text" id="confirmPinInput" placeholder="Confirm PIN" maxlength="6" style="width:100%; padding:14px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px; font-size:17px;">
+        <p id="changePinError" style="color:red; font-size:15px; margin-bottom:10px;"></p>
+        <button onclick="submitChangePin()" style="width:100%; padding:14px; background:#FF8C00; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer; margin-bottom:10px;">Submit</button>
+        <button onclick="closeChangePin()" style="width:100%; padding:14px; background:#ccc; color:#333; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer;">Cancel</button>
+      </div>
+    </div>
+
+    <div class="tmsModal" id="profileModal">
+      <div class="tmsModalBox">
+        <h2 style="color:#FF8C00; font-size:24px; font-weight:bold; margin-bottom:20px;">TMS Library</h2>
+        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">Name: <span id="profileName"></span></p>
+        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">Phone No: <span id="profilePhone"></span></p>
+        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">No. of Devices: <span id="profileDevices"></span></p>
+        <p style="font-size:18px; font-weight:bold; margin-bottom:20px;">Access Period: <span id="profileAccessStart"></span> - <span id="profileAccessEnd"></span></p>
+        <button onclick="downloadProfilePdf()" style="width:100%; padding:14px; background:#4CAF50; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer; margin-bottom:15px;">Download PDF</button>
+        <p style="font-weight:bold; font-size:16px; margin-bottom:5px;">Completely private library.</p>
+        <p style="font-weight:bold; font-size:16px; margin-bottom:15px;">Call:+91-9830894559</p>
+        <button onclick="closeProfile()" style="width:100%; padding:12px; background:#ccc; color:#333; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Close</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Completely private library.</p>
+    <p>Call:+91-9830894559</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqmiTPNCbx2Kd9PKZdaKYrm_tKdR7gqzc",
+      authDomain: "tmsb-online-library.firebaseapp.com",
+      projectId: "tmsb-online-library",
+      storageBucket: "tmsb-online-library.firebasestorage.app",
+      messagingSenderId: "305360233952",
+      appId: "1:305360233952:web:3c92404970ac61c6143785"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let profileListener = null;
+    let currentUserData = null;
+    let deviceWasRegistered = false;
+    let currentLyricsText = '';
+    let currentSongKey = '';
+
+    function getDeviceId() {
+      let id = localStorage.getItem('tmsb_device_id');
+      if (!id) {
+        id = 'dev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('tmsb_device_id', id);
+      }
+      return id;
+    }
+
+    function logoutUser() {
+      document.getElementById('userMenu').style.display = 'none';
+      if (profileListener) {
+        profileListener();
+        profileListener = null;
+      }
+      auth.signOut();
+    }
+
+    function toggleUserMenu() {
+      const menu = document.getElementById('userMenu');
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('userMenu');
+      const btn = document.getElementById('personBtn');
+      if (menu.style.display === 'block' && !menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+
+    function openProfile() {
+      if (!currentUserData) return;
+      document.getElementById('profileName').innerText = currentUserData.name || "-";
+      document.getElementById('profilePhone').innerText = currentUserData.phone || "-";
+      document.getElementById('profileDevices').innerText = ((currentUserData.devices || []).length) + " / " + (currentUserData.maxDevices || 0);
+      document.getElementById('profileAccessStart').innerText = currentUserData.accessStart ? currentUserData.accessStart : "-";
+      document.getElementById('profileAccessEnd').innerText = currentUserData.accessEnd ? currentUserData.accessEnd : "-";
+      document.getElementById('userMenu').style.display = 'none';
+      document.getElementById('profileModal').style.display = 'flex';
+    }
+
+    function closeProfile() {
+      document.getElementById('profileModal').style.display = 'none';
+    }
+
+    function openChangePin() {
+      document.getElementById('newPinInput').value = '';
+      document.getElementById('confirmPinInput').value = '';
+      document.getElementById('changePinError').innerText = '';
+      document.getElementById('userMenu').style.display = 'none';
+      document.getElementById('changePinModal').style.display = 'flex';
+    }
+
+    function closeChangePin() {
+      document.getElementById('changePinModal').style.display = 'none';
+    }
+
+    function submitChangePin() {
+      const errorBox = document.getElementById('changePinError');
+      errorBox.innerText = '';
+      const newPin = document.getElementById('newPinInput').value.trim();
+      const confirmPin = document.getElementById('confirmPinInput').value.trim();
+
+      if (!/^\d{6}$/.test(newPin)) {
+        errorBox.innerText = 'PIN must be exactly 6 digits.';
+        return;
+      }
+      if (newPin !== confirmPin) {
+        errorBox.innerText = 'New PIN and Confirm PIN do not match.';
+        return;
+      }
+
+      const user = auth.currentUser;
+      if (!user) return;
+
+      user.updatePassword(newPin)
+        .then(function() {
+          return db.collection("users").doc(user.uid).update({
+            sessionVersion: firebase.firestore.FieldValue.increment(1),
+            devices: []
+          });
+        })
+        .catch(function(error) {
+          errorBox.innerText = error.message;
+        });
+    }
+
+    function downloadProfilePdf() {
+      if (!currentUserData) return;
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(18);
+      doc.text("TMS Library", 105, 20, { align: "center" });
+      doc.setFontSize(14);
+      doc.text("Name: " + (currentUserData.name || "-"), 20, 40);
+      doc.text("Phone No: " + (currentUserData.phone || "-"), 20, 50);
+      doc.text("No. of Devices: " + ((currentUserData.devices || []).length) + " / " + (currentUserData.maxDevices || 0), 20, 60);
+      doc.text("Access Period: " + (currentUserData.accessStart ? currentUserData.accessStart : "-") + " - " + (currentUserData.accessEnd ? currentUserData.accessEnd : "-"), 20, 70);
+      doc.setFontSize(12);
+      doc.text("Completely private library.", 105, 90, { align: "center" });
+      doc.text("Call:+91-9830894559", 105, 100, { align: "center" });
+
+      const timestamp = Date.now();
+      const filename = (currentUserData.userId || "user") + "_" + (currentUserData.phone || "phone") + "_" + timestamp + ".pdf";
+      doc.save(filename);
+    }
+
+    function formatTime(sec) {
+      if (isNaN(sec)) return '0:00';
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function openPrayer(key, titleEn, titleBn) {
+      currentSongKey = key;
+      document.getElementById('tabListView').style.display = 'none';
+      document.getElementById('playerView').style.display = 'flex';
+      history.pushState({ view: 'player' }, '', '#' + key);
+      document.getElementById('playerTitle').innerText = titleEn;
+      document.getElementById('playerTitleBn').innerText = titleBn;
+
+      const audio = document.getElementById('audioPlayer');
+      audio.pause();
+      audio.src = 'audio/' + key + '.mp3';
+      document.getElementById('playPauseBtn').innerText = 'Play';
+      document.getElementById('progressFill').style.width = '0%';
+      document.getElementById('currentTimeLabel').innerText = '0:00';
+      document.getElementById('durationLabel').innerText = '0:00';
+
+      const lyricsBox = document.getElementById('lyricsBox');
+      lyricsBox.innerText = 'Loading lyrics...';
+      currentLyricsText = '';
+
+      fetch('lyrics/' + key + '.json?t=' + Date.now())
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          currentLyricsText = data.lyrics || '';
+          lyricsBox.innerText = currentLyricsText || 'Lyrics not available.';
+        })
+        .catch(function() {
+          lyricsBox.innerText = 'Lyrics not available.';
+        });
+    }
+
+    function closePrayer() {
+      const audio = document.getElementById('audioPlayer');
+      audio.pause();
+      document.getElementById('playerView').style.display = 'none';
+      document.getElementById('tabListView').style.display = 'block';
+    }
+
+    window.addEventListener('popstate', function(e) {
+      document.getElementById('userMenu').style.display = 'none';
+      const playerView = document.getElementById('playerView');
+      if (playerView.style.display === 'flex') {
+        const audio = document.getElementById('audioPlayer');
+        audio.pause();
+        playerView.style.display = 'none';
+        document.getElementById('tabListView').style.display = 'block';
+      }
+    });
+
+    function togglePlayPause() {
+      const audio = document.getElementById('audioPlayer');
+      const btn = document.getElementById('playPauseBtn');
+      if (audio.paused) {
+        audio.play();
+        btn.innerText = 'Pause';
+      } else {
+        audio.pause();
+        btn.innerText = 'Play';
+      }
+    }
+
+    function stopAudio() {
+      const audio = document.getElementById('audioPlayer');
+      audio.pause();
+      audio.currentTime = 0;
+      document.getElementById('playPauseBtn').innerText = 'Play';
+    }
+
+    function seekAudio(e) {
+      const audio = document.getElementById('audioPlayer');
+      if (!audio.duration) return;
+      const wrap = document.getElementById('progressWrap');
+      const rect = wrap.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const ratio = clickX / rect.width;
+      audio.currentTime = ratio * audio.duration;
+    }
+
+    function downloadLyrics() {
+      if (!currentLyricsText) {
+        alert('Lyrics not loaded yet.');
+        return;
+      }
+      const blob = new Blob([currentLyricsText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = currentSongKey + '.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const audio = document.getElementById('audioPlayer');
+      audio.addEventListener('timeupdate', function() {
+        if (audio.duration) {
+          const pct = (audio.currentTime / audio.duration) * 100;
+          document.getElementById('progressFill').style.width = pct + '%';
+          document.getElementById('currentTimeLabel').innerText = formatTime(audio.currentTime);
+        }
+      });
+      audio.addEventListener('loadedmetadata', function() {
+        document.getElementById('durationLabel').innerText = formatTime(audio.duration);
+      });
+      audio.addEventListener('ended', function() {
+        document.getElementById('playPauseBtn').innerText = 'Play';
+      });
+    });
+
+    auth.onAuthStateChanged(function(user) {
+      const statusMsg = document.getElementById('statusMsg');
+      const pageContent = document.getElementById('pageContent');
+
+      if (profileListener) {
+        profileListener();
+        profileListener = null;
+      }
+
+      if (!user) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      profileListener = db.collection("users").doc(user.uid).onSnapshot(function(doc) {
+        if (!doc.exists) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        const data = doc.data();
+        const today = new Date().toISOString().split('T')[0];
+
+        if (!data.approved) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        if (data.blocked) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        if (data.accessStart && today < data.accessStart) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+        if (data.accessEnd && today > data.accessEnd) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        }
+
+        const deviceId = getDeviceId();
+        const devices = data.devices || [];
+
+        if (devices.includes(deviceId)) {
+          deviceWasRegistered = true;
+        } else if (deviceWasRegistered) {
+          auth.signOut();
+          window.location.href = 'index.html';
+          return;
+        } else {
+          let updatedDevices = devices.slice();
+          if (updatedDevices.length >= (data.maxDevices || 1)) {
+            updatedDevices.shift();
+          }
+          updatedDevices.push(deviceId);
+          deviceWasRegistered = true;
+          db.collection("users").doc(user.uid).update({
+            devices: updatedDevices
+          });
+        }
+
+        currentUserData = data;
+
+        statusMsg.style.display = 'none';
+        pageContent.style.display = 'flex';
+      });
+    });
+  </script>
+
+</body>
+</html>
