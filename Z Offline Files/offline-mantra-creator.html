@@ -100,7 +100,7 @@
   }
 
   .mobileFrame {
-    width: 480px;
+    width: 430px;
     max-width: 100%;
     margin: 0 auto;
     border: 2px solid #333;
@@ -121,23 +121,26 @@
   /* ---- Formatting toolbar ---- */
   .toolbar {
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+    flex-wrap: nowrap;
+    gap: 4px;
     background: #f0f0f0;
     border: 1px solid #ccc;
     border-bottom: none;
     border-radius: 6px 6px 0 0;
-    padding: 8px;
+    padding: 6px;
+    overflow-x: auto;
   }
 
   .toolbar button {
     width: auto;
-    padding: 8px 10px;
-    font-size: 14px;
+    min-width: 32px;
+    padding: 6px 7px;
+    font-size: 13px;
     background: #fff;
     color: #333;
     border: 1px solid #ccc;
     border-radius: 4px;
+    flex-shrink: 0;
   }
 
   .toolbar button.active {
@@ -147,12 +150,94 @@
   }
 
   .toolbar input[type="color"] {
-    width: 38px;
+    width: 30px;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .colorModalOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.55);
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .colorModalBox {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    width: 280px;
+    max-width: 90%;
+  }
+
+  .colorModalBox h3 {
+    font-size: 16px;
+    margin-bottom: 14px;
+    text-align: center;
+    color: #333;
+  }
+
+  .colorGrid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .colorSwatch {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+
+  .colorSwatch:hover {
+    outline: 2px solid #333;
+  }
+
+  .recentColorsLabel {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 6px;
+  }
+
+  .recentColorsRow {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    min-height: 26px;
+  }
+
+  .customColorRow {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .customColorRow input[type="color"] {
+    width: 44px;
+    height: 34px;
     padding: 0;
     border: 1px solid #ccc;
     border-radius: 4px;
     cursor: pointer;
   }
+
+  .colorModalBox button {
+    margin-top: 6px;
+  }
+
+
 
   #contentEditable {
     border: 1px solid #ccc;
@@ -188,6 +273,20 @@
   <div id="songContainer"></div>
 
   <button id="addSongBtn" class="btnPrimary" onclick="addSong()">+ Create New Mantra</button>
+
+  <div class="colorModalOverlay" id="colorModalOverlay">
+    <div class="colorModalBox">
+      <h3>Font Color</h3>
+      <div class="colorGrid" id="standardColorGrid"></div>
+      <div class="recentColorsLabel">Recently used:</div>
+      <div class="recentColorsRow" id="recentColorsRow"></div>
+      <div class="customColorRow">
+        <input type="color" id="customColorInput" value="#000000">
+        <button type="button" class="btnPrimary" style="width:auto; flex:1; padding:10px;" onclick="applyCustomColor()">Apply Custom Color</button>
+      </div>
+      <button class="btnGray" onclick="closeColorPicker()">Close</button>
+    </div>
+  </div>
 
   <script>
     let song = null; // null = nothing added yet; otherwise { title, titleBengali, content }
@@ -282,13 +381,13 @@
             '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'bold\')"><b>B</b></button>' +
             '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'italic\')"><i>I</i></button>' +
             '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'underline\')"><u>U</u></button>' +
-            '<input type="color" id="colorPicker" title="Font color" onchange="fmt(\'foreColor\', this.value)" value="#000000">' +
+            '<button type="button" id="colorBtn" title="Font Color" onmousedown="event.preventDefault()" onclick="openColorPicker()">A<span id="colorIndicator" style="display:block;width:16px;height:3px;background:#000;margin:2px auto 0;"></span></button>' +
             '<button type="button" onmousedown="event.preventDefault()" onclick="resizeSelection(1)">A+</button>' +
             '<button type="button" onmousedown="event.preventDefault()" onclick="resizeSelection(-1)">A-</button>' +
-            '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'justifyLeft\')">Left</button>' +
-            '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'justifyCenter\')">Center</button>' +
-            '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'justifyRight\')">Right</button>' +
-            '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(\'justifyFull\')">Justify</button>' +
+            '<button type="button" title="Align Left" onmousedown="event.preventDefault()" onclick="fmt(\'justifyLeft\')"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="2"/><rect x="1" y="7" width="9" height="2"/><rect x="1" y="12" width="14" height="2"/></svg></button>' +
+            '<button type="button" title="Align Center" onmousedown="event.preventDefault()" onclick="fmt(\'justifyCenter\')"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="2"/><rect x="3.5" y="7" width="9" height="2"/><rect x="1" y="12" width="14" height="2"/></svg></button>' +
+            '<button type="button" title="Align Right" onmousedown="event.preventDefault()" onclick="fmt(\'justifyRight\')"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="2"/><rect x="6" y="7" width="9" height="2"/><rect x="1" y="12" width="14" height="2"/></svg></button>' +
+            '<button type="button" title="Justify" onmousedown="event.preventDefault()" onclick="fmt(\'justifyFull\')"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="2"/><rect x="1" y="7" width="14" height="2"/><rect x="1" y="12" width="14" height="2"/></svg></button>' +
           '</div>' +
           '<div id="contentEditable" contenteditable="true" data-placeholder="Type or paste the mantra/panchali content here..." oninput="lastSizedSpan = null; updateContent();"></div>' +
         '</div>' +
@@ -340,6 +439,72 @@
       saveDraft();
     }
 
+    let recentColors = [];
+
+    const standardColors = [
+      '#000000','#444444','#666666','#999999','#cccccc','#eeeeee','#f3f3f3','#ffffff',
+      '#e53935','#f4511e','#fb8c00','#fdd835','#43a047','#00acc1','#1e88e5','#3949ab',
+      '#8e24aa','#d81b60','#795548','#607d8b','#c62828','#ad1457','#4527a0','#00695c'
+    ];
+
+    function loadRecentColors() {
+      const saved = localStorage.getItem('tms_recent_colors');
+      if (saved) {
+        try { recentColors = JSON.parse(saved); } catch (e) { recentColors = []; }
+      }
+    }
+
+    function saveRecentColor(hex) {
+      recentColors = recentColors.filter(function(c) { return c !== hex; });
+      recentColors.unshift(hex);
+      if (recentColors.length > 8) recentColors = recentColors.slice(0, 8);
+      localStorage.setItem('tms_recent_colors', JSON.stringify(recentColors));
+      renderRecentColors();
+    }
+
+    function renderRecentColors() {
+      const row = document.getElementById('recentColorsRow');
+      if (!row) return;
+      if (recentColors.length === 0) {
+        row.innerHTML = '<span style="font-size:12px;color:#bbb;">No recent colors yet</span>';
+        return;
+      }
+      row.innerHTML = recentColors.map(function(c) {
+        return '<div class="colorSwatch" style="background:' + c + ';" onclick="pickColor(\'' + c + '\')" title="' + c + '"></div>';
+      }).join('');
+    }
+
+    function renderStandardColors() {
+      const grid = document.getElementById('standardColorGrid');
+      if (!grid) return;
+      grid.innerHTML = standardColors.map(function(c) {
+        return '<div class="colorSwatch" style="background:' + c + ';" onclick="pickColor(\'' + c + '\')" title="' + c + '"></div>';
+      }).join('');
+    }
+
+    function openColorPicker() {
+      renderStandardColors();
+      renderRecentColors();
+      document.getElementById('colorModalOverlay').style.display = 'flex';
+    }
+
+    function closeColorPicker() {
+      document.getElementById('colorModalOverlay').style.display = 'none';
+    }
+
+    function pickColor(hex) {
+      fmt('foreColor', hex);
+      saveRecentColor(hex);
+      const indicator = document.getElementById('colorIndicator');
+      if (indicator) indicator.style.background = hex;
+      closeColorPicker();
+    }
+
+    function applyCustomColor() {
+      const hex = document.getElementById('customColorInput').value;
+      pickColor(hex);
+    }
+
     function fmt(command, value) {
       const editable = document.getElementById('contentEditable');
       editable.focus();
@@ -361,40 +526,46 @@
       }
       const range = selection.getRangeAt(0);
 
-      // If this is the same selection we already resized last click, just adjust it again
-      if (lastSizedSpan && editable.contains(lastSizedSpan)) {
-        const testRange = document.createRange();
-        testRange.selectNodeContents(lastSizedSpan);
-        if (range.startContainer === testRange.startContainer && range.startOffset === testRange.startOffset &&
-            range.endContainer === testRange.endContainer && range.endOffset === testRange.endOffset) {
-          const current = parseInt(window.getComputedStyle(lastSizedSpan).fontSize, 10) || 20;
-          lastSizedSpan.style.fontSize = (current + delta) + 'px';
-          selection.removeAllRanges();
-          selection.addRange(testRange);
-          savedRange = testRange.cloneRange();
-          updateContent();
-          return;
+      if (range.startContainer.nodeType === 3 && range.startOffset > 0 && range.startOffset < range.startContainer.length) {
+        range.startContainer.splitText(range.startOffset);
+        range.setStart(range.startContainer.nextSibling, 0);
+      }
+      if (range.endContainer.nodeType === 3 && range.endOffset > 0 && range.endOffset < range.endContainer.length) {
+        range.endContainer.splitText(range.endOffset);
+        range.setEnd(range.endContainer, range.endContainer.length);
+      }
+
+      const walker = document.createTreeWalker(editable, NodeFilter.SHOW_TEXT, null);
+      const nodesToWrap = [];
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        if (range.intersectsNode(node) && node.nodeValue && node.nodeValue.length > 0) {
+          nodesToWrap.push(node);
         }
       }
 
-      const startEl = range.startContainer.nodeType === 3 ? range.startContainer.parentElement : range.startContainer;
-      const current = parseInt(window.getComputedStyle(startEl).fontSize, 10) || 20;
-      const span = document.createElement('span');
-      span.style.fontSize = (current + delta) + 'px';
-      try {
-        range.surroundContents(span);
-      } catch (e) {
-        const content = range.extractContents();
-        span.appendChild(content);
-        range.insertNode(span);
+      let lastSpan = null;
+      nodesToWrap.forEach(function(node) {
+        const parent = node.parentElement;
+        if (!parent) return;
+        const currentSize = parseInt(window.getComputedStyle(parent).fontSize, 10) || 20;
+        const newSize = Math.max(6, currentSize + delta);
+        const span = document.createElement('span');
+        span.style.fontSize = newSize + 'px';
+        parent.replaceChild(span, node);
+        span.appendChild(node);
+        lastSpan = span;
+      });
+
+      if (lastSpan && nodesToWrap.length > 0) {
+        const newRange = document.createRange();
+        newRange.setStart(nodesToWrap[0], 0);
+        newRange.setEnd(lastSpan.firstChild, lastSpan.firstChild.length);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+        savedRange = newRange.cloneRange();
       }
 
-      const newRange = document.createRange();
-      newRange.selectNodeContents(span);
-      selection.removeAllRanges();
-      selection.addRange(newRange);
-      savedRange = newRange.cloneRange();
-      lastSizedSpan = span;
       updateContent();
     }
 
@@ -473,6 +644,7 @@
       }
     }
 
+    loadRecentColors();
     loadDraft();
   </script>
 
