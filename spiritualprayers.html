@@ -284,7 +284,6 @@
     overflow-y: auto;
     font-size: 20px;
     line-height: 1.8;
-    white-space: pre-line;
     margin-bottom: 0;
     text-align: center;
   }
@@ -591,8 +590,8 @@
       fetch('lyrics/' + key + '.json?t=' + Date.now())
         .then(function(res) { return res.json(); })
         .then(function(data) {
-          currentLyricsText = data.lyrics || '';
-          lyricsBox.innerText = currentLyricsText || 'Lyrics not available.';
+          currentLyricsText = data.content || '';
+          lyricsBox.innerHTML = currentLyricsText || 'Lyrics not available.';
         })
         .catch(function() {
           lyricsBox.innerText = 'Lyrics not available.';
