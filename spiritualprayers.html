@@ -614,10 +614,12 @@
         profileModal.style.display = 'none';
       }
 
-      const contentView = document.getElementById('contentView');
+      const playerView = document.getElementById('playerView');
       const tabListView = document.getElementById('tabListView');
-      if (contentView && contentView.style.display === 'flex') {
-        contentView.style.display = 'none';
+      if (playerView && playerView.style.display === 'flex') {
+        const audio = document.getElementById('audioPlayer');
+        if (audio) audio.pause();
+        playerView.style.display = 'none';
         if (tabListView) tabListView.style.display = 'block';
       }
     });
