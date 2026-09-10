@@ -217,6 +217,11 @@
     text-align: left;
   }
 
+  #signupResultModal .tmsModalBox {
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+
   #profileModal .tmsModalLogo, #signupResultModal .tmsModalLogo {
     display: block;
     margin: 0 auto 15px auto;
@@ -358,10 +363,10 @@
   <div class="tmsModalBox">
     <img src="icon-192.png" alt="TMS Library" class="tmsModalLogo">
     <h2 class="tmsCenterLine" style="color:#FF8C00; font-size:24px; font-weight:bold; margin-bottom:25px;">TMS Library</h2>
-    <p style="font-size:20px; font-weight:bold; margin-bottom:40px;">User ID: <span style="color:#DAA520;" id="resultUserId"></span></p>
-    <p style="font-size:20px; font-weight:bold; margin-bottom:40px;">Status: <span style="color:#DAA520;">Pending</span></p>
-    <p style="font-size:20px; font-weight:bold; margin-bottom:40px;">Please call Admin +91-9830894559 to get activated.</p>
-    <p style="font-size:20px; font-weight:bold; margin-bottom:35px;">Thanks.</p>
+    <p style="font-size:24px; font-weight:bold; margin-bottom:40px;">User ID: <span style="color:#FF8C00;" id="resultUserId"></span></p>
+    <p style="font-size:24px; font-weight:bold; margin-bottom:40px;">Status: <span style="color:#FF8C00;">Pending</span></p>
+    <p style="font-size:24px; font-weight:bold; margin-bottom:40px;">Please call Admin +91-9830894559 to get activated.</p>
+    <p class="tmsCenterLine" style="font-size:24px; font-weight:bold; margin-bottom:35px;">Thanks.</p>
     <button onclick="closeSignupResult()" style="width:100%; padding:14px; background:#FF8C00; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer;">Close</button>
   </div>
 </div>
