@@ -210,7 +210,7 @@
     text-align: center;
   }
 
-  #profileModal .tmsModalBox {
+  #profileModal .tmsModalBox, #signupResultModal .tmsModalBox {
     max-width: 100%;
     width: 100%;
     padding: 30px 20px;
@@ -291,7 +291,7 @@
       <h3 id="authTitle">Login</h3>
 
       <div id="loginFields">
-        <input type="text" id="userIdInput" placeholder="User ID">
+        <input type="text" id="userIdInput" placeholder="User ID" autocapitalize="none" autocorrect="off" spellcheck="false" oninput="this.value = this.value.toLowerCase()">
         <input type="password" id="passwordInput" placeholder="6-digit PIN">
         <button onclick="loginUser()">Login</button>
       </div>
@@ -320,13 +320,13 @@
 
     <button id="installPwaBtn" style="display:none; width:100%; max-width:320px; margin:20px auto 0 auto; padding:18px; background-color:#FF8C00; color:#fff; border:none; border-radius:10px; font-size:18px; font-weight:bold; cursor:pointer;">Install PWA</button>
 
-    <div class="barContainer" id="barContainer">
-      <div class="bar" style="background-color:#4CAF50;" onclick="window.location.href='quoteoftheday.html'">Quotes / Advisories<span class="barBengali">বাণী / উপদেশাবলী</span></div>
-	  <div class="bar" style="background-color:#1E90FF;" onclick="window.location.href='spiritualprayers.html'">Spiritual Prayers<span class="barBengali">আধ্যাত্মিক প্রার্থনাসমূহ</span></div>
-	  <div class="bar" style="background-color:#E57373;" onclick="window.location.href='hinduceremonies.html'">Hindu Ceremonies<span class="barBengali">হিন্দু পূজা/আচার সময়সূচী</span></div>
-	  <div class="bar" style="background-color:#FF8C00;" onclick="window.location.href='panchalimantratarpon.html'">Panchali / Mantras / Tarpon<span class="barBengali">পাঁচালী / মন্ত্র / তর্পণ</span></div>
-	  <div class="bar" style="background-color:#9575CD;" onclick="window.location.href='hindugodphotos.html'">Photos of Hindu Goddess<span class="barBengali">হিন্দু দেবদেবীর ছবি</span></div>
-    </div>
+<div class="barContainer" id="barContainer">
+  <div class="bar" style="background-color:#6FCF97;" onclick="window.location.href='quoteoftheday.html'">Quotes / Advisories<span class="barBengali">বাণী / উপদেশাবলী</span></div>
+  <div class="bar" style="background-color:#56CCF2;" onclick="window.location.href='spiritualprayers.html'">Spiritual Prayers<span class="barBengali">আধ্যাত্মিক প্রার্থনাসমূহ</span></div>
+  <div class="bar" style="background-color:#F2C94C;" onclick="window.location.href='panchalimantratarpon.html'">Panchali / Mantras / Tarpon<span class="barBengali">পাঁচালী / মন্ত্র / তর্পণ</span></div>
+  <div class="bar" style="background-color:#EB5757;" onclick="window.location.href='hinduceremonies.html'">Hindu Ceremonies<span class="barBengali">হিন্দু পূজা/আচার সময়সূচী</span></div>
+  <div class="bar" style="background-color:#9B51E0;" onclick="window.location.href='hindugodphotos.html'">Photos of Hindu Goddess<span class="barBengali">হিন্দু দেবদেবীর ছবি</span></div>
+</div>>
 
     <div class="tmsModal" id="changePinModal">
       <div class="tmsModalBox">
@@ -353,6 +353,18 @@
         <button onclick="closeProfile()" style="width:100%; padding:12px; background:#ccc; color:#333; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Close</button>
       </div>
     </div>
+
+<div class="tmsModal" id="signupResultModal">
+  <div class="tmsModalBox">
+    <img src="icon-192.png" alt="TMS Library" class="tmsModalLogo">
+    <h2 class="tmsCenterLine" style="color:#FF8C00; font-size:24px; font-weight:bold; margin-bottom:25px;">TMS Library</h2>
+    <p style="font-size:20px; font-weight:bold; margin-bottom:40px;">User ID: <span style="color:#DAA520;" id="resultUserId"></span></p>
+    <p style="font-size:20px; font-weight:bold; margin-bottom:40px;">Status: <span style="color:#DAA520;">Pending</span></p>
+    <p style="font-size:20px; font-weight:bold; margin-bottom:40px;">Please call Admin +91-9830894559 to get activated.</p>
+    <p style="font-size:20px; font-weight:bold; margin-bottom:35px;">Thanks.</p>
+    <button onclick="closeSignupResult()" style="width:100%; padding:14px; background:#FF8C00; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer;">Close</button>
+  </div>
+</div>
 
   </main>
 
@@ -534,10 +546,10 @@
         });
         await secondaryApp.auth().signOut();
         secondaryApp.delete();
-        localStorage.setItem('tmsb_signup_done', Date.now().toString());
-        document.getElementById('authBox').innerHTML =
-          '<p style="font-size:18px; font-weight:bold; color:#FF8C00; text-align:center; padding:20px 10px;">Your User ID is: <span style="font-size:22px;">' + userId + '</span></p>' +
-          '<p style="font-size:16px; text-align:center;">Please save this User ID.<br>Call Admin to get your account authorized:<br>+91-9830894559.<br>Thanks.</p>';
+localStorage.setItem('tmsb_signup_done', Date.now().toString());
+showLogin();
+document.getElementById('resultUserId').innerText = userId;
+document.getElementById('signupResultModal').style.display = 'flex';
       } catch (error) {
         errorBox.innerText = error.message;
         try { secondaryApp.delete(); } catch (e) {}
@@ -631,6 +643,10 @@
       if (window.location.hash === '#profile') {
         history.back();
       }
+    }
+	
+	function closeSignupResult() {
+      document.getElementById('signupResultModal').style.display = 'none';
     }
 
     function openChangePin() {
