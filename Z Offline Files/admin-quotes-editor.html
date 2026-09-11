@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMS Daily Quotes (Offline)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+  body { zoom: 150%; }
+
+  header {
+    background-color: #FF8C00;
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    font-size: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .topBar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    align-items: center;
+  }
+
+  .topBar input[type="file"] { flex: 1; min-width: 200px; }
+
+  button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .btnPrimary { background-color: #FF8C00; color: #fff; }
+  .btnGreen { background-color: #4CAF50; color: #fff; }
+  .btnRed { background-color: #e53935; color: #fff; }
+  .btnGray { background-color: #757575; color: #fff; }
+
+  #personsContainer { display: flex; flex-direction: column; gap: 20px; }
+
+  .personBlock {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .personHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .personHeader input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-right: 8px;
+  }
+
+  #addPersonBtn { margin-top: 15px; }
+
+  .statusMsg {
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    color: green;
+  }
+
+  .filenamePreview {
+    font-size: 13px;
+    color: #888;
+    margin-top: 6px;
+  }
+
+  /* ---- Quote boxes ---- */
+  .quoteBox {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+    background: #fafafa;
+  }
+
+  .quoteBoxHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #555;
+  }
+
+  .quoteBoxHeader button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  /* ---- Mobile-width formatting frame (matches offline-mantra-creator) ---- */
+  .mobileFrame {
+    width: 430px;
+    max-width: 100%;
+    margin: 0 auto;
+    border: 2px solid #333;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    padding: 6px;
+    overflow-x: auto;
+  }
+
+  .toolbar button {
+    width: auto;
+    min-width: 32px;
+    padding: 6px 7px;
+    font-size: 13px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .quoteEditable {
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    padding: 12px 10px;
+    min-height: 70px;
+    font-size: 16px;
+    line-height: 1.6;
+    outline: none;
+    overflow-y: auto;
+  }
+
+  .quoteEditable:empty:before {
+    content: attr(data-placeholder);
+    color: #aaa;
+  }
+
+  /* ---- Color picker modal ---- */
+  .colorModalOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.55);
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .colorModalBox {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    width: 280px;
+    max-width: 90%;
+  }
+
+  .colorModalBox h3 {
+    font-size: 16px;
+    margin-bottom: 14px;
+    text-align: center;
+    color: #333;
+  }
+
+  .colorGrid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .colorSwatch {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+
+  .colorSwatch:hover {
+    outline: 2px solid #333;
+  }
+
+  .recentColorsLabel {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 6px;
+  }
+
+  .recentColorsRow {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    min-height: 26px;
+  }
+
+  .customColorRow {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .customColorRow input[type="color"] {
+    width: 44px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .colorModalBox button {
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+  <header>TMS Daily Quotes (Offline)</header>
+
+  <div class="topBar">
+    <button class="btnGray" onclick="document.getElementById('importFile').click()">Import person's json</button>
+    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importJson(event)">
+    <button class="btnGreen" onclick="exportJson()">Export / Save json</button>
+    <button class="btnRed" onclick="clearAll()">Clear Everything</button>
+  </div>
+
+  <p id="statusMsg" class="statusMsg"></p>
+
+  <div id="personsContainer"></div>
+
+  <button id="addPersonBtn" class="btnPrimary" onclick="addPerson()">+ Add New Person</button>
+
+  <div class="colorModalOverlay" id="colorModalOverlay">
+    <div class="colorModalBox">
+      <h3>Font Color</h3>
+      <div class="colorGrid" id="standardColorGrid"></div>
+      <div class="recentColorsLabel">Recently used:</div>
+      <div class="recentColorsRow" id="recentColorsRow"></div>
+      <div class="customColorRow">
+        <input type="color" id="customColorInput" value="#000000">
+        <button type="button" class="btnPrimary" style="width:auto; flex:1; padding:10px;" onclick="applyCustomColor()">Apply Custom Color</button>
+      </div>
+      <button class="btnGray" onclick="closeColorPicker()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    let person = null; // null = nothing added yet; otherwise { name, nameBengali, initials, quotes: [] }
+    let activeQuoteIndex = null;
+    let savedRanges = {}; // quoteIndex -> Range
+
+    // ---------- Draft persistence ----------
+    function saveDraft() {
+      if (person) {
+        localStorage.setItem('tms_quotes_draft', JSON.stringify(person));
+      } else {
+        localStorage.removeItem('tms_quotes_draft');
+      }
+    }
+
+    function loadDraft() {
+      const saved = localStorage.getItem('tms_quotes_draft');
+      if (saved) {
+        try {
+          person = JSON.parse(saved);
+          if (person && person.nameBengali === undefined) person.nameBengali = '';
+        } catch (e) {
+          person = null;
+        }
+      }
+      render();
+    }
+
+    function makeFilename(name) {
+      return (name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ---------- Quote storage helpers ----------
+    // Each quote is stored as a single string, e.g. <div style="text-align:center;">Some <b>text</b></div>
+    // so alignment + inline formatting travel together inside the same plain string —
+    // the exported JSON shape (name/nameBengali/initials/quotes[]) never changes.
+    function parseStoredQuote(q) {
+      if (!q) return { align: 'left', html: '' };
+      const m = q.match(/^<div style="text-align:\s*([a-zA-Z]+);?\s*">([\s\S]*)<\/div>$/);
+      if (m) return { align: m[1], html: m[2] };
+      return { align: 'left', html: q }; // legacy plain-text quote
+    }
+
+    function buildStoredQuote(i) {
+      const editable = document.getElementById('quoteEditable_' + i);
+      const align = editable.style.textAlign || 'left';
+      return '<div style="text-align:' + align + ';">' + editable.innerHTML + '</div>';
+    }
+
+    function updateQuoteContent(i) {
+      if (!person) return;
+      person.quotes[i] = buildStoredQuote(i);
+      saveDraft();
+    }
+
+    // ---------- Selection tracking (per quote) ----------
+    document.addEventListener('selectionchange', function() {
+      if (activeQuoteIndex === null) return;
+      const editable = document.getElementById('quoteEditable_' + activeQuoteIndex);
+      if (!editable) return;
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0) {
+        const range = sel.getRangeAt(0);
+        if (!range.collapsed && editable.contains(range.commonAncestorContainer)) {
+          savedRanges[activeQuoteIndex] = range.cloneRange();
+        }
+      }
+    });
+
+    function restoreSelection(i) {
+      const r = savedRanges[i];
+      if (r) {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(r);
+      }
+    }
+
+    function focusQuote(i) {
+      activeQuoteIndex = i;
+    }
+
+    // ---------- Render ----------
+    function render() {
+      const container = document.getElementById('personsContainer');
+      const addBtn = document.getElementById('addPersonBtn');
+      container.innerHTML = '';
+
+      if (!person) {
+        addBtn.style.display = 'inline-block';
+        return;
+      }
+
+      addBtn.style.display = 'none';
+
+      const block = document.createElement('div');
+      block.className = 'personBlock';
+
+      let html = '<div class="personHeader">' +
+        '<div>' +
+        '<input type="text" placeholder="Full Name" value="' + escapeHtml(person.name) + '" onchange="updatePersonField(\'name\', this.value)">' +
+        '<input type="text" placeholder="Name in Bengali (optional)" value="' + escapeHtml(person.nameBengali || '') + '" onchange="updatePersonField(\'nameBengali\', this.value)" style="margin-top:6px; display:block;">' +
+        '<input type="text" placeholder="Initials" maxlength="3" value="' + escapeHtml(person.initials) + '" onchange="updatePersonField(\'initials\', this.value)" style="width:60px; margin-top:6px;">' +
+        '</div>' +
+        '<button class="btnRed" onclick="removePerson()">Remove Person</button>' +
+        '</div>';
+
+      html += '<div class="filenamePreview">Will save as: ' + (makeFilename(person.name) || '(type a name first)') + '.json</div>';
+
+      html += '<div style="margin-top:12px;">' +
+        '<button class="btnGreen" onclick="addQuote()">+ Add Quote</button>' +
+        '<span style="margin-left:10px; color:#888; font-size:13px;">' + person.quotes.length + ' quote(s)</span>' +
+        '</div>';
+
+      html += '<div id="quotesList" style="margin-top:12px;">';
+      person.quotes.forEach(function(q, i) {
+        html += '<div class="quoteBox">' +
+          '<div class="quoteBoxHeader"><span>Quote ' + (i + 1) + '</span><button class="btnRed" onclick="removeQuote(' + i + ')">Delete</button></div>' +
+          '<div class="mobileFrame">' +
+            '<div class="toolbar">' +
+              '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(' + i + ',\'bold\')"><b>B</b></button>' +
+              '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(' + i + ',\'italic\')"><i>I</i></button>' +
+              '<button type="button" onmousedown="event.preventDefault()" onclick="fmt(' + i + ',\'underline\')"><u>U</u></button>' +
+              '<button type="button" title="Font Color" onmousedown="event.preventDefault()" onclick="openColorPicker(' + i + ')">A<span id="colorIndicator_' + i + '" style="display:block;width:16px;height:3px;background:#000;margin:2px auto 0;"></span></button>' +
+              '<button type="button" onmousedown="event.preventDefault()" onclick="resizeSelection(' + i + ',1)">A+</button>' +
+              '<button type="button" onmousedown="event.preventDefault()" onclick="resizeSelection(' + i + ',-1)">A-</button>' +
+              '<button type="button" title="Align Left" onmousedown="event.preventDefault()" onclick="fmt(' + i + ',\'justifyLeft\')"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="2"/><rect x="1" y="7" width="9" height="2"/><rect x="1" y="12" width="14" height="2"/></svg></button>' +
+              '<button type="button" title="Align Center" onmousedown="event.preventDefault()" onclick="fmt(' + i + ',\'justifyCenter\')"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="2"/><rect x="3.5" y="7" width="9" height="2"/><rect x="1" y="12" width="14" height="2"/></svg></button>' +
+              '<button type="button" title="Align Right" onmousedown="event.preventDefault()" onclick="fmt(' + i + ',\'justifyRight\')"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="2"/><rect x="6" y="7" width="9" height="2"/><rect x="1" y="12" width="14" height="2"/></svg></button>' +
+              '<button type="button" title="Justify" onmousedown="event.preventDefault()" onclick="fmt(' + i + ',\'justifyFull\')"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="2"/><rect x="1" y="7" width="14" height="2"/><rect x="1" y="12" width="14" height="2"/></svg></button>' +
+            '</div>' +
+            '<div class="quoteEditable" id="quoteEditable_' + i + '" contenteditable="true" data-placeholder="Type or paste the quote here..." onfocus="focusQuote(' + i + ')" oninput="updateQuoteContent(' + i + ')"></div>' +
+          '</div>' +
+        '</div>';
+      });
+      html += '</div>';
+
+      block.innerHTML = html;
+      container.appendChild(block);
+
+      document.execCommand('styleWithCSS', false, true);
+
+      // Populate each editable from stored data (unwrap alignment + content)
+      person.quotes.forEach(function(q, i) {
+        const editable = document.getElementById('quoteEditable_' + i);
+        const parsed = parseStoredQuote(q);
+        editable.style.textAlign = parsed.align;
+        editable.innerHTML = parsed.html;
+      });
+    }
+
+    // ---------- Person / quote CRUD ----------
+    function addPerson() {
+      person = { name: '', nameBengali: '', initials: '', quotes: [] };
+      saveDraft();
+      render();
+    }
+
+    function removePerson() {
+      if (confirm('Remove this person and all their quotes from the editor? (This does not delete anything already uploaded to GitHub.)')) {
+        person = null;
+        saveDraft();
+        render();
+      }
+    }
+
+    function updatePersonField(field, value) {
+      person[field] = value;
+      saveDraft();
+      render();
+    }
+
+    function addQuote() {
+      person.quotes.unshift('');
+      saveDraft();
+      render();
+    }
+
+    function removeQuote(i) {
+      person.quotes.splice(i, 1);
+      delete savedRanges[i];
+      saveDraft();
+      render();
+    }
+
+    // ---------- Formatting ----------
+    function fmt(i, command, value) {
+      const editable = document.getElementById('quoteEditable_' + i);
+      editable.focus();
+      restoreSelection(i);
+      document.execCommand(command, false, value || null);
+      updateQuoteContent(i);
+    }
+
+    function resizeSelection(i, delta) {
+      const editable = document.getElementById('quoteEditable_' + i);
+      editable.focus();
+      restoreSelection(i);
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
+        const current = parseInt(window.getComputedStyle(editable).fontSize, 10) || 16;
+        editable.style.fontSize = (current + delta) + 'px';
+        updateQuoteContent(i);
+        return;
+      }
+      const range = selection.getRangeAt(0);
+
+      if (range.startContainer.nodeType === 3 && range.startOffset > 0 && range.startOffset < range.startContainer.length) {
+        range.startContainer.splitText(range.startOffset);
+        range.setStart(range.startContainer.nextSibling, 0);
+      }
+      if (range.endContainer.nodeType === 3 && range.endOffset > 0 && range.endOffset < range.endContainer.length) {
+        range.endContainer.splitText(range.endOffset);
+        range.setEnd(range.endContainer, range.endContainer.length);
+      }
+
+      const walker = document.createTreeWalker(editable, NodeFilter.SHOW_TEXT, null);
+      const nodesToWrap = [];
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        if (range.intersectsNode(node) && node.nodeValue && node.nodeValue.length > 0) {
+          nodesToWrap.push(node);
+        }
+      }
+
+      let lastSpan = null;
+      nodesToWrap.forEach(function(node) {
+        const parent = node.parentElement;
+        if (!parent) return;
+        const currentSize = parseInt(window.getComputedStyle(parent).fontSize, 10) || 16;
+        const newSize = Math.max(6, currentSize + delta);
+        const span = document.createElement('span');
+        span.style.fontSize = newSize + 'px';
+        parent.replaceChild(span, node);
+        span.appendChild(node);
+        lastSpan = span;
+      });
+
+      if (lastSpan && nodesToWrap.length > 0) {
+        const newRange = document.createRange();
+        newRange.setStart(nodesToWrap[0], 0);
+        newRange.setEnd(lastSpan.firstChild, lastSpan.firstChild.length);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+        savedRanges[i] = newRange.cloneRange();
+      }
+
+      updateQuoteContent(i);
+    }
+
+    // ---------- Color picker ----------
+    let recentColors = [];
+
+    const standardColors = [
+      '#000000','#444444','#666666','#999999','#cccccc','#eeeeee','#f3f3f3','#ffffff',
+      '#e53935','#f4511e','#fb8c00','#fdd835','#43a047','#00acc1','#1e88e5','#3949ab',
+      '#8e24aa','#d81b60','#795548','#607d8b','#c62828','#ad1457','#4527a0','#00695c'
+    ];
+
+    function loadRecentColors() {
+      const saved = localStorage.getItem('tms_quotes_recent_colors');
+      if (saved) {
+        try { recentColors = JSON.parse(saved); } catch (e) { recentColors = []; }
+      }
+    }
+
+    function saveRecentColor(hex) {
+      recentColors = recentColors.filter(function(c) { return c !== hex; });
+      recentColors.unshift(hex);
+      if (recentColors.length > 8) recentColors = recentColors.slice(0, 8);
+      localStorage.setItem('tms_quotes_recent_colors', JSON.stringify(recentColors));
+      renderRecentColors();
+    }
+
+    function renderRecentColors() {
+      const row = document.getElementById('recentColorsRow');
+      if (!row) return;
+      if (recentColors.length === 0) {
+        row.innerHTML = '<span style="font-size:12px;color:#bbb;">No recent colors yet</span>';
+        return;
+      }
+      row.innerHTML = recentColors.map(function(c) {
+        return '<div class="colorSwatch" style="background:' + c + ';" onclick="pickColor(\'' + c + '\')" title="' + c + '"></div>';
+      }).join('');
+    }
+
+    function renderStandardColors() {
+      const grid = document.getElementById('standardColorGrid');
+      if (!grid) return;
+      grid.innerHTML = standardColors.map(function(c) {
+        return '<div class="colorSwatch" style="background:' + c + ';" onclick="pickColor(\'' + c + '\')" title="' + c + '"></div>';
+      }).join('');
+    }
+
+    function openColorPicker(i) {
+      activeQuoteIndex = i;
+      renderStandardColors();
+      renderRecentColors();
+      document.getElementById('colorModalOverlay').style.display = 'flex';
+    }
+
+    function closeColorPicker() {
+      document.getElementById('colorModalOverlay').style.display = 'none';
+    }
+
+    function pickColor(hex) {
+      if (activeQuoteIndex === null) return;
+      fmt(activeQuoteIndex, 'foreColor', hex);
+      saveRecentColor(hex);
+      const indicator = document.getElementById('colorIndicator_' + activeQuoteIndex);
+      if (indicator) indicator.style.background = hex;
+      closeColorPicker();
+    }
+
+    function applyCustomColor() {
+      const hex = document.getElementById('customColorInput').value;
+      pickColor(hex);
+    }
+
+    // ---------- Import / Export ----------
+    function exportJson() {
+      if (!person) {
+        alert('Add or import a person first.');
+        return;
+      }
+      const filename = makeFilename(person.name);
+      if (!filename) {
+        alert('Please type the name first.');
+        return;
+      }
+
+      const exportData = {
+        name: person.name,
+        nameBengali: person.nameBengali || '',
+        initials: person.initials,
+        quotes: person.quotes
+      };
+
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      const status = document.getElementById('statusMsg');
+      status.innerText = filename + '.json downloaded! Now upload this file to your GitHub repo.';
+      setTimeout(function() { status.innerText = ''; }, 5000);
+    }
+
+    function importJson(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          person = {
+            name: imported.name || '',
+            nameBengali: imported.nameBengali || '',
+            initials: imported.initials || '',
+            quotes: imported.quotes || []
+          };
+          saveDraft();
+          render();
+          const status = document.getElementById('statusMsg');
+          status.innerText = 'Imported successfully! All fields auto-filled, including Bengali name. You can continue editing.';
+          setTimeout(function() { status.innerText = ''; }, 4000);
+        } catch (err) {
+          alert('Could not read this file. Please make sure it is a valid person json file.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function clearAll() {
+      if (confirm('This will erase everything currently in the editor (not any file already uploaded to GitHub). Continue?')) {
+        person = null;
+        localStorage.removeItem('tms_quotes_draft');
+        render();
+      }
+    }
+
+    loadRecentColors();
+    loadDraft();
+  </script>
+
+</body>
+</html>
