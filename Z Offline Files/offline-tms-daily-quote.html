@@ -262,7 +262,7 @@
     padding: 16px 10px;
     min-height: 200px;
     font-size: 20px;
-    line-height: 1.8;
+    line-height: 1.4;
     outline: none;
     overflow-y: auto;
   }
@@ -494,9 +494,27 @@
       if (size) input.value = size;
     }
 
-    function showFakeHighlight(serial) {
-      // placeholder hook kept for parity; no visual highlight needed since selection is preserved via savedRanges
-    }
+function showFakeHighlight(serial) {
+  if (!savedRanges[serial]) return;
+  removeFakeHighlight(serial);
+  const span = document.createElement('span');
+  span.id = 'fakeHighlightSpan-' + serial;
+  span.style.background = '#FFD180';
+  try {
+    savedRanges[serial].surroundContents(span);
+  } catch (e) {
+    // selection spans multiple elements; skip highlight in that case
+  }
+}
+
+function removeFakeHighlight(serial) {
+  const span = document.getElementById('fakeHighlightSpan-' + serial);
+  if (span) {
+    const parent = span.parentNode;
+    while (span.firstChild) parent.insertBefore(span.firstChild, span);
+    parent.removeChild(span);
+  }
+}
 
     function restoreSelection(serial) {
       if (savedRanges[serial]) {
@@ -515,17 +533,22 @@
       updateContent(serial);
     }
 
-    function unwrapFontSizeSpans(node) {
-      let parent = node.parentElement;
-      while (parent && !parent.classList.contains('contentEditable') && parent.tagName === 'SPAN' && parent.style.fontSize && parent.style.length === 1) {
-        const grandparent = parent.parentNode;
-        while (parent.firstChild) {
-          grandparent.insertBefore(parent.firstChild, parent);
-        }
-        grandparent.removeChild(parent);
-        parent = node.parentElement;
+function unwrapFontSizeSpans(node) {
+  let parent = node.parentElement;
+  while (parent && parent.classList && !parent.classList.contains('contentEditable') && parent.tagName === 'SPAN' && parent.style.fontSize) {
+    parent.style.fontSize = '';
+    if (!parent.getAttribute('style')) {
+      const grandparent = parent.parentNode;
+      while (parent.firstChild) {
+        grandparent.insertBefore(parent.firstChild, parent);
       }
+      grandparent.removeChild(parent);
+      parent = node.parentElement;
+    } else {
+      break; // other styling (like color) remains on this span — keep it, just without the old font-size
     }
+  }
+}
 
     function resizeSelection(serial, delta) {
       const editable = document.getElementById('editable-' + serial);
@@ -541,8 +564,9 @@
       applySizeToSelection(serial, selection, function(currentSize) { return Math.max(6, currentSize + delta); });
     }
 
-    function applyFontSize(serial) {
-      const input = document.getElementById('fontSizeInput-' + serial);
+function applyFontSize(serial) {
+  removeFakeHighlight(serial);
+  const input = document.getElementById('fontSizeInput-' + serial);
       const size = parseInt(input.value, 10);
       if (!size || size < 6) return;
       const editable = document.getElementById('editable-' + serial);
