@@ -1,0 +1,551 @@
+{
+  "name": "Sri Maa Sarada Devi",
+  "nameBengali": "শ্রী মা সারদা দেবী",
+  "initials": "",
+  "quotes": [
+    {
+      "serial": 1,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">আমি সতেরও মা, অসতেরও মা। আমি সত্যিকারের মা, গুরুপত্নী নই, পাতানো মা নই, কথার কথা মা নই – সত্য জননী।</span></div>"
+    },
+    {
+      "serial": 2,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… কলিতে মনের পাপ - পাপ নয়। যখনই দুর্বলতা আসবে ঠাকুরকে স্মরণ করবে, আমাকে ভাববে।</span></div>"
+    },
+    {
+      "serial": 3,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভগবান লাভ হ’লে কি আর হয়, দুটো শিং বেরোয়? না, মন শুদ্ধ হয়! শুদ্ধ মনে জ্ঞান, চৈতন্য, আনন্দ লাভ হয়। ভগবানে ভক্তি, ভালবাসা, অনুরাগ বাড়ে। সর্বদা একটা টান থাকে।</span></div>"
+    },
+    {
+      "serial": 4,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… কখনো চুপচাপ বসে থেকো না, কিছু না কিছু কাজ করবে। একটা কিছু কাজ নিয়ে থাকতে হয়, নইলে অলস মনে নানা চিন্তা এসে ভিড় করবে।</span></div>"
+    },
+    {
+      "serial": 5,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মন মত্তকরী — হাওয়ার সঙ্গে ছোটে। তাই সর্বদা বিচার করতে হয়। ঈশ্বরলাভের জন্য চেষ্টা দরকার।</span></div>"
+    },
+    {
+      "serial": 6,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যে রাস্তায় তুমি চলছ, যদি দেখ সে-রাস্তায় কেউ পড়ে গিয়েছে, তাকে তুমি তুলে দেবে। পথে পড়ে-থাকা কাউকে দেখে কখনও ফেলে যেতে নেই।</span></div>"
+    },
+    {
+      "serial": 7,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মনের গোলযোগ — ওটা প্রকৃতির নিয়ম। যেমন অমাবস্যা পূর্ণিমা আছে, তেমনি মন কখন ভাল, আবার কখন মন্দ থাকে।</span></div>"
+    },
+    {
+      "serial": 8,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">জীবনের প্রতিটি পদক্ষেপে ঠাকুরকে স্মরণ রেখো। তাহলে কোনও কষ্টকে আর কষ্ট বলে মনে হবে না।&nbsp;</span></div>"
+    },
+    {
+      "serial": 9,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যখনই যা কিছু খাবে, তাঁকে নিবেদন করে প্রসাদরূপে খাবে, তা হ’লে রক্ত শুদ্ধ হবে, মন শুদ্ধ হবে।</span></div>"
+    },
+    {
+      "serial": 10,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">জীবনে দুঃখ-কষ্ট কার বা নেই? ওসব তো থাকবেই, তার নাম নিলে, তাকে আশ্রয় করলে তিনি শক্তি দেবেন। দুঃখ ও কষ্ট তখন আর তোমার ওপর ছাপ ফেলতে পারবে না।</span></div>"
+    },
+    {
+      "serial": 11,
+      "text": "<div style=\"text-align: center;\"><span style=\"font-size: 21px;\">মনেতেই সব, মনেতেই শুদ্ধ, মনেতেই অশুদ্ধ।</span></div>"
+    },
+    {
+      "serial": 12,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যে কেউ শরৎকে (শরৎ মহারাজকে) ভালবেসে সেবা করবে, মুক্তি তার কেনা। শরৎ ঠাকুরের গণেশ, শরৎ আমার মাথার মণি। সারা দুনিয়ায় শরতের মতো মহাপুরুষ খুব কম আছে জানবে।</span></div>"
+    },
+    {
+      "serial": 13,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মানুষের নিজের মনটি আগে দোষ করে, তবে সে পরের দোষ দেখে। পরের দোষ দেখলে কার কি হয়? নিজেরই ক্ষতি।&nbsp;</span></div>"
+    },
+    {
+      "serial": 14,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">একটা কথা মনে রেখো — জাতাশৌচ, মৃতাশৌচ এবং কালাশৌচে ঠাকুরের কোনও কাজ করবে না, ঠাকুর ঘরেও যাবে না।</span></div>"
+    },
+    {
+      "serial": 15,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মন্ত্রের দ্বারা দেহশুদ্ধি হয়, মন্ত্র জপ ক’রে মানুষ পবিত্র হয়। জপাৎ সিদ্ধি। জপাৎ সিদ্ধি।</span></div>"
+    },
+    {
+      "serial": 16,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">সবাই বলে শ্রীরামকৃষ্ণ ধর্ম-সমন্বয় প্রচার করতে এসেছিলেন। তিনি যে বিভিন্ন ধর্ম সাধন করেছিলেন, তা কিন্তু এই উদ্দেশ্যে নয়। তার উদ্দেশ্য ছিল বিভিন্ন ধর্মে কিভাবে ঈশ্বরকে ডাকে তা জানা।</span></div>"
+    },
+    {
+      "serial": 17,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যার (অর্থ) আছে সে মাপো (দান কর), যার নেই সে জপো।</span></div>"
+    },
+    {
+      "serial": 18,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">শ্রী শ্রী ঠাকুরের মতন ত্যাগের কথা এর আগে কেউ কখনও শোনেও নি।</span></div>"
+    },
+    {
+      "serial": 19,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">রোজ ১৫-২০ হাজার জপ করতে পারে তা হ’লে হয়, আমি দেখেছি বাস্তবিক হয়। আগে করুক, তারপর না হয় তখন বলবে। তবে একটু মন দিয়ে করতে হয়। কেউ কিছু করবে না, কেবল বলবে — কেন হয় না?</span></div>"
+    },
+    {
+      "serial": 20,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">আমার কাছে আসবে না তো কার কাছে যাবে? আমি খালি ভালোরই মা - মন্দের মা নই?</span></div>"
+    },
+    {
+      "serial": 21,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">পবিত্র ধ্যান-জপের একটা নিয়মিত সময় থাকা খুব দরকার। সন্ধির সময় তাঁকে ডাকা উচিত। রাত যাচ্ছে, দিন আসছে, আবার দিন যাচ্ছে, রাত আসছে—এই হ’ল সন্ধি। এমন সময় মন শান্ত থাকে। অসুখ হ’লে বা কাজে ঝঞ্ঝাটে স্মরণ, প্রণাম করলেও হয়।</span></div>"
+    },
+    {
+      "serial": 22,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মুনি ঋষিরা ঈশ্বরলাভের জন্যে কত জন্ম কাটিয়েছেন তপস্যা করে। আর তোমরা ঈশ্বরলাভ করতে চাও কিছু না করে, ফাঁকি দিয়ে। বিনা চেষ্টাতেই কি তা সম্ভব? যা চাও তা পেতে গেলে উঠে পড়ে লাগতে হবে।</span></div>"
+    },
+    {
+      "serial": 23,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">জপ-তপের দ্বারা কর্মপাশ কেটে যায়, কিন্তু ভগবানকে প্রেম-ভক্তি ছাড়া পাওয়া যায় না। জপ-তপ কি জানো? ওর দ্বারা ইন্দ্রিয়-টিন্দ্রিয়গুলো কেটে যায়। রাখালেরা কি কৃষ্ণকে জপ-ধ্যান করে পেয়েছিল? না, তারা ‘আয় রে, খা রে, নে রে’ — এই করে পেয়েছিল?</span></div>"
+    },
+    {
+      "serial": 24,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">সবাই আসে আর বলে কৃপা, কৃপা। কৃপা কি করবে? কৃপা গিয়ে ফিরে আসে। কৃপা যার কাছে এল, সে যদি প্রস্তুত না থাকে, তাহলে কৃপা এসেও ফিরে যাবে।</span></div>"
+    },
+    {
+      "serial": 25,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভগবানকে কে বাঁধতে পেরেছে বলো না? তিনি নিজে ধরা দিয়েছিলেন বলেই তো যশোদা তাঁকে বাঁধতে পেরেছিলেন।</span></div>"
+    },
+    {
+      "serial": 26,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">এ যুগে শ্রীরামকৃষ্ণ এসে ঈশ্বরলাভের পথ প্রশস্ত করে দিয়ে গেছেন। যে কেউ একটু উদ্যোগী হয়ে ঈশ্বর চিন্তা করবে, সে-ই তাকে পেয়ে যাবে।</span></div>"
+    },
+    {
+      "serial": 27,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">কাজ করতেই হয়। কর্মেই কর্মপাশ কাটে। কাজ ছাড়া থাকা ঠিক নয়।</span></div>"
+    },
+    {
+      "serial": 28,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যদি শান্তি চাও মা, কারও দোষ দেখো না, দোষ দেখবে নিজের। জগৎকে আপনার করে নিতে শেখো। কেউ পর নয় মা, জগৎ তোমার।</span></div>"
+    },
+    {
+      "serial": 29,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">কর্মফল কেউ এড়াতে পারে না। তবে যদি সাধন-ভজন থাকে, তো যেখানে খাঁড়ার ঘা লাগার কথা, সেখানে কাঁটাটি ফোটে।</span></div>"
+    },
+    {
+      "serial": 30,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যখন তোমরা কোনও সমস্যায় পড়বে, যখন কোনও মানসিক অশান্তি আসবে, তখন মনে রাখবে তোমাদের একজন মা আছেন।</span></div>"
+    },
+    {
+      "serial": 31,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">বাসনা থেকেই শরীর। যখন বাসনা থাকে না তখন শরীর পড়ে যায়। সম্পূর্ণ বাসনাক্ষয়ই মুক্তি। নির্বাসনা হবার বাসনা করো।</span></div>"
+    },
+    {
+      "serial": 32,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">অনেক সময়ে লঘু, চঞ্চল মনের মানুষ দীক্ষার জন্য আসে। আমি তাদের চেহারা, ভাবভঙ্গি দেখেই পূর্বজীবন বুঝতে পারি। জিজ্ঞাসা করি, আগে তারা অন্য কারও কাছ থেকে দীক্ষা নিয়েছে কিনা। যখন বলে—হ্যাঁ, তখন তাদের বলি, কী আশ্চর্য, তুমি আবার দীক্ষার জন্য এসেছ! তোমার গুরু যে মন্ত্র দিয়েছেন তার উপর এতটুকু বিশ্বাস নেই? মন্ত্র ভগবানের পবিত্র নাম ছাড়া আর কি! তারপরেও তুমি দীক্ষার জন্য এলে কেন? তখন তারা ক্ষমা চায়, কিন্তু কাঁদতে কাঁদতে মন্ত্রের জন্য অনুনয় করে। কারও কান্না আমি সহ্য করতে পারি না। তখন ঠাকুরকে ডেকে বলি, এদের বিশ্বাসে জোর এনে দাও। তারপর ঠাকুরের নির্দেশে নতুন মন্ত্র দিই। এই অতিরিক্ত মন্ত্র দিই ঈশ্বরের প্রতি তাদের ভক্তি-বিশ্বাস বাড়াবার শক্তি হিসাবে।</span></div><div><span style=\"font-size: 23px;\">\r</span></div><div style=\"text-align: justify;\"><br></div>"
+    },
+    {
+      "serial": 33,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">শরীর ধারণে কিছুমাত্র সুখ নাই। দুঃখপূর্ণই জগৎ, কেবল সুখ একটি — তাঁর নামে। তাঁর কৃপা যার ওপর হয়েছে, সেই কেবল তাঁকে জানতে পেরেছে এবং সেইটুকুই তার সুখ।</span></div>"
+    },
+    {
+      "serial": 34,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">না না, আমি কেউ নই। ঠাকুরই তাদের আশীর্বাদ করেন। আমি তার যন্ত্র মাত্র।</span></div>"
+    },
+    {
+      "serial": 35,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">দুঃখ-বিপদ আসবে না, মনে করা অন্যায়। তারা আসবেই। তবে ভক্তের কি হয় জানো? পায়ের তলা দিয়ে জলের মতো বেরিয়ে যায়।</span></div>"
+    },
+    {
+      "serial": 36,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… মনের ঐ স্বভাব, চোখ এবং কানের মতোই। নিয়মিত ধ্যান-জপ করে যাও। ভগবানের আকর্ষণ ইন্দ্রিয়ের আকর্ষণ থেকে অনেক বেশী শক্তিশালী। নিয়মিত অভ্যাস করলে সময়ে সব ঠিক হয়ে যাবে। সব সময় ঠাকুরের কথা ভাববে, তিনি তোমাকে সর্বক্ষণ দেখছেন। তোমার ত্রুটি সম্পর্কে একদম চিন্তা করবে না।</span></div>"
+    },
+    {
+      "serial": 37,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">সাধন বলো, ভজন বলো, প্রথম বয়সেই করে নেবে। শেষে কি আর হয়? যা করতে পারো - এখন।</span></div>"
+    },
+    {
+      "serial": 38,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">তোমার কথাবার্তা, কাজকর্ম ও অভ্যাস সম্পর্কে সৎ থাকবে। তাহলেই অনুভব করবে, কতখানি ধন্য তুমি।</span></div>"
+    },
+    {
+      "serial": 39,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">সাধু হয়েছে, ভগবানকে ডাকবে না তো কি করবে? তাঁর যখন ইচ্ছা তিনি দেখা দেবেন।</span></div>"
+    },
+    {
+      "serial": 40,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ঠাকুরের আশীর্বাদ সর্বক্ষণ জীবের উপর বর্ষিত হচ্ছে, তা চাওয়ার দরকার হয় না। ব্যাকুল হয়ে ধ্যান-জপ করো, তাঁর অসীম কৃপা বুঝতে পারবে।</span></div>"
+    },
+    {
+      "serial": 41,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ঠাকুর বলতেন - \"যারা আমাকে ডাকবে তাদের জন্য আমাকে অন্তিমে দাঁড়াতে হবে।\" - এটি তাঁর নিজের মুখের কথা।</span></div>"
+    },
+    {
+      "serial": 42,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভগবান চান ঐকান্তিকতা, সত্যবাদিতা, ভালবাসা। বাহ্যিক ভাবোচ্ছাস তাঁর কাছে পৌঁছায় না।</span></div>"
+    },
+    {
+      "serial": 43,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যারা একধারে স্বামী, অন্যধারে ছেলে নিয়ে সংসারে তাদের সেবা করেও তাঁকে ডাকতে পারে - তারা নিশ্চয়ই তাঁর দেখা পাবে।</span></div>"
+    },
+    {
+      "serial": 44,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">নিয়মিত নির্দিষ্ট সময়ে নামজপ করবে, মন্ত্রোচারণের সময়ে সর্বশক্তি দিয়ে মনকে একাগ্র করবে। যদি অন্য সমস্ত চিন্তা সরিয়ে দিয়ে হৃদয়ের গভীরতম আর্তির সঙ্গে তুমি প্রভুকে ডাকতে পারো, তিনি সাড়া দেবেনই। করুণাময় তিনি। তোমার প্রার্থনা পূরণ করবেন।</span></div>"
+    },
+    {
+      "serial": 45,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">সর্বদা ইষ্টচিন্তা থাকলে অনিষ্ট আসবে কোথা দিয়ে?</span></div>"
+    },
+    {
+      "serial": 46,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… এই সংসারে সুখ-দুঃখ ভাল-মন্দ আছেই। যার যখন সময়, ঠিক আসে, ভোগও করিয়ে নেয়। মনে জোর করতে হয়, আর ঈশ্বরে মন রাখতে হয়।</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">\r</span></div><div>\r</div>"
+    },
+    {
+      "serial": 47,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">আমার ছেলে যদি ধুলো কাদা মাখে, আমাকেই তো তা ধুয়ে মুছে তাকে কোলে তুলে নিতে হবে।</span></div>"
+    },
+    {
+      "serial": 48,
+      "text": "<div style=\"text-align: center;\"><span style=\"font-size: 23px;\">ঠাকুরকে ডাকো, তাঁকে ডাকলেই সব হবে।</span></div>"
+    },
+    {
+      "serial": 49,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">গুরু ও ইষ্ট একই। ঐ তোমার ইষ্ট এবং উনিই আবার রামকৃষ্ণ।</span></div>"
+    },
+    {
+      "serial": 50,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ঠাকুরই মহেশ্বর, ঠাকুরই মহেশ্বরী। শুদ্ধ সত্ত্ব যোগমায়া তার শরীর। তিনি সশক্তিক ব্রহ্ম। শিব ও শক্তি এক।</span></div>"
+    },
+    {
+      "serial": 51,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">নিজ ইষ্টবীজে সব পুজো করবে। ইষ্টই তো সব হয়ে রয়েছেন।</span></div>"
+    },
+    {
+      "serial": 52,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">কখনও যদি অন্য দেবদেবীর পুজো করবার ইচ্ছা হয় তো ঠাকুরের মূৰ্ত্তিতে করলেই চলবে। কারণ, ইষ্ট ও তিনি এক এবং তিনিই সর্বদেবদেবীস্বরূপ হয়ে আছেন।</span></div>"
+    },
+    {
+      "serial": 53,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… কাউকেও হিংসা করো না, ভগবানকেও বিচার করতে বলো না। বরং যাতে অত্যাচারীর ভাল হয় তার সম্বন্ধে প্রার্থনা করো। ভগবানের বিচার নিক্তি ধরা, একচুল এদিক-ওদিক হবার জো নেই।</span></div>"
+    },
+    {
+      "serial": 54,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… ঠাকুর তো এবার দয়া করে লোকের মঙ্গলের জন্য কঠোর তপস্যা করে গেলেন। ছিল শুধু হাড় আর চামড়া, তার ওপর আবার লোকের পাপ নিয়ে রোগ ভোগ। তাঁতে ভক্তি, শ্রদ্ধা, বিশ্বাস করলেই, তার নামজপ, তার লীলা ধ্যান করলেই কুণ্ডলিনী আনন্দে আপনি জেগে উঠবেন, এতটুকুও কঠোরতা করতে হবে না।</span></div>"
+    },
+    {
+      "serial": 55,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">কলিকাল, এখন কি আর লোকে সত্য-ত্রেতার মত তপস্যা করতে পারে? এখন অন্নগত প্রাণ। ঠাকুরের নাম করো, দ্যাখো তিনি খাওয়া-পরার সব ব্যবস্থা করে দেবেন। ঠাকুরের নাম করলে এবার কেউ কখনও অন্ন কষ্ট পাবে না। মোটা ভাত, মোটা কাপড়ের ব্যবস্থা তিনি করে গেছেন।</span></div>"
+    },
+    {
+      "serial": 56,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">গুরু-ঈশ্বরের সাহায্য না পেলে কি কেউ আপনি (নিজের) বন্ধন খুলতে পারে? তাই ঠাকুর অতি কঠোর তপস্যা করে তার ফল যে সব ভক্তরা আসবে তাদের জন্য সঞ্চয় করে রেখে গেলেন। তিনি তো কৃপা করে দরজায় দাঁড়িয়ে, এখন তুমি দরজা খুললেই হয়।</span></div>"
+    },
+    {
+      "serial": 57,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… দেখো, মনটাকে দুভাগ করতে হয়, একটা যেন বিবেকী, আর একটা যেন অবিবেকী—ছেলেমানুষের মতো। বিবেকী মনটা বাপ-মার মতো সর্বদা অবিবেকী মনটার পিছনে লেগে থাকবে। একটা কিছু আবোল তাবোল করলেই তাকে শাসন করবে, গালমন্দ করবে, দেখনি বাপ-মা যেমন দুষ্টু ছেলেটাকে বকে ঝকে। দেখবে, এইরকম কিছুদিন অভ্যাস করলেই মনটা শায়েস্তা হয়ে আসবে। কিন্তু অবিবেকী মনে যদি একটা বিষয়ে বহুদিনের অভ্যাসের ফলে দৃঢ় সংস্কার জন্মে যায়, তাহলে শত তিরস্কারেও সেটা যেতে চায় না। তখন ঐ দুর্বল মনের জন্য ঠাকুরের কাছে প্রার্থনা করবে, নইলে আর কোনও উপায় নেই। তিনি ঈশ্বর — সব করতে পারেন। ঠাকুরের ইচ্ছের কাছে দেখেছি মানুষের মনগুলো যেন কাঁচা মাটির তালের মতো হয়ে যেতো, আর তিনি যাকে যেমন ইচ্ছে তাকে তেমনি করে গড়ে তুলতেন।</span></div>"
+    },
+    {
+      "serial": 58,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যেখানে নরেনের পুজো হয় না, ঠাকুর সেখানে পুজো গ্রহণ করেন না।</span></div>"
+    },
+    {
+      "serial": 59,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… অনিবেদিত বস্তু কখনও খেও না। এক খিলি পান খেতে হলেও নিবেদন করে খাবে। আর শ্রাদ্ধের অন্ন কখনও খেও না।</span></div>"
+    },
+    {
+      "serial": 60,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">আমাদের যা কিছু সবার মূল ঠাকুর, তিনিই আদর্শ। যা কিছু করো না কেন, তাকে ধরে থাকলে, কোনও বেচাল হবে না।</span></div>"
+    },
+    {
+      "serial": 61,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">পৃথিবীর ওপর দিয়ে কত উৎপাত, কত উপদ্রব হয়ে যাচ্ছে, পৃথিবী কিন্তু সব একভাবে সহ্য করে যাচ্ছে। এইরকম সহ্যগুণ মানুষেরও হওয়া চাই।</span></div>"
+    },
+    {
+      "serial": 62,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ঠাকুর এবার এসেছেন ধনী-নির্ধন, পণ্ডিত-মুর্খ সকলকে উদ্ধার করতে। মলয়ের হাওয়া খুব বইছে। এবার বাঁশ ও ঘাস ছাড়া যার ভিতরে একটু সার আছে, সে-ই চন্দন হবে। যে একটু পাল তুলে দেবে, শরণাগত হবে, সে-ই ধন্য হয়ে যাবে। তোমাদের ভাবনা কি? তোমরা আমার আপনার (নিজের) লোক!</span></div>"
+    },
+    {
+      "serial": 63,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">সর্বদা কাজ করতে হয়। কাজে দেহ মন ভালো থাকে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 64,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… গুরু ভক্তি থাকা চাই। গুরু যেমনই হোক, তাঁর প্রতি ভক্তিতেই মুক্তি।&nbsp;</span></div>"
+    },
+    {
+      "serial": 65,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যে হয় সুপ্রাণী, তার জন্য কাঁদে মহাপ্রাণী (অন্তরাত্মা)।&nbsp;</span></div>"
+    },
+    {
+      "serial": 66,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">কাজ করা চাই বইকি, কর্ম্ম করতে করতে কর্মের বন্ধন কেটে যায়, তবে নিস্কাম ভাব আসে। একদণ্ডও কাজ ছেড়ে থাকা উচিত নয়।</span></div><div>\r</div><div>\r</div><div>\r</div><div>\r</div><div>\r</div><div>\r</div><div>\r</div>"
+    },
+    {
+      "serial": 67,
+      "text": "\r<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যে ব্যাকুল হয়ে তাঁকে ডাকবে, সেই তাঁর দেখা পাবে।</span></div>"
+    },
+    {
+      "serial": 68,
+      "text": "\n<div style=\"text-align: left;\"><span style=\"font-size: 23px; text-align: justify;\">আজকের দিনে আমি তোমাদের আশির্বাদ করছি, তোমাদের মুক্তিলাভ হোক। জন্ম মৃত্যু বড়ো যন্ত্রণা, তা যেন তোমাদের আর ভুগতে না হয়।</span></div>"
+    },
+    {
+      "serial": 69,
+      "text": "<div style=\"text-align: center;\"><span style=\"font-size: 23px;\">… গুরুবাক্যে বিশ্বাস রাখতে হয়।&nbsp;</span></div>"
+    },
+    {
+      "serial": 70,
+      "text": "<div style=\"text-align: center;\"><span style=\"font-size: 23px;\">… ব্রহ্ম সকল বস্তুতেই আছেন।&nbsp;</span></div>"
+    },
+    {
+      "serial": 71,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… সাধুপুরুষেরা সব আসেন মানুষকে পথ দেখাতে। এক এক জনে এক এক রকমের বোল বলেন। পথ অনেক, সেজন্য তাঁদের সকলের কথাই সত্য। যেমন একটি গাছে সাদা, কালো, লাল নানারকমের পাখি এসে বসে হরেক রকমের বোল বলছে। শুনতে ভিন্ন ভিন্ন হলেও সকলগুলিকেই আমরা পাখির বোল বলি। একটাই পাখির বোল আর অন্যগুলো পাখির বোল নয় – এরূপ বলি না।&nbsp;</span></div>"
+    },
+    {
+      "serial": 72,
+      "text": "<div style=\"text-align: center;\"><span style=\"font-size: 23px;\">… ব্রহ্ম কি তর্কের বস্তু?&nbsp;</span></div>"
+    },
+    {
+      "serial": 73,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ঠাকুর বলতেন জরু, গরু, ধান – এ তিন রাখবে আপন বিদ্যমান।&nbsp;</span></div>"
+    },
+    {
+      "serial": 74,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ঠাকুর ও আমাকে অভেদভাবে দেখবে। আর যখন যেভাবে দর্শন পাবে, সেই ভাবেই ধ্যান-স্তুতি করবে। ধ্যান হয়ে গেলেই পুজো শেষ হলো। এইখানেই (হৃদয়ে) আরম্ভ ও এইখানে (মস্তকে) শেষ করবে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 75,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মন্ত্র তন্ত্র কিছু নয় না, ভক্তিই সব। ঠাকুরের মাঝেই গুরু, ইষ্ট সব পাবে। উনিই সব।&nbsp;</span></div>"
+    },
+    {
+      "serial": 76,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… চড় খেয়ে রামনাম অনেকেই বলে। কিন্তু শৈশব হতে ফুলের মতো মনটি যে ঠাকুরের পায়ে দিতে পারে, সেই ধন্য।&nbsp;</span></div>"
+    },
+    {
+      "serial": 77,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… আমি আর কি উপদেশ দেব। ঠাকুরের কথা সব বইয়ে বেরিয়ে গিয়েছে। তাঁর একটা কথা ধারনা করে যদি চলতে পারো, তো সব হয়ে যাবে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 78,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">উপদেশ নেয় তেমন আধার কই? আধার চাই মা, নইলে হয় না।&nbsp;</span></div>"
+    },
+    {
+      "serial": 79,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">নতুন ভক্তদের ঠাকুর সেবা করতে দিতে হয়। কারণ তাদের নবানুরাগ, সেবা হয় ভালো। আর ওরা সব সেবা করতে করতে এলিয়ে পড়েছে। সেবা কি করলেই হয় মা। যাতে সেবাপরাধ না হয় সেদিকে লক্ষ্য রাখা চাই। তবে কি জানো, মানুষ অজ্ঞ জেনে তিনি ক্ষমা করেন।&nbsp;</span></div>"
+    },
+    {
+      "serial": 80,
+      "text": "<div style=\"text-align: center;\"><span style=\"font-size: 23px;\">স্বামী – স্ত্রী একমত হলে তবে ধর্মলাভ হয়।&nbsp;</span></div>"
+    },
+    {
+      "serial": 81,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… সকলেই বলে এ দুঃখ, ও দুঃখ, ভগবানকে এত ডাকলুম, তবু দুঃখ গেল না। কিন্তু দুঃখই তো ভগবানের দয়ার দান।&nbsp;</span></div>"
+    },
+    {
+      "serial": 82,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… পাপ পূণ্য প্রসঙ্গ যেখানে হয়, সেখানে যত লোক থাকে, তাদের সকলকেই সেই ভালমন্দের একটু না একটু অংশী হতে হয়।</span></div>"
+    },
+    {
+      "serial": 83,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… যত বড়ো মহাপুরুষই হোক, দেহধারন করে এলে দেহের ভোগটি সবই নিতে হয়। তবে তফাৎ এই, সাধারণ লোকে যায় কাঁদতে কাঁদতে, আর ওঁরা যান হেসে হেসে – মৃত্যুটা যেন খেলা।&nbsp;</span></div>"
+    },
+    {
+      "serial": 84,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… স্বামী বল, পুত্র বলো, দেহ বলো, সব মায়া। এইসব মায়ার বন্ধন কাটতে না পারলে পার হওয়া যায় না। দেহে মায়া দেহাত্মবুদ্ধি, শেষে এটাকেও কাটতে হবে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 85,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ঠাকুর বলতেন হরিণের নাভিতে কস্তুরী হয়, তখন তার গন্ধে হরিণগুলো দিকে দিকে ছুটে বেড়ায়, জানে না কোথা হতে গন্ধটি আসছে। তেমনি ভগবান এই মানুষের দেহের মধ্যেই রয়েছেন, মানুষ তাঁকে জানতে না পেরে ঘুরে মরছে। ভগবানই সত্য, আর সব মিথ্যা।&nbsp;</span></div>"
+    },
+    {
+      "serial": 86,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… মনে ভাববে, আর কেউ না থাক, আমার একজন ‘মা’ আছেন।&nbsp;</span></div>"
+    },
+    {
+      "serial": 87,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… ঠাকুর যে বলে গেছেন, এখানকার সকলকে তিনি শেষ দিনে দেখা দেবেনই, দেখা দিয়ে সঙ্গে নিয়ে যাবেন।&nbsp;</span></div>"
+    },
+    {
+      "serial": 88,
+      "text": "<div style=\"text-align: center;\"><span style=\"font-size: 23px;\">… দুর্জনকে পরিহার করে চলতে হয়।&nbsp;</span></div>"
+    },
+    {
+      "serial": 89,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… ঠাকুর ভগবানের বিষয় ছাড়া কোন কথাই বলতেন না। আমাকে বলতেন – দেখছ্‌ তো মানুষের দেহ কি! এই আছে, এই নাই। আবার সংসারে এসে কত দুঃখ, কত জ্বালা পায়। এ দেহের আবার পয়দা করা কেন? এক ভগবানই নিত্য সত্য, তাঁকে ডাকতে পারলেই ভালো। দেহ ধরলেই নানা উপসর্গ।&nbsp;</span></div>"
+    },
+    {
+      "serial": 90,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… কত সৌভাগ্যে মা এই জন্ম। খুব করে ভগবানকে ডেকে যাও। খাটতে হয়, না খাটলে কি কিছু হয়? সংসারে কাজকর্মের মধ্যেও একটি সময় করে নিতে হয়।&nbsp;</span></div>"
+    },
+    {
+      "serial": 91,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… কর্ম করতে হয়, মেয়েলোকের বসে থাকতে নেই। বসে থাকলে নানারকম বাজে চিন্তা, কুচিন্তা সব আসে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 92,
+      "text": "<div style=\"text-align: center;\"><span style=\"font-size: 23px;\">মায়ের কাছে ছেলে – ছেলে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 93,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… ঠাকুর আমাকে বলেছিলেন – আমার চিন্তা যে করে, সে কখনও খাওয়ার কষ্ট পায় না।&nbsp;</span></div>"
+    },
+    {
+      "serial": 94,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… 'আমি' কি, মা? ঠাকুরই সব। তোমরা ঠাকুরের কাছে এই বলো – আমার 'আমিত্ব' যেন না আসে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 95,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">প্রসাদে ও হরিতে কোন প্রভেদ নেই, মনে এটি স্থির বিশ্বাস রেখো।&nbsp;</span></div>"
+    },
+    {
+      "serial": 96,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভয় কি বাবা, সর্বদার তরে জানবে যে ঠাকুর তোমাদের পেছনে রয়েছেন। আমি রয়েছি – আমি মা থাকতে ভয় কি? ঠাকুর যে বলে গেছেন – “যারা তোমার কাছে আসবে, আমি শেষকালে এসে তাদের হাতে ধরে নিয়ে যাবো”। যে যা খুশি করো না কেন, যে যেভাবে খুশি চল না কেন, ঠাকুরকে শেষকালে আসতেই হবে তোমাদের নিতে। ঈশ্বর হাত পা (ইন্দ্রিয়াদি) দিয়েছেন, তারা তো ছুঁড়বেই, তারা তাদের খেলা খেলবেই।&nbsp;</span></div>"
+    },
+    {
+      "serial": 97,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… কেন গীতায় পড় নাই – ফল, পুষ্প, জল ভগবানকে ভক্তি করে যা দেওয়া যায়, তা তিনি পান।&nbsp;</span></div>"
+    },
+    {
+      "serial": 98,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মানুষের আর কতটুকু বুদ্ধি? কি চাইতে কি চাইবে! শেষ কি শিব গড়তে বানর হয়ে যাবে! তাঁর শরণাগত হয়ে থাকা ভালো। তিনি যখন যেমন দরকার, তেমন দিবেন। তবে ভক্তি ও নির্বাসনা কামনা করতে হয় – এ কামনা ‘কামনা’র মধ্যে নয়।&nbsp;</span></div>"
+    },
+    {
+      "serial": 99,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">শ্রাদ্ধের অন্নটা খেতে ঠাকুর বিশেষ নিষেধ করতেন, ওতে ভক্তির হানি হয়। সকল কর্মে যজ্ঞেশ্বর নারায়ণের অর্চনা হয় বটে, তবু তিনি শ্রাদ্ধান্নটা খেতে নিষেধ করতেন।&nbsp;</span></div>"
+    },
+    {
+      "serial": 100,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">টাকাতে কি আছে মা? ঠাকুর তো টাকা ছুঁতেই পারতেন না। হাত বেঁকে যেত। তিনি বলতেন ‘জগৎটাই যে মিথ্যা। … ভগবানই সত্যি’।&nbsp;</span></div>"
+    },
+    {
+      "serial": 101,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">বাবা, অকালে তীর্থ দর্শন করলে পূর্ব ধর্ম নষ্ট হয় বলে। কিন্তু আবার পূণ্য কার্য্য শীঘ্র শীঘ্র সেরে ফেলা ভালো।&nbsp;</span></div>"
+    },
+    {
+      "serial": 102,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... এখানে যে এসেছে, যারা আমার ছেলে, তাদের মুক্তি হয়ে আছে। বিধির সাধ্য নেই যে আমার ছেলেদের রসাতলে ফেলে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 103,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... আমার উপর ভার দিয়ে নিশ্চিন্ত হয়ে থাকো। আর এটা সর্বদা স্মরণ রেখো যে, তোমাদের পেছনে এমন একজন রয়েছেন যিনি সময় আসলে তোমাদের সেই নিত্যধামে নিয়ে যাবেন।</span></div>"
+    },
+    {
+      "serial": 104,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... তোমাদের যা দরকার, যাতে ভালো হয়, ঠাকুর তাই দেবেন। তোমরা যা করছ করে যাও, ভয় কি? আমরা তো রয়েছি।&nbsp;</span></div>"
+    },
+    {
+      "serial": 105,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ঠাকুর একমাত্র রক্ষাকর্তা - এটি সর্বদা মনে রাখবে। এটি ভুললে সব ভুল।&nbsp;</span></div>"
+    },
+    {
+      "serial": 106,
+      "text": "... এ শরীর থাকা না থাকা আমার হাত নয় - তাঁর ইচ্ছা। তোমরা এত ব্যস্ত হচ্ছ কেন?&nbsp;"
+    },
+    {
+      "serial": 107,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">তোমরা কি মনে করো, যদি ঠাকুর এ শরীরটা না রাখেন, তাহলেও যাদের ভার নিয়েছি তাদের একজনও বাকি থাকতে আমার ছুটি আছে? তাদের সঙ্গে থাকতে হবে। তাদের ভালোমন্দের ভার যে নিতে হয়েছে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 108,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... জপধ্যান করবে, সৎ সঙ্গে থাকবে, অহংকারকে কিছুতেই মাথা তুলতে দেবে না।&nbsp;</span></div>"
+    },
+    {
+      "serial": 109,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... আর সর্বদা মনে ভাববে আমি কার সন্তান, কার আশ্রিত! যখনই মনে কোন কুভাব আসবে, মনকে বলবে - তাঁর ছেলে হয়ে আমি কি এ কাজ করতে পারি? দেখবে মনে বল পাবে, শান্তি পাবে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 110,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... শিষ্যের পাপে গুরুকে ভুগতে হয়। সবসময় ঘড়ির কাঁটার মতো ইষ্ট মন্ত্র জপ করবে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 111,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... যার উপর যেমন কর্তব্য করে যাবে। কিন্তু ভালো এক ভগবান ছাড়া আর কাউকে বেসো না। ভালোবাসলে অনেক দুঃখ পেতে হয়।&nbsp;</span></div>"
+    },
+    {
+      "serial": 112,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যে ঠাকুরের শরণাগত হয়, তার ব্রহ্মশাপেও কিছু হয় না।&nbsp;</span></div>"
+    },
+    {
+      "serial": 113,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যদি এখনও ধর্ম কিছু থাকে তো সে এখানে, আর মঠে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 114,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... যে ঠাকুরকে ডাকে, সে যেমনই হোক, তার উপর অভক্তি হয় না।&nbsp;</span></div>"
+    },
+    {
+      "serial": 115,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... মন স্থির করে একবার ডাকলে লক্ষ জপের কাজ হয়। নতুবা সারাদিন জপ করছে কিন্তু মন নেই, তাতে ফল কি? মন চাই, তবে তাঁর কৃপা।&nbsp;</span></div>"
+    },
+    {
+      "serial": 116,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... শিববাক্য আর তাঁর (ঠাকুরের) মুখের কথা - সে কথা মিথ্যা হবার জো নেই।&nbsp;</span></div>"
+    },
+    {
+      "serial": 117,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... বিশ্বনাথ দর্শন-স্পর্শনে পাপক্ষয় হয়। তাইতেই দীর্ঘজীবি হয়।&nbsp;</span></div>"
+    },
+    {
+      "serial": 118,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... জগন্নাথকে দেখলুম যেন পুরুষ সিংহ, রত্নবেদীতে বসে রয়েছেন। আর আমি দাসী হয়ে তাঁর সেবা করছি।&nbsp;</span></div>"
+    },
+    {
+      "serial": 119,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">তিনি সব করাচ্ছেন বটে, কিন্তু সেরূপ বোধ থাকলে তো হয়। লোকে অহংকারে মত্ত হয়ে মনে করে আমি সব করছি - তাঁর উপর নির্ভর করে না। যে তাঁর উপর নির্ভ করে, তিনি তাকে সকল বিপদ হতে রক্ষা করেন।&nbsp;</span></div>"
+    },
+    {
+      "serial": 120,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... মন্দ কাজে মন সর্বদা যায়। ভালো কাজ করতে চাইলে মন তার দিকে এগোতে চায় না।&nbsp;</span></div>"
+    },
+    {
+      "serial": 121,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">আসন-প্রাণায়াম করলে সিদ্ধাই হয়। সিদ্ধাই লোককে পথভ্রষ্ট করে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 122,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মন যদি এক স্থানে শান্তিতে থাকে, তবে তীর্থ ভ্রমনের কি দরকার?&nbsp;</span></div>"
+    },
+    {
+      "serial": 123,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... বিষয় বলতে টাকাকড়ি, পুত্র পরিবার - এইসব বিষয়ে মন যাওয়া খারাপ। কাজকর্ম সম্বন্ধে মন তো যাবেই। ধ্যান না হয় জপ করবে, 'জপাৎ সিদ্ধিঃ'। জপ করলেই সিদ্ধিলাভ করবে। ধ্যান হলো ভালো, না হয় জোর করে ধ্যান করবার দরকার নেই।&nbsp;</span></div>"
+    },
+    {
+      "serial": 124,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... নির্জনে হৃষিকেশ প্রভৃতি স্থানে কিছুকাল সাধন ভজন করে মন পাকলে তারপর মনকে যেখানেই রাখো, যে লোকের সঙ্গেই মেশো, একরূপই থাকবে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 125,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... নির্জনে সাধন করা খুব দরকার। যখন মনে কোন বিষয় উদিত হবে, জানবার ইচ্ছা হবে, তখন একাকী কেঁদে কেঁদে তাঁর নিকট প্রার্থনা করবে। তিনি সমস্ত মনের ময়লা ও কষ্ট দূর করে দেবেন আর বুঝিয়ে দেবেন।&nbsp;</span></div>"
+    },
+    {
+      "serial": 126,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... সাধন মানে তাঁর পাদপদ্ম সর্বদা মনে রেখে তাঁর চিন্তাতে মনকে ডুবিয়ে রাখা। তাঁর নাম জপ করবে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 127,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... জলেতে ইচ্ছা করেই পড়ো, আর ঠেলেই ফেলে দিক - কাপড় ভিজবেই। নিত্য ধ্যান করবে। কাঁচা মন কি না। ধ্যান করতে করতে মন স্থির হয়ে যাবে। সর্বদা বিচার করবে। যে বস্তুতে মন যাচ্ছে, তা অনিত্য চিন্তা করে ভগবানে মন সমর্পণ করবে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 128,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... (জীবনের উদ্দেশ্য হলো) ভগবান লাভ করা ও তাঁর পাদপদ্মে সর্বদা মগ্ন হয়ে থাকা।</span></div>"
+    },
+    {
+      "serial": 129,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">&nbsp;... তোমাদের ইহকাল পরকাল তিনিই দেখছেন। তোমাদের ভাবনা কি?&nbsp;</span></div>"
+    },
+    {
+      "serial": 130,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... সর্বদা কি ভগবানের চিন্তা করতে পারা যায়? কখনো বেড়াবে, কখনো তাঁর চিন্তা করবে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 131,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">সাধুর রাগ দ্বেষ থাকবে না, সব সহ্য করা সাধুর দরকার।&nbsp;</span></div>"
+    },
+    {
+      "serial": 132,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">তাঁর নাম করতে করতে সব হয়ে যাবে। মন স্থির না হলেও তো বসে বসে তাঁর লক্ষ লক্ষ নাম জপ করা যায়। কুণ্ডলীনি জাগবার পূর্বে অনাহুত ধ্বনি শোনা যায়। মা জগদম্বার কৃপা না হলে হয় না।&nbsp;</span></div>"
+    },
+    {
+      "serial": 133,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">তিনি জীবজন্তু সব হয়েছেন বটে, তবে সংস্কার ও কর্ম অনুসারে সকলে নিজ নিজ কর্মফল ভোগ করে। সূর্য এক, কিন্তু জায়গা ও বস্তু ভেদে তার প্রকাশ ভিন্ন ভিন্ন রকমের।&nbsp;</span></div>"
+    },
+    {
+      "serial": 134,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... তোমরা সন্ন্যাসী, তোমাদের গৃহস্থের সঙ্গে সম্বন্ধ রাখা অত্যন্ত খারাপ। বিষয়ী লোকদের বাতাস লাগাও খারাপ।&nbsp;</span></div>"
+    },
+    {
+      "serial": 135,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... তাঁর ইচ্ছে হলে তিনি সব কাটিয়ে দিতে পারেন। দেখো না, কর্মের ফল তাঁকেও ভোগ করতে হয়েছে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 136,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... মন না বসলেও জপ করতে ছাড়বে না। তোমার কাজ তুমি করে যাবে। নাম করতে করতে মন আপনি স্থির হবে - বায়ুহীন স্থানে দীপশিখা মতো। বাতাস থাকলে প্রদীপের শিখা স্থির থাকে না। মনেও কল্পনা বাসনা থাকলে মন স্থির হয় না। ঠিক ঠিক মন্ত্র উচ্চারণ না হলে দেরী হয়।&nbsp;</span></div>"
+    }
+  ]
+}
