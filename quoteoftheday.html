@@ -155,7 +155,7 @@
     border: 1px solid #FFDDB0;
     border-radius: 12px;
     padding: 25px 15px;
-    margin: 0 auto 40px auto;
+    margin: 0 auto 20px auto;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     text-align: center;
     width: 100%;
@@ -195,17 +195,13 @@
   }
 
   @media (max-width: 480px) {
-	main { padding: 30px 6px; }
-	.quoteCard { padding: 20px 6px; }
-	.quoteCard { margin: 0 auto 40px auto; }
     #headerTitle { font-size: 20px; }
     #personBtn { width: 40px; height: 40px; }
     #backBtn { width: 40px; height: 40px; }
-    .avatar { width: 115px; height: 115px; font-size: 30px; }
+    .avatar { width: 90px; height: 90px; font-size: 30px; }
     .quoteText { font-size: 22px; }
     .quoteAuthor { font-size: 18px; }
-	.quoteAuthorBn { margin-bottom: 0; }
-	footer p { font-size: 18px; }
+	 footer p { font-size: 18px; }
     .userMenuItem { font-size: 18px; padding: 16px; }
     .tmsModalBox { max-width: 92%; padding: 25px 20px; }
     .tmsModalBox h2, .tmsModalBox h3 { font-size: 22px; }
@@ -328,6 +324,11 @@
       }
       return arr;
     }
+
+function shuffleSerials(serials, seed) {
+  const idxOrder = shuffledIndices(serials.length, seed);
+  return idxOrder.map(function(i) { return serials[i]; });
+}
 
     function logoutUser() {
       document.getElementById('userMenu').style.display = 'none';
@@ -472,44 +473,93 @@
       doc.save(filename);
     }
 
-    function renderPerson(personId) {
-      const state = personState[personId];
-      const card = document.getElementById('card-' + personId);
-      if (!state || !card) return;
+function renderPerson(personId) {
+  const state = personState[personId];
+  const card = document.getElementById('card-' + personId);
+  if (!state || !card) return;
 
-      if (!state.quotes || state.quotes.length === 0) {
-          card.innerHTML =
-          '<img class="avatar" src="images/' + personId + '.png" alt="' + (state.name || '') + '">' +
-          '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
-        (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '') +
-          '<p class="quoteText">No quotes added yet.</p>';
-        return;
-      }
+  if (!state.quoteText) {
+    card.innerHTML =
+      '<img class="avatar" src="images/' + personId + '.png" alt="' + (state.name || '') + '">' +
+      '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
+      (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '') +
+      '<p class="quoteText">No quotes added yet.</p>';
+    return;
+  }
 
-      const total = state.quotes.length;
-      let index = (state.baseIndex + state.manualOffset) % total;
-      if (index < 0) index += total;
+  card.innerHTML =
+    '<img class="avatar" src="images/' + personId + '.png" alt="' + (state.name || '') + '">' +
+    '<p class="quoteText">&ldquo;' + state.quoteText + '&rdquo;</p>' +
+    '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
+    (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '');
+}
 
-      const quoteText = state.quotes[index];
+async function getChosenSerial(personKey, allSerials, rotationHours) {
+  const deviceId = getDeviceId();
+  const stateRef = db.collection('deviceQuoteState').doc(deviceId + '_' + personKey);
+  const IST_OFFSET_MS = 5.5 * 3600000;
+  const timeSlot = Math.floor((Date.now() + IST_OFFSET_MS) / (rotationHours * 3600000));
+  const allSet = new Set(allSerials);
 
-        card.innerHTML =
-          '<img class="avatar" src="images/' + personId + '.png" alt="' + (state.name || '') + '">' +
-        '<p class="quoteText">&ldquo;' + quoteText + '&rdquo;</p>' +
-        '<p class="quoteAuthor">' + (state.name || '') + '</p>' +
-        (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '');
+  const snap = await stateRef.get();
+
+  if (!snap.exists) {
+    const order = shuffleSerials(allSerials, hashString(deviceId + '_' + personKey));
+    await stateRef.set({ order: order, position: 0, lastTimeSlot: timeSlot });
+    return order[0];
+  }
+
+  const data = snap.data();
+  let order = data.order || [];
+  let position = data.position || 0;
+  const lastTimeSlot = (typeof data.lastTimeSlot === 'number') ? data.lastTimeSlot : timeSlot;
+
+  const seenPart = order.slice(0, position + 1).filter(function(s) { return allSet.has(s); });
+  let remainingPart = order.slice(position + 1).filter(function(s) { return allSet.has(s); });
+  position = Math.max(0, seenPart.length - 1);
+
+  const existingSet = new Set(seenPart.concat(remainingPart));
+  const newSerials = allSerials.filter(function(s) { return !existingSet.has(s); });
+
+  if (newSerials.length > 0) {
+    const mergeSeed = hashString(deviceId + '_' + personKey + '_merge_' + timeSlot);
+    remainingPart = shuffleSerials(remainingPart.concat(newSerials), mergeSeed);
+  }
+
+  order = seenPart.concat(remainingPart);
+
+  let slotsElapsed = Math.max(0, timeSlot - lastTimeSlot);
+  for (let i = 0; i < slotsElapsed; i++) {
+    position++;
+    if (position >= order.length) {
+      order = shuffleSerials(allSerials, hashString(deviceId + '_' + personKey + '_cycle_' + timeSlot + '_' + i));
+      position = 0;
     }
+  }
+
+  await stateRef.set({ order: order, position: position, lastTimeSlot: timeSlot });
+  return order[position];
+}
 
     async function loadQuotesFromJson() {
       const container = document.getElementById('quoteContent');
       container.innerHTML = '';
 
       const personFiles = [
-        { key: 'thakursriramakrishna', file: 'json/thakursriramakrishna.json' },
-        { key: 'srimaasaradadevi', file: 'json/srimaasaradadevi.json' },
-        { key: 'swamivivekananda', file: 'json/swamivivekananda.json' }
+        { key: 'thakursriramakrishna', file: 'tms-daily-quotes/thakur-sri-ramakrishna.json' },
+        { key: 'srimaasaradadevi', file: 'tms-daily-quotes/sri-maa-sarada-devi.json' },
+        { key: 'swamivivekananda', file: 'tms-daily-quotes/swami-vivekananda.json' }
       ];
 
-      const deviceId = getDeviceId();
+      let rotationHours = 24;
+      try {
+        const settingsDoc = await db.collection('settings').doc('quoteSettings').get();
+        if (settingsDoc.exists && typeof settingsDoc.data().tmsquote === 'number') {
+          rotationHours = settingsDoc.data().tmsquote;
+        }
+      } catch (e) {
+        // fallback stays 24 if settings can't be read
+      }
 
       for (const p of personFiles) {
         const card = document.createElement('div');
@@ -526,19 +576,29 @@
           continue;
         }
 
-        const quotes = personData.quotes || [];
-        const intervalHours = personData.rotationHours || 24;
-        const IST_OFFSET_MS = 5.5 * 3600000;
-        const timeSlot = Math.floor((Date.now() + IST_OFFSET_MS) / (intervalHours * 3600000));
-        const order = quotes.length > 0 ? shuffledIndices(quotes.length, hashString(deviceId + '_' + p.key)) : [];
+        const quotesArr = personData.quotes || [];
 
-          personState[p.key] = {
+        if (quotesArr.length === 0) {
+          personState[p.key] = { name: personData.name || '', nameBengali: personData.nameBengali || '', quoteText: '' };
+          renderPerson(p.key);
+          continue;
+        }
+
+        const textBySerial = {};
+        quotesArr.forEach(function(q) { textBySerial[q.serial] = q.text; });
+        const allSerials = quotesArr.map(function(q) { return q.serial; });
+
+        let chosenSerial;
+        try {
+          chosenSerial = await getChosenSerial(p.key, allSerials, rotationHours);
+        } catch (e) {
+          chosenSerial = allSerials[0];
+        }
+
+        personState[p.key] = {
           name: personData.name || '',
           nameBengali: personData.nameBengali || '',
-          initials: personData.initials || '',
-          quotes: quotes,
-          baseIndex: quotes.length > 0 ? order[timeSlot % quotes.length] : 0,
-          manualOffset: 0
+          quoteText: textBySerial[chosenSerial] || ''
         };
 
         renderPerson(p.key);
