@@ -546,8 +546,7 @@ async function getChosenSerial(personKey, allSerials, rotationHours, uid) {
 }
 
     async function loadQuotesFromJson(uid) {
-      const container = document.getElementById('quoteContent');
-      container.innerHTML = '';
+            const container = document.getElementById('quoteContent');
 
       const personFiles = [
         { key: 'thakursriramakrishna', file: 'tms-daily-quotes/thakur-sri-ramakrishna.json' },
@@ -556,10 +555,12 @@ async function getChosenSerial(personKey, allSerials, rotationHours, uid) {
       ];
 
       personFiles.forEach(function(p) {
-        const card = document.createElement('div');
-        card.className = 'quoteCard';
-        card.id = 'card-' + p.key;
-        container.appendChild(card);
+        if (!document.getElementById('card-' + p.key)) {
+          const card = document.createElement('div');
+          card.className = 'quoteCard';
+          card.id = 'card-' + p.key;
+          container.appendChild(card);
+        }
       });
 
       let rotationHours = 24;
