@@ -717,6 +717,22 @@ document.getElementById('signupResultModal').style.display = 'flex';
       doc.save(filename);
     }
 
+        function tryInstantAuthDisplay() {
+      try {
+        const wasLoggedIn = localStorage.getItem('tms_index_last_logged_in') === 'true';
+        if (wasLoggedIn) {
+          document.getElementById('checkingMsg').style.display = 'none';
+          document.getElementById('authBox').style.display = 'none';
+          document.getElementById('personBtn').style.display = 'flex';
+          document.getElementById('barContainer').style.display = 'flex';
+        }
+      } catch (e) {
+        // ignore — normal "checking..." flow will show instead
+      }
+    }
+
+    tryInstantAuthDisplay();
+
     auth.onAuthStateChanged(function(user) {
       const authBox = document.getElementById('authBox');
       const personBtn = document.getElementById('personBtn');
@@ -786,15 +802,19 @@ document.getElementById('signupResultModal').style.display = 'flex';
             });
           }
 
-          currentUserData = data;
+                    currentUserData = data;
 
           checkingMsg.style.display = 'none';
           authBox.style.display = 'none';
           personBtn.style.display = 'flex';
           barContainer.style.display = 'flex';
           document.getElementById('authError').innerText = "";
+
+          try {
+            localStorage.setItem('tms_index_last_logged_in', 'true');
+          } catch (e) {}
         });
-      } else {
+            } else {
         checkingMsg.style.display = 'none';
         authBox.style.display = 'block';
         personBtn.style.display = 'none';
@@ -804,6 +824,10 @@ document.getElementById('signupResultModal').style.display = 'flex';
         barContainer.style.display = 'none';
         deviceWasRegistered = false;
         currentUserData = null;
+
+        try {
+          localStorage.removeItem('tms_index_last_logged_in');
+        } catch (e) {}
       }
     });
   </script>
