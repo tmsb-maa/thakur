@@ -555,6 +555,13 @@ async function getChosenSerial(personKey, allSerials, rotationHours, uid) {
         { key: 'swamivivekananda', file: 'tms-daily-quotes/swami-vivekananda.json' }
       ];
 
+      personFiles.forEach(function(p) {
+        const card = document.createElement('div');
+        card.className = 'quoteCard';
+        card.id = 'card-' + p.key;
+        container.appendChild(card);
+      });
+
       let rotationHours = 24;
       try {
         const settingsDoc = await db.collection('settings').doc('quoteSettings').get();
@@ -565,19 +572,15 @@ async function getChosenSerial(personKey, allSerials, rotationHours, uid) {
         // fallback stays 24 if settings can't be read
       }
 
-      for (const p of personFiles) {
-        const card = document.createElement('div');
-        card.className = 'quoteCard';
-        card.id = 'card-' + p.key;
-        container.appendChild(card);
-
+      await Promise.all(personFiles.map(async function(p) {
         let personData;
         try {
           const response = await fetch(p.file + '?t=' + Date.now());
           personData = await response.json();
         } catch (e) {
-          card.innerHTML = '<p style="text-align:center; color:#888;">Quotes not available for this person right now.</p>';
-          continue;
+          const card = document.getElementById('card-' + p.key);
+          if (card) card.innerHTML = '<p style="text-align:center; color:#888;">Quotes not available for this person right now.</p>';
+          return;
         }
 
         const quotesArr = personData.quotes || [];
@@ -585,7 +588,7 @@ async function getChosenSerial(personKey, allSerials, rotationHours, uid) {
         if (quotesArr.length === 0) {
           personState[p.key] = { name: personData.name || '', nameBengali: personData.nameBengali || '', quoteText: '' };
           renderPerson(p.key);
-          continue;
+          return;
         }
 
         const textBySerial = {};
@@ -606,10 +609,43 @@ async function getChosenSerial(personKey, allSerials, rotationHours, uid) {
         };
 
         renderPerson(p.key);
+      }));
+
+      try {
+        localStorage.setItem('tms_quote_cache_' + uid, JSON.stringify(personState));
+        localStorage.setItem('tms_last_uid', uid);
+      } catch (e) {
+        // ignore cache-write failures (e.g. storage full)
       }
 
       quotesLoaded = true;
     }
+
+    function tryInstantRenderFromCache() {
+      try {
+        const lastUid = localStorage.getItem('tms_last_uid');
+        if (!lastUid) return;
+        const cached = localStorage.getItem('tms_quote_cache_' + lastUid);
+        if (!cached) return;
+        const data = JSON.parse(cached);
+        const container = document.getElementById('quoteContent');
+        container.innerHTML = '';
+        Object.keys(data).forEach(function(key) {
+          const card = document.createElement('div');
+          card.className = 'quoteCard';
+          card.id = 'card-' + key;
+          container.appendChild(card);
+          personState[key] = data[key];
+          renderPerson(key);
+        });
+        document.getElementById('statusMsg').style.display = 'none';
+        container.style.display = 'block';
+      } catch (e) {
+        // ignore — normal "Checking access..." flow will just show instead
+      }
+    }
+
+tryInstantRenderFromCache();
 
     auth.onAuthStateChanged(function(user) {
       const statusMsg = document.getElementById('statusMsg');
