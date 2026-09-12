@@ -499,9 +499,8 @@ function renderPerson(personId) {
     (state.nameBengali ? '<p class="quoteAuthorBn">' + state.nameBengali + '</p>' : '');
 }
 
-async function getChosenSerial(personKey, allSerials, rotationHours) {
-  const deviceId = getDeviceId();
-  const stateRef = db.collection('deviceQuoteState').doc(deviceId + '_' + personKey);
+async function getChosenSerial(personKey, allSerials, rotationHours, uid) {
+  const stateRef = db.collection('deviceQuoteState').doc(uid + '_' + personKey);
   const IST_OFFSET_MS = 5.5 * 3600000;
   const timeSlot = Math.floor((Date.now() + IST_OFFSET_MS) / (rotationHours * 3600000));
   const allSet = new Set(allSerials);
@@ -509,7 +508,7 @@ async function getChosenSerial(personKey, allSerials, rotationHours) {
   const snap = await stateRef.get();
 
   if (!snap.exists) {
-    const order = shuffleSerials(allSerials, hashString(deviceId + '_' + personKey));
+    const order = shuffleSerials(allSerials, hashString(uid + '_' + personKey));
     await stateRef.set({ order: order, position: 0, lastTimeSlot: timeSlot });
     return order[0];
   }
@@ -527,7 +526,7 @@ async function getChosenSerial(personKey, allSerials, rotationHours) {
   const newSerials = allSerials.filter(function(s) { return !existingSet.has(s); });
 
   if (newSerials.length > 0) {
-    const mergeSeed = hashString(deviceId + '_' + personKey + '_merge_' + timeSlot);
+    const mergeSeed = hashString(uid + '_' + personKey + '_merge_' + timeSlot);
     remainingPart = shuffleSerials(remainingPart.concat(newSerials), mergeSeed);
   }
 
@@ -537,7 +536,7 @@ async function getChosenSerial(personKey, allSerials, rotationHours) {
   for (let i = 0; i < slotsElapsed; i++) {
     position++;
     if (position >= order.length) {
-      order = shuffleSerials(allSerials, hashString(deviceId + '_' + personKey + '_cycle_' + timeSlot + '_' + i));
+      order = shuffleSerials(allSerials, hashString(uid + '_' + personKey + '_cycle_' + timeSlot + '_' + i));
       position = 0;
     }
   }
@@ -546,7 +545,7 @@ async function getChosenSerial(personKey, allSerials, rotationHours) {
   return order[position];
 }
 
-    async function loadQuotesFromJson() {
+    async function loadQuotesFromJson(uid) {
       const container = document.getElementById('quoteContent');
       container.innerHTML = '';
 
@@ -595,7 +594,7 @@ async function getChosenSerial(personKey, allSerials, rotationHours) {
 
         let chosenSerial;
         try {
-          chosenSerial = await getChosenSerial(p.key, allSerials, rotationHours);
+          chosenSerial = await getChosenSerial(p.key, allSerials, rotationHours, uid);
         } catch (e) {
           chosenSerial = allSerials[0];
         }
@@ -683,7 +682,7 @@ async function getChosenSerial(personKey, allSerials, rotationHours) {
         quoteContent.style.display = 'block';
 
         if (!quotesLoaded) {
-          loadQuotesFromJson();
+          loadQuotesFromJson(user.uid);
         }
       });
     });
