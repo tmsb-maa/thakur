@@ -297,7 +297,7 @@
 
       <div id="loginFields">
         <input type="text" id="userIdInput" placeholder="User ID" autocapitalize="none" autocorrect="off" spellcheck="false" oninput="this.value = this.value.toLowerCase()">
-        <input type="password" id="passwordInput" placeholder="6-digit PIN">
+        <input type="password" id="passwordInput" placeholder="6-digit PIN" inputmode="numeric" pattern="[0-9]*" maxlength="6">
         <button onclick="loginUser()">Login</button>
       </div>
 
