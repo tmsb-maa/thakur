@@ -631,7 +631,11 @@ async function getChosenSerial(personKey, allSerials, rotationHours, uid) {
         const data = JSON.parse(cached);
         const container = document.getElementById('quoteContent');
         container.innerHTML = '';
-        Object.keys(data).forEach(function(key) {
+
+        const fixedOrder = ['thakursriramakrishna', 'srimaasaradadevi', 'swamivivekananda'];
+
+        fixedOrder.forEach(function(key) {
+          if (!data[key]) return;
           const card = document.createElement('div');
           card.className = 'quoteCard';
           card.id = 'card-' + key;
@@ -639,6 +643,7 @@ async function getChosenSerial(personKey, allSerials, rotationHours, uid) {
           personState[key] = data[key];
           renderPerson(key);
         });
+
         document.getElementById('statusMsg').style.display = 'none';
         container.style.display = 'block';
       } catch (e) {
