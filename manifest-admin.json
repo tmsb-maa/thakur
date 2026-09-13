@@ -1,7 +1,9 @@
 {
   "name": "TMS Admin",
   "short_name": "TMS Admin",
+  "id": "./tmsbadmin.html",
   "start_url": "./tmsbadmin.html",
+  "scope": "./tmsbadmin.html",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#FF8C00",
