@@ -516,16 +516,16 @@
       const contentBox = document.getElementById('monthContent');
       contentBox.innerHTML = 'Loading...';
 
-      try {
+            try {
         const response = await fetch('ceremonies/ceremonies-' + ceremonyMonthFiles[wrapped] + '.json?t=' + Date.now());
         const data = await response.json();
-        renderMonthContent(data);
+        renderMonthContent(data, wrapped);
       } catch (e) {
         contentBox.innerHTML = '<p class="cerEmptyMsg">No entries yet for this month.</p>';
       }
     }
 
-    function renderMonthContent(data) {
+    function renderMonthContent(data, monthIndex) {
       const contentBox = document.getElementById('monthContent');
       const dateKeys = Object.keys(data).map(Number).sort(function(a, b) { return a - b; });
 
@@ -543,12 +543,42 @@
         blocks.push(html);
       }
 
-      contentBox.innerHTML = blocks.length > 0 ? blocks.join('') : '<p class="cerEmptyMsg">No entries yet for this month.</p>';
+      const finalHtml = blocks.length > 0 ? blocks.join('') : '<p class="cerEmptyMsg">No entries yet for this month.</p>';
+      contentBox.innerHTML = finalHtml;
+
+      if (typeof monthIndex === 'number') {
+        try {
+          localStorage.setItem('tms_ceremonies_cache_' + monthIndex, finalHtml);
+        } catch (e) {}
+      }
     }
 
     function changeMonth(direction) {
       loadMonthContent(viewMonthIndex + direction);
     }
+
+    function tryInstantAuthDisplay() {
+      try {
+        const wasLoggedIn = localStorage.getItem('tms_ceremonies_last_logged_in') === 'true';
+        if (wasLoggedIn) {
+          document.getElementById('statusMsg').style.display = 'none';
+          document.getElementById('pageContent').style.display = 'flex';
+
+          renderTodayLine();
+          const currentMonth = new Date().getMonth();
+          const cachedHtml = localStorage.getItem('tms_ceremonies_cache_' + currentMonth);
+          if (cachedHtml) {
+            viewMonthIndex = currentMonth;
+            document.getElementById('monthHeading').innerText = englishMonthsFull[currentMonth];
+            document.getElementById('monthContent').innerHTML = cachedHtml;
+          }
+        }
+      } catch (e) {
+        // ignore — normal "checking..." flow will show instead
+      }
+    }
+
+    tryInstantAuthDisplay();
 
     auth.onAuthStateChanged(function(user) {
       const statusMsg = document.getElementById('statusMsg');
@@ -559,7 +589,8 @@
         profileListener = null;
       }
 
-      if (!user) {
+            if (!user) {
+        try { localStorage.removeItem('tms_ceremonies_last_logged_in'); } catch (e) {}
         window.location.href = 'index.html';
         return;
       }
@@ -615,10 +646,14 @@
           });
         }
 
-        currentUserData = data;
+                currentUserData = data;
 
         statusMsg.style.display = 'none';
         pageContent.style.display = 'flex';
+
+        try {
+          localStorage.setItem('tms_ceremonies_last_logged_in', 'true');
+        } catch (e) {}
 
         renderTodayLine();
         loadMonthContent(new Date().getMonth());
