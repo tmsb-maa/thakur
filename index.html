@@ -307,14 +307,14 @@
 
       <div id="signupBox" style="display:none; margin-top:20px; border-top:1px solid #eee; padding-top:20px;">
         <h3>Create Account</h3>
-        <input type="text" id="signupName" placeholder="Full Name (e.g. John Mike)">
-        <input type="tel" id="signupPhone" placeholder="10-digit Phone Number" maxlength="10">
+        <input type="text" id="signupName" placeholder="Full Name (সম্পূর্ণ নাম)">
+        <input type="tel" id="signupPhone" placeholder="10-digit Phone No." maxlength="10">
         <div style="position:relative;">
-          <input type="text" id="signupPin" placeholder="6-digit PIN" maxlength="6">
+          <input type="text" id="signupPin" placeholder="6-digit PIN" maxlength="6" inputmode="numeric" pattern="[0-9]*">
           <span onclick="togglePin('signupPin')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
         </div>
         <div style="position:relative;">
-          <input type="text" id="signupPinConfirm" placeholder="Confirm PIN" maxlength="6">
+          <input type="text" id="signupPinConfirm" placeholder="Confirm PIN" maxlength="6" inputmode="numeric" pattern="[0-9]*">
           <span onclick="togglePin('signupPinConfirm')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
         </div>
         <button onclick="registerUser()" style="width:100%;">Register</button>
