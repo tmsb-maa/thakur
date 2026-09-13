@@ -289,7 +289,8 @@
     <div id="userMenu">
       <div class="userMenuItem" onclick="openProfile()">Profile</div>
       <div class="userMenuItem" onclick="openChangePin()">Change PIN</div>
-      <div class="userMenuItem" onclick="logoutUser()">Logout</div>
+      <div class="userMenuItem" onclick="shareTmsLink()">Share Link</div>
+	  <div class="userMenuItem" onclick="logoutUser()">Logout</div>
     </div>
   </header>
 
@@ -575,6 +576,23 @@ document.getElementById('signupResultModal').style.display = 'flex';
           document.getElementById('authError').innerText = "Invalid Credentials";
         });
     }
+
+function shareTmsLink() {
+  const shareUrl = 'https://tmsb-maa.github.io/thakur/';
+  document.getElementById('userMenu').style.display = 'none';
+
+  if (navigator.share) {
+    navigator.share({ title: 'TMS Library', url: shareUrl }).catch(function() {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(shareUrl).then(function() {
+      alert('Link copied: ' + shareUrl);
+    }).catch(function() {
+      prompt('Copy this link:', shareUrl);
+    });
+  } else {
+    prompt('Copy this link:', shareUrl);
+  }
+}
 
     function logoutUser() {
       document.getElementById('userMenu').style.display = 'none';
