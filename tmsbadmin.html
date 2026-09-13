@@ -380,9 +380,10 @@
       messagingSenderId: "305360233952",
       appId: "1:305360233952:web:3c92404970ac61c6143785"
     };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+
+const adminApp = firebase.initializeApp(firebaseConfig, "TMSAdminApp");
+const auth = adminApp.auth();
+const db = adminApp.firestore();
 
     const ADMIN_EMAIL = "gtti.computer@gmail.com";
 
