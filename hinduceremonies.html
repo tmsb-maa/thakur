@@ -509,7 +509,7 @@
         now.getDate() + '-' + englishMonthsShort[now.getMonth()] + '-' + now.getFullYear() + ', ' + weekdaysFull[now.getDay()];
     }
 
-    async function loadMonthContent(index) {
+        async function loadMonthContent(index) {
       const wrapped = ((index % 12) + 12) % 12;
       viewMonthIndex = wrapped;
 
@@ -522,8 +522,17 @@
       try {
         const response = await fetch('ceremonies/ceremonies-' + ceremonyMonthFiles[wrapped] + '.json?t=' + Date.now());
         const data = await response.json();
-        renderMonthContent(data, wrapped);
-        currentlyRenderedMonth = wrapped;
+        const rawJson = JSON.stringify(data);
+        const cachedRaw = localStorage.getItem('tms_ceremonies_rawcache_' + wrapped);
+
+        if (rawJson !== cachedRaw || wrapped !== currentlyRenderedMonth) {
+          renderMonthContent(data, wrapped);
+          currentlyRenderedMonth = wrapped;
+        }
+
+        try {
+          localStorage.setItem('tms_ceremonies_rawcache_' + wrapped, rawJson);
+        } catch (e) {}
       } catch (e) {
         contentBox.innerHTML = '<p class="cerEmptyMsg">No entries yet for this month.</p>';
         currentlyRenderedMonth = wrapped;
