@@ -501,6 +501,7 @@
     const ceremonyMonthFiles = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 
     let viewMonthIndex = 0;
+    let currentlyRenderedMonth = null;
 
     function renderTodayLine() {
       const now = new Date();
@@ -514,14 +515,18 @@
 
       document.getElementById('monthHeading').innerText = englishMonthsFull[wrapped];
       const contentBox = document.getElementById('monthContent');
-      contentBox.innerHTML = 'Loading...';
+      if (wrapped !== currentlyRenderedMonth) {
+        contentBox.innerHTML = 'Loading...';
+      }
 
-            try {
+      try {
         const response = await fetch('ceremonies/ceremonies-' + ceremonyMonthFiles[wrapped] + '.json?t=' + Date.now());
         const data = await response.json();
         renderMonthContent(data, wrapped);
+        currentlyRenderedMonth = wrapped;
       } catch (e) {
         contentBox.innerHTML = '<p class="cerEmptyMsg">No entries yet for this month.</p>';
+        currentlyRenderedMonth = wrapped;
       }
     }
 
@@ -566,11 +571,12 @@
 
           renderTodayLine();
           const currentMonth = new Date().getMonth();
-          const cachedHtml = localStorage.getItem('tms_ceremonies_cache_' + currentMonth);
+                    const cachedHtml = localStorage.getItem('tms_ceremonies_cache_' + currentMonth);
           if (cachedHtml) {
             viewMonthIndex = currentMonth;
             document.getElementById('monthHeading').innerText = englishMonthsFull[currentMonth];
             document.getElementById('monthContent').innerHTML = cachedHtml;
+            currentlyRenderedMonth = currentMonth;
           }
         }
       } catch (e) {
