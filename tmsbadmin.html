@@ -286,9 +286,10 @@
     <button id="personBtn" onclick="toggleAdminUserMenu()" style="display:none;">
       <svg viewBox="0 0 24 24" width="24" height="24" fill="#FF8C00"><circle cx="12" cy="8" r="4.2"/><path d="M4.5 20c0-4.4 3.8-6.5 7.5-6.5s7.5 2.1 7.5 6.5"/></svg>
     </button>
-    <div id="userMenu">
-      <div class="userMenuItem" onclick="adminLogout()">Logout</div>
-    </div>
+<div id="userMenu">
+  <div class="userMenuItem" onclick="shareTmsLink()">Share Link</div>
+  <div class="userMenuItem" onclick="adminLogout()">Logout</div>
+</div>
   </header>
 
   <div id="adminLoginBox">
@@ -413,6 +414,23 @@ const db = adminApp.firestore();
       document.getElementById('cardPending').classList.toggle('statCardActive', filter === 'pending');
       renderUserTable();
     }
+
+function shareTmsLink() {
+  const shareUrl = 'https://tinyurl.com/tms-library';
+  document.getElementById('userMenu').style.display = 'none';
+
+  if (navigator.share) {
+    navigator.share({ title: 'TMS Library', url: shareUrl }).catch(function() {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(shareUrl).then(function() {
+      alert('Link copied: ' + shareUrl);
+    }).catch(function() {
+      prompt('Copy this link:', shareUrl);
+    });
+  } else {
+    prompt('Copy this link:', shareUrl);
+  }
+}
 
     function adminLogout() {
       if (usersListener) {
