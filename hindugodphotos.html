@@ -622,6 +622,20 @@
       }
     });
 
+        function tryInstantAuthDisplay() {
+      try {
+        const wasLoggedIn = localStorage.getItem('tms_godphotos_last_logged_in') === 'true';
+        if (wasLoggedIn) {
+          document.getElementById('statusMsg').style.display = 'none';
+          document.getElementById('pageContent').style.display = 'flex';
+        }
+      } catch (e) {
+        // ignore — normal "checking..." flow will show instead
+      }
+    }
+
+    tryInstantAuthDisplay();
+
     auth.onAuthStateChanged(function(user) {
       const statusMsg = document.getElementById('statusMsg');
       const pageContent = document.getElementById('pageContent');
@@ -631,7 +645,8 @@
         profileListener = null;
       }
 
-      if (!user) {
+            if (!user) {
+        try { localStorage.removeItem('tms_godphotos_last_logged_in'); } catch (e) {}
         window.location.href = 'index.html';
         return;
       }
@@ -687,10 +702,14 @@
           });
         }
 
-        currentUserData = data;
+                currentUserData = data;
 
         statusMsg.style.display = 'none';
         pageContent.style.display = 'flex';
+
+        try {
+          localStorage.setItem('tms_godphotos_last_logged_in', 'true');
+        } catch (e) {}
       });
     });
   </script>
