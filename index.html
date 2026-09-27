@@ -323,7 +323,7 @@
           <input type="text" id="signupPinConfirm" placeholder="Confirm PIN" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
           <span onclick="togglePin('signupPinConfirm')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
         </div>
-        <button onclick="registerUser()" style="width:100%;">Register</button>
+        <button id="registerBtn" onclick="registerUser()" style="width:100%;">Register</button>
         <p id="signupError" style="color:red; font-size:13px;"></p>
         <p style="margin-top:10px; font-size:14px;"><a href="#" onclick="showLogin(); return false;">Back to Login</a></p>
       </div>
@@ -476,6 +476,9 @@
     async function registerUser() {
       const errorBox = document.getElementById('signupError');
       errorBox.innerText = '';
+      const registerBtn = document.getElementById('registerBtn');
+      if (registerBtn.disabled) return;
+      registerBtn.disabled = true;
 
       const SIGNUP_COOLDOWN_MINUTES = 60; // <-- change this number to adjust the wait time
       const lastSignupTime = localStorage.getItem('tmsb_signup_done');
@@ -483,6 +486,7 @@
         const minutesPassed = (Date.now() - parseInt(lastSignupTime)) / 60000;
         if (minutesPassed < SIGNUP_COOLDOWN_MINUTES) {
           errorBox.innerText = 'This device recently registered an account. Please try again in ' + Math.ceil(SIGNUP_COOLDOWN_MINUTES - minutesPassed) + ' minutes.';
+          registerBtn.disabled = false;
           return;
         }
       }
@@ -495,18 +499,22 @@
       const nameParts = rawName.trim().split(/\s+/);
       if (!/^[A-Za-z\s]+$/.test(rawName.trim()) || nameParts.length < 2) {
         errorBox.innerText = 'Please enter your full name (first and last name).';
+        registerBtn.disabled = false;
         return;
       }
       if (!/^\d{10}$/.test(phone)) {
         errorBox.innerText = 'Phone number must be exactly 10 digits.';
+        registerBtn.disabled = false;
         return;
       }
       if (!/^\d{6}$/.test(pin)) {
         errorBox.innerText = 'PIN must be exactly 6 digits.';
+        registerBtn.disabled = false;
         return;
       }
       if (pin !== pinConfirm) {
         errorBox.innerText = 'PIN and Confirm PIN do not match.';
+        registerBtn.disabled = false;
         return;
       }
 
@@ -531,6 +539,7 @@
           if (err.code !== 'auth/email-already-in-use') {
             errorBox.innerText = 'Something went wrong. Please contact admin.';
             try { secondaryApp.delete(); } catch (e) {}
+            registerBtn.disabled = false;
             return;
           }
         }
@@ -539,6 +548,7 @@
       if (!cred) {
         errorBox.innerText = 'Could not generate a unique User ID. Please contact admin.';
         try { secondaryApp.delete(); } catch (e) {}
+        registerBtn.disabled = false;
         return;
       }
 
@@ -561,9 +571,11 @@ localStorage.setItem('tmsb_signup_done', Date.now().toString());
 showLogin();
 document.getElementById('resultUserId').innerText = userId;
 document.getElementById('signupResultModal').style.display = 'flex';
+registerBtn.disabled = false;
       } catch (error) {
         errorBox.innerText = 'Something went wrong. Please contact admin.';
         try { secondaryApp.delete(); } catch (e) {}
+        registerBtn.disabled = false;
       }
     }
 
