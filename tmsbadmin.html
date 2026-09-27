@@ -545,7 +545,6 @@ function shareTmsLink() {
           name: toTitleCaseAdmin(rawName),
           phone: phone,
           userId: userId,
-          pin: pin,
           approved: true,
           approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
           blocked: false,
@@ -745,13 +744,7 @@ function shareTmsLink() {
         alert("PIN must be exactly 6 digits.");
         return;
       }
-      db.collection("users").doc(id).update({ pin: newPin })
-        .then(function() {
-          alert("PIN updated in database.");
-        })
-        .catch(function(error) {
-          alert("Failed to update PIN: " + error.message);
-        });
+      alert("Note: Resetting the login PIN requires a Cloud Function (admin SDK) since this can't be done from the browser alone.");
     }
 
     function deleteUser(id) {
