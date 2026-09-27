@@ -352,7 +352,6 @@
     <table>
       <thead>
         <tr>
-          <th>Source</th>
           <th>Name</th>
           <th>Phone</th>
           <th>User ID</th>
@@ -389,16 +388,6 @@ const db = adminApp.firestore();
 
     const ADMIN_EMAIL = "gtti.computer@gmail.com";
 
-    async function sha256Hex(text) {
-      const enc = new TextEncoder().encode(text);
-      const buf = await crypto.subtle.digest('SHA-256', enc);
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    function randomAuthPass(userId) {
-      return userId + '_tms_fixed_key';
-    }
-
     function toTitleCaseAdmin(str) {
       return str.trim().toLowerCase().split(' ')
         .filter(function(w) { return w.length > 0; })
@@ -416,7 +405,6 @@ const db = adminApp.firestore();
 
     document.getElementById('newName').addEventListener('input', formatNameInputAdmin);
     let usersListener = null;
-    let newUsersListener = null;
     let currentUserFilter = 'approved';
     let latestUsersSnapshot = null;
 
@@ -448,10 +436,6 @@ function shareTmsLink() {
       if (usersListener) {
         usersListener();
         usersListener = null;
-      }
-      if (newUsersListener) {
-        newUsersListener();
-        newUsersListener = null;
       }
       auth.signOut();
     }
@@ -538,7 +522,7 @@ function shareTmsLink() {
 
       for (const candidate of candidates) {
         try {
-          cred = await secondaryApp.auth().createUserWithEmailAndPassword(candidate + '@tms-library.in', randomAuthPass(candidate));
+          cred = await secondaryApp.auth().createUserWithEmailAndPassword(candidate + '@tms-library.in', pin);
           userId = candidate;
           break;
         } catch (err) {
@@ -557,13 +541,10 @@ function shareTmsLink() {
       }
 
       try {
-        const pinHash = await sha256Hex(userId + ':' + pin);
-        await db.collection("newUsers").doc(userId).set({
+        await db.collection("users").doc(cred.user.uid).set({
           name: toTitleCaseAdmin(rawName),
           phone: phone,
           userId: userId,
-          authUid: cred.user.uid,
-          pinHash: pinHash,
           approved: true,
           approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
           blocked: false,
@@ -623,21 +604,17 @@ function shareTmsLink() {
     }
 	
     // ---- LOAD USERS ----
-    let latestNewUsersSnapshot = null;
-
+    // ---- LOAD USERS ----
     function loadUsers() {
       usersListener = db.collection("users").onSnapshot(function(snapshot) {
         latestUsersSnapshot = snapshot;
         renderUserTable();
       });
-      newUsersListener = db.collection("newUsers").onSnapshot(function(snapshot) {
-        latestNewUsersSnapshot = snapshot;
-        renderUserTable();
-      });
     }
 
     function renderUserTable() {
-      if (!latestUsersSnapshot && !latestNewUsersSnapshot) return;
+      if (!latestUsersSnapshot) return;
+      const snapshot = latestUsersSnapshot;
       const tbody = document.getElementById('userTableBody');
       const noUsersMsg = document.getElementById('noUsersMsg');
       tbody.innerHTML = "";
@@ -648,20 +625,8 @@ function shareTmsLink() {
       let totalLicenses = 0;
       let activeLicenses = 0;
 
-      const combined = [];
-      if (latestUsersSnapshot) {
-        latestUsersSnapshot.forEach(function(doc) {
-          combined.push({ id: doc.id, data: doc.data(), source: 'old' });
-        });
-      }
-      if (latestNewUsersSnapshot) {
-        latestNewUsersSnapshot.forEach(function(doc) {
-          combined.push({ id: doc.id, data: doc.data(), source: 'new' });
-        });
-      }
-
-      combined.forEach(function(item) {
-        const u = item.data;
+      snapshot.forEach(function(doc) {
+        const u = doc.data();
         if (u.approved) {
           approvedCount++;
           totalLicenses += (u.maxDevices || 0);
@@ -683,10 +648,9 @@ function shareTmsLink() {
       const searchBox = document.getElementById('userSearchBox');
       const searchTerm = searchBox ? searchBox.value.trim().toLowerCase() : '';
 
-      combined.forEach(function(item) {
-        const u = item.data;
-        const id = item.id;
-        const source = item.source;
+      snapshot.forEach(function(doc) {
+        const u = doc.data();
+        const id = doc.id;
 
         if (searchTerm) {
           const matches = (u.name || '').toLowerCase().indexOf(searchTerm) !== -1 ||
@@ -701,25 +665,24 @@ function shareTmsLink() {
         visibleCount++;
         const row = document.createElement('tr');
         row.innerHTML =
-          '<td data-label="Source">' + (source === 'new' ? 'New' : 'Old') + '</td>' +
           '<td data-label="Name">' + (u.name || "") + '</td>' +
           '<td data-label="Phone">' + (u.phone || "") + '</td>' +
           '<td data-label="User ID">' + (u.userId || "") + '</td>' +
           '<td data-label="Approved">' + (u.approved ? "Yes" : "No") + '</td>' +
           '<td data-label="Blocked">' + (u.blocked ? "Yes" : "No") + '</td>' +
-          '<td data-label="Allowed"><input type="number" id="dev-' + source + '-' + id + '" value="' + (u.maxDevices || 1) + '"></td>' +
+          '<td data-label="Allowed"><input type="number" id="dev-' + id + '" value="' + (u.maxDevices || 1) + '"></td>' +
           '<td data-label="Logged in">' + ((u.devices || []).length) + '</td>' +
-          '<td data-label="Start"><input type="date" id="start-' + source + '-' + id + '" value="' + (u.accessStart || '') + '"></td>' +
-          '<td data-label="End"><input type="date" id="end-' + source + '-' + id + '" value="' + (u.accessEnd || '') + '"></td>' +
+          '<td data-label="Start"><input type="date" id="start-' + id + '" value="' + (u.accessStart || '') + '"></td>' +
+          '<td data-label="End"><input type="date" id="end-' + id + '" value="' + (u.accessEnd || '') + '"></td>' +
           '<td data-label="Actions">' +
-          '<button class="btnSmall save" onclick="saveUser(\'' + source + '\',\'' + id + '\')">Save</button>' +
-          '<button class="btnSmall approve" onclick="setApproved(\'' + source + '\',\'' + id + '\', true)"' + (u.approved ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Approve</button>' +
-          '<button class="btnSmall block" onclick="setApproved(\'' + source + '\',\'' + id + '\', false)"' + (!u.approved ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Disapprove</button>' +
-          '<button class="btnSmall block" onclick="setBlocked(\'' + source + '\',\'' + id + '\', true)"' + (u.blocked ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Block</button>' +
-          '<button class="btnSmall unblock" onclick="setBlocked(\'' + source + '\',\'' + id + '\', false)"' + (!u.blocked ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Unblock</button>' +
-          '<button class="btnSmall reset" onclick="resetPin(\'' + source + '\',\'' + id + '\')">Reset PIN</button>' +
-          '<button class="btnSmall block" onclick="forceLogout(\'' + source + '\',\'' + id + '\')">Force Logout</button>' +
-          '<button class="btnSmall delete" onclick="deleteUser(\'' + source + '\',\'' + id + '\')">Delete</button>' +
+          '<button class="btnSmall save" onclick="saveUser(\'' + id + '\')">Save</button>' +
+          '<button class="btnSmall approve" onclick="setApproved(\'' + id + '\', true)"' + (u.approved ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Approve</button>' +
+          '<button class="btnSmall block" onclick="setApproved(\'' + id + '\', false)"' + (!u.approved ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Disapprove</button>' +
+          '<button class="btnSmall block" onclick="setBlocked(\'' + id + '\', true)"' + (u.blocked ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Block</button>' +
+          '<button class="btnSmall unblock" onclick="setBlocked(\'' + id + '\', false)"' + (!u.blocked ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Unblock</button>' +
+          '<button class="btnSmall reset" onclick="resetPin(\'' + id + '\')">Reset PIN</button>' +
+          '<button class="btnSmall block" onclick="forceLogout(\'' + id + '\')">Force Logout</button>' +
+          '<button class="btnSmall delete" onclick="deleteUser(\'' + id + '\')">Delete</button>' +
           '</td>';
         tbody.appendChild(row);
       });
@@ -736,73 +699,57 @@ function shareTmsLink() {
       }
     }
 
-    function collectionForSource(source) {
-      return source === 'new' ? 'newUsers' : 'users';
-    }
-
-    function saveUser(source, id) {
-      const maxDevices = parseInt(document.getElementById('dev-' + source + '-' + id).value) || 1;
-      const start = document.getElementById('start-' + source + '-' + id).value;
-      const end = document.getElementById('end-' + source + '-' + id).value;
-      db.collection(collectionForSource(source)).doc(id).update({
+    function saveUser(id) {
+      const maxDevices = parseInt(document.getElementById('dev-' + id).value) || 1;
+      const start = document.getElementById('start-' + id).value;
+      const end = document.getElementById('end-' + id).value;
+      db.collection("users").doc(id).update({
         maxDevices: maxDevices,
         accessStart: start,
         accessEnd: end
       });
     }
 
-    function setApproved(source, id, value) {
-      const col = collectionForSource(source);
+    function setApproved(id, value) {
       if (!value) {
-        db.collection(col).doc(id).update({ approved: false });
+        db.collection("users").doc(id).update({ approved: false });
         return;
       }
-      db.collection(col).doc(id).get().then(function(doc) {
+      db.collection("users").doc(id).get().then(function(doc) {
         const data = doc.data() || {};
         const update = { approved: true };
         if (!data.approvedAt) {
           update.approvedAt = firebase.firestore.FieldValue.serverTimestamp();
         }
-        db.collection(col).doc(id).update(update);
+        db.collection("users").doc(id).update(update);
       });
     }
 
-    function setBlocked(source, id, value) {
-      db.collection(collectionForSource(source)).doc(id).update({ blocked: value });
+    function setBlocked(id, value) {
+      db.collection("users").doc(id).update({ blocked: value });
     }
 
-    function forceLogout(source, id) {
+    function forceLogout(id) {
       if (confirm("Force logout this user from ALL devices and clear registered devices?")) {
-        db.collection(collectionForSource(source)).doc(id).update({
+        db.collection("users").doc(id).update({
           sessionVersion: firebase.firestore.FieldValue.increment(1),
           devices: []
         });
       }
     }
 
-    async function resetPin(source, id) {
-      if (source === 'old') {
-        alert("Old user — must change PIN from their own account.");
-        return;
-      }
+    function resetPin(id) {
       const newPin = prompt("Enter new 6-digit PIN for this user:");
       if (!newPin || !/^\d{6}$/.test(newPin)) {
         alert("PIN must be exactly 6 digits.");
         return;
       }
-      const newHash = await sha256Hex(id + ':' + newPin);
-      db.collection("newUsers").doc(id).update({ pinHash: newHash })
-        .then(function() {
-          alert("PIN updated. It will take effect on next login.");
-        })
-        .catch(function(err) {
-          alert("Failed to update PIN: " + err.message);
-        });
+      alert("Note: Resetting the login PIN requires a Cloud Function (admin SDK) since this can't be done from the browser alone.");
     }
 
-    function deleteUser(source, id) {
+    function deleteUser(id) {
       if (confirm("Delete this user's access record?")) {
-        db.collection(collectionForSource(source)).doc(id).delete();
+        db.collection("users").doc(id).delete();
       }
     }
 

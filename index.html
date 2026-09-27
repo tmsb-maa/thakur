@@ -601,42 +601,13 @@ registerBtn.style.opacity = '1';
       }
     }
 
-    async function sha256Hex(text) {
-      const enc = new TextEncoder().encode(text);
-      const buf = await crypto.subtle.digest('SHA-256', enc);
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    function randomAuthPass(userId) {
-      return userId + '_tms_fixed_key';
-    }
-
     function loginUser() {
       const userId = document.getElementById('userIdInput').value.trim().toLowerCase();
       const pin = document.getElementById('passwordInput').value;
       const pseudoEmail = userId + '@tms-library.in';
-      localStorage.setItem('tms_index_userId', userId);
-      auth.signInWithEmailAndPassword(pseudoEmail, randomAuthPass(userId))
-        .then(function() {
-          return db.collection("newUsers").doc(userId).get();
-        })
-        .then(async function(doc) {
-          if (!doc.exists) {
-            document.getElementById('authError').innerText = "Invalid Credentials";
-            auth.signOut();
-            return;
-          }
-          const typedHash = await sha256Hex(userId + ':' + pin);
-          if (typedHash !== doc.data().pinHash) {
-            document.getElementById('authError').innerText = "Invalid Credentials";
-            auth.signOut();
-          }
-        })
-        .catch(function() {
-          auth.signInWithEmailAndPassword(pseudoEmail, pin)
-            .catch(function() {
-              document.getElementById('authError').innerText = "Invalid Credentials";
-            });
+      auth.signInWithEmailAndPassword(pseudoEmail, pin)
+        .catch(function(error) {
+          document.getElementById('authError').innerText = "Invalid Credentials";
         });
     }
 
@@ -770,29 +741,17 @@ function shareTmsLink() {
       const user = auth.currentUser;
       if (!user) return;
 
-      const storedUserId = localStorage.getItem('tms_index_userId');
-      db.collection("newUsers").doc(storedUserId).get().then(function(newDoc) {
-        if (newDoc.exists) {
-          return sha256Hex(storedUserId + ':' + newPin).then(function(newHash) {
-            return db.collection("newUsers").doc(storedUserId).update({
-              pinHash: newHash,
-              sessionVersion: firebase.firestore.FieldValue.increment(1),
-              devices: []
-            });
-          });
-        }
-        return user.updatePassword(newPin).then(function() {
+      user.updatePassword(newPin)
+        .then(function() {
+          selfInitiatedPinChange = true;
           return db.collection("users").doc(user.uid).update({
             sessionVersion: firebase.firestore.FieldValue.increment(1),
             devices: []
           });
+        })
+        .catch(function(error) {
+          errorBox.innerText = 'Something went wrong. Please try again or contact admin.';
         });
-      }).then(function() {
-        selfInitiatedPinChange = true;
-        closeChangePin();
-      }).catch(function() {
-        errorBox.innerText = 'Something went wrong. Please try again or contact admin.';
-      });
     }
 
     function downloadProfilePdf() {
@@ -831,81 +790,6 @@ function shareTmsLink() {
 
     tryInstantAuthDisplay();
 
-    function handleUserDoc(doc, user) {
-      const authBox = document.getElementById('authBox');
-      const personBtn = document.getElementById('personBtn');
-      const barContainer = document.getElementById('barContainer');
-      const checkingMsg = document.getElementById('checkingMsg');
-
-      if (!doc.exists) {
-        document.getElementById('authError').innerText = "Account not found. Contact admin.";
-        auth.signOut();
-        return;
-      }
-      const data = doc.data();
-      const today = new Date().toISOString().split('T')[0];
-
-      if (!data.approved) {
-        document.getElementById('authError').innerText = "Account pending admin approval.";
-        auth.signOut();
-        return;
-      }
-      if (data.blocked) {
-        document.getElementById('authError').innerText = "Account has been blocked by admin.";
-        auth.signOut();
-        return;
-      }
-      if (data.accessStart && today < data.accessStart) {
-        document.getElementById('authError').innerText = "Access not yet started.";
-        auth.signOut();
-        return;
-      }
-      if (data.accessEnd && today > data.accessEnd) {
-        document.getElementById('authError').innerText = "Access period has expired.";
-        auth.signOut();
-        return;
-      }
-
-      const deviceId = getDeviceId();
-      const devices = data.devices || [];
-
-      if (devices.includes(deviceId)) {
-        deviceWasRegistered = true;
-      } else if (deviceWasRegistered) {
-        document.getElementById('authError').innerText = selfInitiatedPinChange
-          ? "PIN changed successfully. Please login with your new PIN."
-          : "You have been logged out.";
-        selfInitiatedPinChange = false;
-        deviceWasRegistered = false;
-        auth.signOut();
-        return;
-      } else {
-        let updatedDevices = devices.slice();
-        if (updatedDevices.length >= (data.maxDevices || 1)) {
-          updatedDevices.shift();
-        }
-        updatedDevices.push(deviceId);
-        deviceWasRegistered = true;
-        doc.ref.update({
-          devices: updatedDevices
-        }).catch(function() {
-          alert("Something went wrong. Please contact admin.");
-        });
-      }
-
-      currentUserData = data;
-
-      checkingMsg.style.display = 'none';
-      authBox.style.display = 'none';
-      personBtn.style.display = 'flex';
-      barContainer.style.display = 'flex';
-      document.getElementById('authError').innerText = "";
-
-      try {
-        localStorage.setItem('tms_index_last_logged_in', 'true');
-      } catch (e) {}
-    }
-
     auth.onAuthStateChanged(function(user) {
       const authBox = document.getElementById('authBox');
       const personBtn = document.getElementById('personBtn');
@@ -920,21 +804,74 @@ function shareTmsLink() {
       if (user) {
         profileListener = db.collection("users").doc(user.uid).onSnapshot(function(doc) {
           if (!doc.exists) {
-            const storedUserId = localStorage.getItem('tms_index_userId');
-            if (!storedUserId) {
-              document.getElementById('authError').innerText = "Account not found. Contact admin.";
-              auth.signOut();
-              return;
-            }
-            profileListener();
-            profileListener = db.collection("newUsers").doc(storedUserId).onSnapshot(function(doc2) {
-              handleUserDoc(doc2, user);
-            });
+            document.getElementById('authError').innerText = "Account not found. Contact admin.";
+            auth.signOut();
             return;
           }
-          handleUserDoc(doc, user);
+          const data = doc.data();
+          const today = new Date().toISOString().split('T')[0];
+
+          if (!data.approved) {
+            document.getElementById('authError').innerText = "Account pending admin approval.";
+            auth.signOut();
+            return;
+          }
+          if (data.blocked) {
+            document.getElementById('authError').innerText = "Account has been blocked by admin.";
+            auth.signOut();
+            return;
+          }
+          if (data.accessStart && today < data.accessStart) {
+            document.getElementById('authError').innerText = "Access not yet started.";
+            auth.signOut();
+            return;
+          }
+          if (data.accessEnd && today > data.accessEnd) {
+            document.getElementById('authError').innerText = "Access period has expired.";
+            auth.signOut();
+            return;
+          }
+
+          const deviceId = getDeviceId();
+          const devices = data.devices || [];
+
+          if (devices.includes(deviceId)) {
+            deviceWasRegistered = true;
+          } else if (deviceWasRegistered) {
+            document.getElementById('authError').innerText = selfInitiatedPinChange
+              ? "PIN changed successfully. Please login with your new PIN."
+              : "You have been logged out.";
+            selfInitiatedPinChange = false;
+            deviceWasRegistered = false;
+            auth.signOut();
+            return;
+          } else {
+            let updatedDevices = devices.slice();
+            if (updatedDevices.length >= (data.maxDevices || 1)) {
+              updatedDevices.shift();
+            }
+            updatedDevices.push(deviceId);
+            deviceWasRegistered = true;
+            db.collection("users").doc(user.uid).update({
+              devices: updatedDevices
+            }).catch(function(error) {
+              alert("Something went wrong. Please contact admin.");
+            });
+          }
+
+                    currentUserData = data;
+
+          checkingMsg.style.display = 'none';
+          authBox.style.display = 'none';
+          personBtn.style.display = 'flex';
+          barContainer.style.display = 'flex';
+          document.getElementById('authError').innerText = "";
+
+          try {
+            localStorage.setItem('tms_index_last_logged_in', 'true');
+          } catch (e) {}
         });
-      } else {
+            } else {
         checkingMsg.style.display = 'none';
         authBox.style.display = 'block';
         personBtn.style.display = 'none';
