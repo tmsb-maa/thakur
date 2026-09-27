@@ -615,26 +615,24 @@ registerBtn.style.opacity = '1';
       const userId = document.getElementById('userIdInput').value.trim().toLowerCase();
       const pin = document.getElementById('passwordInput').value;
       const pseudoEmail = userId + '@tms-library.in';
-      auth.signInWithEmailAndPassword(pseudoEmail, pin)
-        .catch(function() {
-          db.collection("newUsers").doc(userId).get().then(async function(doc) {
-            if (!doc.exists) {
-              document.getElementById('authError').innerText = "Invalid Credentials";
-              return;
-            }
-            const data = doc.data();
+      auth.signInWithEmailAndPassword(pseudoEmail, randomAuthPass(userId))
+        .then(function() {
+          return db.collection("newUsers").doc(userId).get();
+        })
+        .then(async function(doc) {
+          if (!doc.exists) {
             const typedHash = await sha256Hex(userId + ':' + pin);
-            if (typedHash !== data.pinHash) {
+            if (typedHash !== doc.data().pinHash) {
               document.getElementById('authError').innerText = "Invalid Credentials";
-              return;
+              auth.signOut();
             }
-            auth.signInWithEmailAndPassword(pseudoEmail, randomAuthPass(userId))
-              .catch(function() {
-                document.getElementById('authError').innerText = "Invalid Credentials";
-              });
-          }).catch(function() {
-            document.getElementById('authError').innerText = "Invalid Credentials";
-          });
+          }
+        })
+        .catch(function() {
+          auth.signInWithEmailAndPassword(pseudoEmail, pin)
+            .catch(function() {
+              document.getElementById('authError').innerText = "Invalid Credentials";
+            });
         });
     }
 
