@@ -529,7 +529,7 @@
           break;
         } catch (err) {
           if (err.code !== 'auth/email-already-in-use') {
-            errorBox.innerText = err.message;
+            errorBox.innerText = 'Something went wrong. Please contact admin.';
             try { secondaryApp.delete(); } catch (e) {}
             return;
           }
@@ -562,7 +562,7 @@ showLogin();
 document.getElementById('resultUserId').innerText = userId;
 document.getElementById('signupResultModal').style.display = 'flex';
       } catch (error) {
-        errorBox.innerText = error.message;
+        errorBox.innerText = 'Something went wrong. Please contact admin.';
         try { secondaryApp.delete(); } catch (e) {}
       }
     }
@@ -716,7 +716,7 @@ function shareTmsLink() {
           });
         })
         .catch(function(error) {
-          errorBox.innerText = error.message;
+          errorBox.innerText = 'Something went wrong. Please try again or contact admin.';
         });
     }
 
@@ -821,7 +821,7 @@ function shareTmsLink() {
             db.collection("users").doc(user.uid).update({
               devices: updatedDevices
             }).catch(function(error) {
-              alert("Device registration failed: " + error.message);
+              alert("Something went wrong. Please contact admin.");
             });
           }
 
