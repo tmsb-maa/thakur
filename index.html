@@ -561,6 +561,13 @@
       }
 
       try {
+        const todayDate = new Date();
+        const oneYearLater = new Date(todayDate);
+        oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+        const pad = function(n) { return n < 10 ? '0' + n : '' + n; };
+        const startStr = todayDate.getFullYear() + '-' + pad(todayDate.getMonth() + 1) + '-' + pad(todayDate.getDate());
+        const endStr = oneYearLater.getFullYear() + '-' + pad(oneYearLater.getMonth() + 1) + '-' + pad(oneYearLater.getDate());
+
         await secondaryApp.firestore().collection("users").doc(cred.user.uid).set({
           name: name,
           phone: phone,
@@ -568,8 +575,8 @@
           approved: false,
           blocked: false,
           maxDevices: 1,
-          accessStart: "",
-          accessEnd: "",
+          accessStart: startStr,
+          accessEnd: endStr,
           sessionVersion: 0,
           devices: []
         });
