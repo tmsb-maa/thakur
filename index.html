@@ -615,17 +615,21 @@ registerBtn.style.opacity = '1';
       const userId = document.getElementById('userIdInput').value.trim().toLowerCase();
       const pin = document.getElementById('passwordInput').value;
       const pseudoEmail = userId + '@tms-library.in';
+      localStorage.setItem('tms_index_userId', userId);
       auth.signInWithEmailAndPassword(pseudoEmail, randomAuthPass(userId))
         .then(function() {
           return db.collection("newUsers").doc(userId).get();
         })
         .then(async function(doc) {
           if (!doc.exists) {
-            const typedHash = await sha256Hex(userId + ':' + pin);
-            if (typedHash !== doc.data().pinHash) {
-              document.getElementById('authError').innerText = "Invalid Credentials";
-              auth.signOut();
-            }
+            document.getElementById('authError').innerText = "Invalid Credentials";
+            auth.signOut();
+            return;
+          }
+          const typedHash = await sha256Hex(userId + ':' + pin);
+          if (typedHash !== doc.data().pinHash) {
+            document.getElementById('authError').innerText = "Invalid Credentials";
+            auth.signOut();
           }
         })
         .catch(function() {
@@ -766,17 +770,29 @@ function shareTmsLink() {
       const user = auth.currentUser;
       if (!user) return;
 
-      user.updatePassword(newPin)
-        .then(function() {
-          selfInitiatedPinChange = true;
+      const storedUserId = localStorage.getItem('tms_index_userId');
+      db.collection("newUsers").doc(storedUserId).get().then(function(newDoc) {
+        if (newDoc.exists) {
+          return sha256Hex(storedUserId + ':' + newPin).then(function(newHash) {
+            return db.collection("newUsers").doc(storedUserId).update({
+              pinHash: newHash,
+              sessionVersion: firebase.firestore.FieldValue.increment(1),
+              devices: []
+            });
+          });
+        }
+        return user.updatePassword(newPin).then(function() {
           return db.collection("users").doc(user.uid).update({
             sessionVersion: firebase.firestore.FieldValue.increment(1),
             devices: []
           });
-        })
-        .catch(function(error) {
-          errorBox.innerText = 'Something went wrong. Please try again or contact admin.';
         });
+      }).then(function() {
+        selfInitiatedPinChange = true;
+        closeChangePin();
+      }).catch(function() {
+        errorBox.innerText = 'Something went wrong. Please try again or contact admin.';
+      });
     }
 
     function downloadProfilePdf() {
@@ -904,17 +920,15 @@ function shareTmsLink() {
       if (user) {
         profileListener = db.collection("users").doc(user.uid).onSnapshot(function(doc) {
           if (!doc.exists) {
-            db.collection("newUsers").where("authUid", "==", user.uid).limit(1).get().then(function(qs) {
-              if (qs.empty) {
-                document.getElementById('authError').innerText = "Account not found. Contact admin.";
-                auth.signOut();
-                return;
-              }
-              const newDoc = qs.docs[0];
-              profileListener();
-              profileListener = db.collection("newUsers").doc(newDoc.id).onSnapshot(function(doc2) {
-                handleUserDoc(doc2, user);
-              });
+            const storedUserId = localStorage.getItem('tms_index_userId');
+            if (!storedUserId) {
+              document.getElementById('authError').innerText = "Account not found. Contact admin.";
+              auth.signOut();
+              return;
+            }
+            profileListener();
+            profileListener = db.collection("newUsers").doc(storedUserId).onSnapshot(function(doc2) {
+              handleUserDoc(doc2, user);
             });
             return;
           }
