@@ -479,14 +479,16 @@
       const registerBtn = document.getElementById('registerBtn');
       if (registerBtn.disabled) return;
       registerBtn.disabled = true;
+      registerBtn.style.opacity = '0.5';
 
-      const SIGNUP_COOLDOWN_MINUTES = 60; // <-- change this number to adjust the wait time
+      const SIGNUP_COOLDOWN_MINUTES = 1; // <-- change this number to adjust the wait time
       const lastSignupTime = localStorage.getItem('tmsb_signup_done');
       if (lastSignupTime) {
         const minutesPassed = (Date.now() - parseInt(lastSignupTime)) / 60000;
         if (minutesPassed < SIGNUP_COOLDOWN_MINUTES) {
           errorBox.innerText = 'This device recently registered an account. Please try again in ' + Math.ceil(SIGNUP_COOLDOWN_MINUTES - minutesPassed) + ' minutes.';
           registerBtn.disabled = false;
+          registerBtn.style.opacity = '1';
           return;
         }
       }
@@ -500,21 +502,25 @@
       if (!/^[A-Za-z\s]+$/.test(rawName.trim()) || nameParts.length < 2) {
         errorBox.innerText = 'Please enter your full name (first and last name).';
         registerBtn.disabled = false;
+        registerBtn.style.opacity = '1';
         return;
       }
       if (!/^\d{10}$/.test(phone)) {
         errorBox.innerText = 'Phone number must be exactly 10 digits.';
         registerBtn.disabled = false;
+        registerBtn.style.opacity = '1';
         return;
       }
       if (!/^\d{6}$/.test(pin)) {
         errorBox.innerText = 'PIN must be exactly 6 digits.';
         registerBtn.disabled = false;
+        registerBtn.style.opacity = '1';
         return;
       }
       if (pin !== pinConfirm) {
         errorBox.innerText = 'PIN and Confirm PIN do not match.';
         registerBtn.disabled = false;
+        registerBtn.style.opacity = '1';
         return;
       }
 
@@ -540,6 +546,7 @@
             errorBox.innerText = 'Something went wrong. Please contact admin.';
             try { secondaryApp.delete(); } catch (e) {}
             registerBtn.disabled = false;
+            registerBtn.style.opacity = '1';
             return;
           }
         }
@@ -549,6 +556,7 @@
         errorBox.innerText = 'Could not generate a unique User ID. Please contact admin.';
         try { secondaryApp.delete(); } catch (e) {}
         registerBtn.disabled = false;
+        registerBtn.style.opacity = '1';
         return;
       }
 
@@ -572,10 +580,12 @@ showLogin();
 document.getElementById('resultUserId').innerText = userId;
 document.getElementById('signupResultModal').style.display = 'flex';
 registerBtn.disabled = false;
+registerBtn.style.opacity = '1';
       } catch (error) {
         errorBox.innerText = 'Something went wrong. Please contact admin.';
         try { secondaryApp.delete(); } catch (e) {}
         registerBtn.disabled = false;
+        registerBtn.style.opacity = '1';
       }
     }
 
