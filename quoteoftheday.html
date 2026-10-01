@@ -249,17 +249,50 @@
     </div>
 
     <div class="tmsModal" id="profileModal">
-      <div class="tmsModalBox">
-        <img src="icon-192.png" alt="TMS Library" class="tmsModalLogo">
-        <h2 class="tmsCenterLine" style="color:#FF8C00; font-size:24px; font-weight:bold; margin-bottom:20px;">TMS Library</h2>
-        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">Name: <span id="profileName"></span></p>
-        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">Phone No: <span id="profilePhone"></span></p>
-        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">No. of Devices: <span id="profileDevices"></span></p>
-        <p style="font-size:18px; font-weight:bold; margin-bottom:35px;">Access Period : <span id="profileAccessWrap" style="display:inline-block; vertical-align:top;"></span></p>
-        <button onclick="downloadProfilePdf()" style="width:100%; padding:14px; background:#4CAF50; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer; margin-bottom:40px;">Download PDF</button>
-        <p class="tmsCenterLine" style="font-weight:bold; font-size:16px; margin-bottom:5px;">Completely private library.</p>
-        <p class="tmsCenterLine" style="font-weight:bold; font-size:16px; margin-bottom:15px;">Call:+91-9830894559</p>
-        <button onclick="closeProfile()" style="width:100%; padding:12px; background:#ccc; color:#333; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Close</button>
+      <div class="tmsModalBox" style="max-height:100%; overflow-y:auto;">
+        <img src="icon-192.png" alt="TMS Library" class="tmsModalLogo" style="width:100px; height:100px;">
+        <h2 class="tmsCenterLine" style="color:#FF8C00; font-size:28px; font-weight:bold; margin-bottom:0;">TMS Library</h2>
+        <hr style="border:0; border-top:3px solid #000; margin:20px 0 24px 0;">
+
+        <table style="width:100%; border-collapse:collapse; font-size:18px;">
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Name</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profileName" style="padding:8px 0 8px 24px; word-break:break-word;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Phone</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profilePhone" style="padding:8px 0 8px 24px;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Allowed Devices</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profileAllowed" style="padding:8px 0 8px 24px;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Logged in</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profileLoggedIn" style="padding:8px 0 8px 24px;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Access Start</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profileStart" style="padding:8px 0 8px 24px;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Access End</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profileEnd" style="padding:8px 0 8px 24px;"></td>
+          </tr>
+        </table>
+
+        <p class="tmsCenterLine" style="font-size:18px; margin-top:64px; margin-bottom:32px;">Completely private library.</p>
+        <p class="tmsCenterLine" style="font-size:18px; margin-bottom:32px;">Call / Whatsapp : Biswajit : +91-9830894559</p>
+        <p class="tmsCenterLine" style="font-size:18px; margin-bottom:36px;">Thanks.</p>
+
+        <button onclick="downloadProfilePdf()" style="width:100%; padding:14px; background:#4CAF50; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer; margin-bottom:12px;">Download PDF</button>
+        <button onclick="closeProfile()" style="width:100%; padding:14px; background:#ccc; color:#333; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer;">Close</button>
       </div>
     </div>
   </main>
@@ -276,12 +309,12 @@
 
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyDqmiTPNCbx2Kd9PKZdaKYrm_tKdR7gqzc",
-      authDomain: "tmsb-online-library.firebaseapp.com",
-      projectId: "tmsb-online-library",
-      storageBucket: "tmsb-online-library.firebasestorage.app",
-      messagingSenderId: "305360233952",
-      appId: "1:305360233952:web:3c92404970ac61c6143785"
+      apiKey: "AIzaSyDuuW3QUEYB15CEAh0PgTArLdL21LhtA7g",
+      authDomain: "tmsb-online-library-4eaa6.firebaseapp.com",
+      projectId: "tmsb-online-library-4eaa6",
+      storageBucket: "tmsb-online-library-4eaa6.firebasestorage.app",
+      messagingSenderId: "133113941862",
+      appId: "1:133113941862:web:01ecc4e679dbc3c27d02a7"
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
@@ -355,11 +388,7 @@ function shareTmsLink() {
 
     function logoutUser() {
       document.getElementById('userMenu').style.display = 'none';
-      if (profileListener) {
-        profileListener();
-        profileListener = null;
-      }
-      auth.signOut();
+      goToLogin();
     }
 
     function toggleUserMenu() {
@@ -416,11 +445,10 @@ function shareTmsLink() {
       if (!currentUserData) return;
       document.getElementById('profileName').innerText = currentUserData.name || "-";
       document.getElementById('profilePhone').innerText = currentUserData.phone || "-";
-      document.getElementById('profileDevices').innerText = ((currentUserData.devices || []).length) + " / " + (currentUserData.maxDevices || 0);
-
-      const startFmt = currentUserData.accessStart ? formatDisplayDate(currentUserData.accessStart) : "-";
-      const endFmt = currentUserData.accessEnd ? formatDisplayDate(currentUserData.accessEnd) : "";
-      document.getElementById('profileAccessWrap').innerHTML = endFmt ? (startFmt + " -<br>" + endFmt) : startFmt;
+      document.getElementById('profileAllowed').innerText = String(currentUserData.maxDevices || 0);
+      document.getElementById('profileLoggedIn').innerText = String((currentUserData.devices || []).length);
+      document.getElementById('profileStart').innerText = currentUserData.accessStart ? formatDisplayDate(currentUserData.accessStart) : "-";
+      document.getElementById('profileEnd').innerText = currentUserData.accessEnd ? formatDisplayDate(currentUserData.accessEnd) : "-";
 
       document.getElementById('userMenu').style.display = 'none';
       document.getElementById('profileModal').style.display = 'flex';
@@ -446,6 +474,11 @@ function shareTmsLink() {
       document.getElementById('changePinModal').style.display = 'none';
     }
 
+    async function sha256(text) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
     function submitChangePin() {
       const errorBox = document.getElementById('changePinError');
       errorBox.innerText = '';
@@ -461,39 +494,105 @@ function shareTmsLink() {
         return;
       }
 
-      const user = auth.currentUser;
-      if (!user) return;
+      const uid = localStorage.getItem('tms_user_id');
+      if (!uid) return;
 
-      user.updatePassword(newPin)
-        .then(function() {
-          return db.collection("users").doc(user.uid).update({
+      sha256(newPin)
+        .then(function(h) {
+          return db.collection("tmsbusers").doc(uid).update({
+            pinHash: h,
             sessionVersion: firebase.firestore.FieldValue.increment(1),
             devices: []
           });
         })
         .catch(function(error) {
-          errorBox.innerText = error.message;
+          errorBox.innerText = 'Something went wrong. Please try again or contact admin.';
         });
     }
 
     function downloadProfilePdf() {
       if (!currentUserData) return;
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFontSize(18);
-      doc.text("TMS Library", 105, 20, { align: "center" });
-      doc.setFontSize(14);
-      doc.text("Name: " + (currentUserData.name || "-"), 20, 40);
-      doc.text("Phone No: " + (currentUserData.phone || "-"), 20, 50);
-      doc.text("No. of Devices: " + ((currentUserData.devices || []).length) + " / " + (currentUserData.maxDevices || 0), 20, 60);
-      doc.text("Access Period: " + (currentUserData.accessStart ? currentUserData.accessStart : "-") + " - " + (currentUserData.accessEnd ? currentUserData.accessEnd : "-"), 20, 70);
-      doc.setFontSize(12);
-      doc.text("Completely private library.", 105, 90, { align: "center" });
-      doc.text("Call:+91-9830894559", 105, 100, { align: "center" });
 
-      const timestamp = Date.now();
-      const filename = (currentUserData.userId || "user") + "_" + (currentUserData.phone || "phone") + "_" + timestamp + ".pdf";
-      doc.save(filename);
+      function buildPdf(logoDataUrl) {
+        const doc = new jsPDF();
+        let y = 20;
+
+        if (logoDataUrl) {
+          doc.addImage(logoDataUrl, 'PNG', 92, 15, 26, 26);
+          y = 55;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(26);
+        doc.setTextColor(255, 140, 0);
+        doc.text("TMS Library", 105, y, { align: "center" });
+
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(1.2);
+        doc.line(40, y + 22, 170, y + 22);
+
+        const labelX = 40;
+        const rowGap = 12;
+        const firstRowY = y + 44;
+
+        const rows = [
+          ["Name", currentUserData.name || "-"],
+          ["Phone", currentUserData.phone || "-"],
+          ["Allowed Devices", String(currentUserData.maxDevices || 0)],
+          ["Logged in", String((currentUserData.devices || []).length)],
+          ["Access Start", currentUserData.accessStart ? formatDisplayDate(currentUserData.accessStart) : "-"],
+          ["Access End", currentUserData.accessEnd ? formatDisplayDate(currentUserData.accessEnd) : "-"]
+        ];
+
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+
+        doc.setFont("helvetica", "bold");
+        let maxLabelWidth = 0;
+        rows.forEach(function(r) {
+          const w = doc.getTextWidth(r[0]);
+          if (w > maxLabelWidth) maxLabelWidth = w;
+        });
+        const colonX = labelX + maxLabelWidth + 3;
+        const valueX = colonX + 12;
+
+        let rowY = firstRowY;
+        rows.forEach(function(r) {
+          doc.setFont("helvetica", "bold");
+          doc.text(r[0], labelX, rowY);
+          doc.text(":", colonX, rowY);
+          doc.setFont("helvetica", "normal");
+          doc.text(r[1], valueX, rowY);
+          rowY += rowGap;
+        });
+
+        let fy = rowY + 28;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(16);
+        doc.text("Completely private library.", 105, fy, { align: "center" });
+        fy += 16;
+        doc.text("Call / Whatsapp : Biswajit : +91-9830894559", 105, fy, { align: "center" });
+        fy += 16;
+        doc.text("Thanks.", 105, fy, { align: "center" });
+
+        const timestamp = Date.now();
+        const filename = (currentUserData.userId || "user") + "_" + (currentUserData.phone || "phone") + "_" + timestamp + ".pdf";
+        doc.save(filename);
+      }
+
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+        buildPdf(canvas.toDataURL('image/png'));
+      };
+      img.onerror = function() {
+        buildPdf(null);
+      };
+      img.src = 'icon-192.png';
     }
 
 function renderPerson(personId) {
@@ -671,49 +770,30 @@ async function getChosenSerial(personKey, allSerials, rotationHours, uid) {
 
 tryInstantRenderFromCache();
 
-    auth.onAuthStateChanged(function(user) {
+    function goToLogin() {
+      if (profileListener) { profileListener(); profileListener = null; }
+      localStorage.removeItem('tms_user_id');
+      try { localStorage.removeItem('tms_index_last_logged_in'); } catch (e) {}
+      window.location.href = 'index.html';
+    }
+
+    const savedUid = localStorage.getItem('tms_user_id');
+
+    if (!savedUid) {
+      goToLogin();
+    } else {
       const statusMsg = document.getElementById('statusMsg');
       const quoteContent = document.getElementById('quoteContent');
 
-      if (profileListener) {
-        profileListener();
-        profileListener = null;
-      }
-
-      if (!user) {
-        window.location.href = 'index.html';
-        return;
-      }
-
-      profileListener = db.collection("users").doc(user.uid).onSnapshot(function(doc) {
-        if (!doc.exists) {
-          auth.signOut();
-          window.location.href = 'index.html';
-          return;
-        }
+      profileListener = db.collection("tmsbusers").doc(savedUid).onSnapshot(function(doc) {
+        if (!doc.exists) { goToLogin(); return; }
         const data = doc.data();
         const today = new Date().toISOString().split('T')[0];
 
-        if (!data.approved) {
-          auth.signOut();
-          window.location.href = 'index.html';
-          return;
-        }
-        if (data.blocked) {
-          auth.signOut();
-          window.location.href = 'index.html';
-          return;
-        }
-        if (data.accessStart && today < data.accessStart) {
-          auth.signOut();
-          window.location.href = 'index.html';
-          return;
-        }
-        if (data.accessEnd && today > data.accessEnd) {
-          auth.signOut();
-          window.location.href = 'index.html';
-          return;
-        }
+        if (!data.approved) { goToLogin(); return; }
+        if (data.blocked) { goToLogin(); return; }
+        if (data.accessStart && today < data.accessStart) { goToLogin(); return; }
+        if (data.accessEnd && today > data.accessEnd) { goToLogin(); return; }
 
         const deviceId = getDeviceId();
         const devices = data.devices || [];
@@ -721,8 +801,7 @@ tryInstantRenderFromCache();
         if (devices.includes(deviceId)) {
           deviceWasRegistered = true;
         } else if (deviceWasRegistered) {
-          auth.signOut();
-          window.location.href = 'index.html';
+          goToLogin();
           return;
         } else {
           let updatedDevices = devices.slice();
@@ -731,7 +810,7 @@ tryInstantRenderFromCache();
           }
           updatedDevices.push(deviceId);
           deviceWasRegistered = true;
-          db.collection("users").doc(user.uid).update({
+          db.collection("tmsbusers").doc(savedUid).update({
             devices: updatedDevices
           });
         }
@@ -742,10 +821,12 @@ tryInstantRenderFromCache();
         quoteContent.style.display = 'block';
 
         if (!quotesLoaded) {
-          loadQuotesFromJson(user.uid);
+          loadQuotesFromJson(savedUid);
         }
+      }, function(error) {
+        goToLogin();
       });
-    });
+    }
   </script>
 
 </body>

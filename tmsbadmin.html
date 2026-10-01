@@ -199,7 +199,8 @@
     vertical-align: middle;
   }
 
-  th { background-color: #FF8C00; color: #000; }
+  th { background-color: #FF8C00; color: #000; white-space: nowrap; padding: 14px 10px; }
+  th:last-child { min-width: 140px; text-align: center; }
 
     td input {
     width: 100%;
@@ -277,6 +278,26 @@
     #rotationBox label { font-size: 18px; }
     #rotationBox select { font-size: 18px; padding: 14px; }
   
+td[data-label="Actions"]::before { content: none; }
+.actionGrid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px; width: 100%; }
+td[data-label="Actions"] .actionGrid .btnSmall { margin: 0; padding: 12px 6px; font-size: 15px; }
+
+#qrModal, #bankModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; flex-direction: column; align-items: center; padding: 16px; overflow-y: auto; }
+#qrModal { background: #000; justify-content: center; }
+#qrModal img { max-width: 100%; max-height: 75%; object-fit: contain; }
+#bankModal { background: #fff; }
+#bankBox { margin: auto; width: 100%; max-width: 480px; display: flex; flex-direction: column; align-items: center; }
+.bankRow { display: grid; grid-template-columns: 38% 62%; gap: 10px; width: 100%; font-weight: bold; font-size: 20px; color: #000; padding: 14px 0; border-bottom: 1px solid #ddd; word-break: break-word; }
+.shareBtn { width: 100%; max-width: 320px; margin-top: 20px; padding: 16px; border: none; border-radius: 10px; background-color: #4CAF50; color: #fff; font-size: 20px; font-weight: bold; cursor: pointer; }
+
+#pwModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; align-items: center; justify-content: center; padding: 16px; }
+#pwBox { background: #fff; border-radius: 12px; padding: 24px; width: 100%; max-width: 340px; }
+#pwBox input { width: 100%; padding: 14px; font-size: 18px; border: 1px solid #ccc; border-radius: 8px; }
+#pwError { color: red; font-weight: bold; font-size: 16px; min-height: 22px; margin: 8px 0; text-align: center; }
+#pwBox button { width: 100%; padding: 14px; margin-top: 8px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; color: #fff; cursor: pointer; }
+#pwOk { background-color: #4CAF50; }
+#pwCancel { background-color: #757575; }
+
 </style>
 </head>
 <body>
@@ -288,6 +309,8 @@
     </button>
 <div id="userMenu">
   <div class="userMenuItem" onclick="shareTmsLink()">Share Link</div>
+  <div class="userMenuItem" onclick="showQr()">Show QR</div>
+  <div class="userMenuItem" onclick="showBank()">Bank Details</div>
   <div class="userMenuItem" onclick="adminLogout()">Logout</div>
 </div>
   </header>
@@ -303,7 +326,7 @@
   <button id="installAdminBtn" style="display:none; width:90%; max-width:320px; margin:20px auto; padding:18px; background-color:#FF8C00; color:#fff; border:none; border-radius:10px; font-size:18px; font-weight:bold; cursor:pointer;">Install TMS Admin App</button>
   
   <div id="panel">
-    <input type="text" id="userSearchBox" placeholder="Search by Name, Phone or User ID" oninput="renderUserTable()" style="width:100%; padding:14px; margin-bottom:20px; border:2px solid #FF8C00; border-radius:8px; font-size:16px;">
+        <input type="text" id="userSearchBox" name="tms_admin_search" autocomplete="off" placeholder="Search by Name, Phone or User ID" oninput="renderUserTable()" style="width:100%; padding:14px; margin-bottom:20px; border:2px solid #FF8C00; border-radius:8px; font-size:16px;">
 
     <div id="rotationBox" style="background:#fff; border:2px solid #FF8C00; border-radius:10px; padding:20px; margin-bottom:25px;">
       <h3 style="color:#FF8C00; margin-bottom:15px; font-size:20px;">Set Quote Rotation Timing</h3>
@@ -338,6 +361,7 @@
       <h3>Create New User</h3>
       <input type="text" id="newName" placeholder="Full Name">
       <input type="tel" id="newPhone" placeholder="10-digit Phone Number" maxlength="10">
+      <input type="text" id="newUserIdPreview" placeholder="User ID (auto)" readonly>
       <input type="text" id="newPin" placeholder="6-digit PIN" maxlength="6">
       <input type="number" id="newMaxDevices" placeholder="Max Devices" value="1">
       <input type="date" id="newStart">
@@ -357,10 +381,10 @@
           <th>User ID</th>
           <th>Approved</th>
           <th>Blocked</th>
-          <th>Max Devices</th>
+          <th>Allowed</th>
+          <th>Logged in</th>
           <th>Start</th>
           <th>End</th>
-          <th>Actions</th>
         </tr>
       </thead>
       <tbody id="userTableBody">
@@ -368,25 +392,40 @@
     </table>
   </div>
 
+  <div id="qrModal"><img src="gpay-qr.png" alt="GPay QR"><button class="shareBtn" onclick="shareQr()">Share</button></div>
+  <div id="bankModal"><div id="bankBox">
+    <div class="bankRow"><span>Bank:</span><span>Bandhan Bank</span></div>
+    <div class="bankRow"><span>Name:</span><span>Biswajit Karmakar</span></div>
+    <div class="bankRow"><span>S/B A/C No:</span><span>50150082646611</span></div>
+    <div class="bankRow"><span>IFSC Code:</span><span>BDBL0001406</span></div>
+    <div class="bankRow"><span>Branch Name:</span><span>Baghajatin</span></div>
+    <button class="shareBtn" onclick="shareBank()">Share</button>
+  </div></div>
+    <div id="pwModal"><div id="pwBox">
+    <input type="password" id="pwInput" placeholder="Admin Password" autocomplete="new-password">
+    <p id="pwError"></p>
+    <button id="pwOk" onclick="submitPw()">OK</button>
+    <button id="pwCancel" onclick="closePw()">Cancel</button>
+  </div></div>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyDqmiTPNCbx2Kd9PKZdaKYrm_tKdR7gqzc",
-      authDomain: "tmsb-online-library.firebaseapp.com",
-      projectId: "tmsb-online-library",
-      storageBucket: "tmsb-online-library.firebasestorage.app",
-      messagingSenderId: "305360233952",
-      appId: "1:305360233952:web:3c92404970ac61c6143785"
+      apiKey: "AIzaSyDuuW3QUEYB15CEAh0PgTArLdL21LhtA7g",
+      authDomain: "tmsb-online-library-4eaa6.firebaseapp.com",
+      projectId: "tmsb-online-library-4eaa6",
+      storageBucket: "tmsb-online-library-4eaa6.firebasestorage.app",
+      messagingSenderId: "133113941862",
+      appId: "1:133113941862:web:01ecc4e679dbc3c27d02a7"
     };
 
 const adminApp = firebase.initializeApp(firebaseConfig, "TMSAdminApp");
 const auth = adminApp.auth();
 const db = adminApp.firestore();
 
-    const ADMIN_EMAIL = "gtti.computer@gmail.com";
+        const ADMIN_EMAIL = "tmsadmin@tms-library.in";
 
     function toTitleCaseAdmin(str) {
       return str.trim().toLowerCase().split(' ')
@@ -404,6 +443,33 @@ const db = adminApp.firestore();
     }
 
     document.getElementById('newName').addEventListener('input', formatNameInputAdmin);
+	    function updateUserIdPreview() {
+      const nameParts = document.getElementById('newName').value.trim().split(/\s+/);
+      const phone = document.getElementById('newPhone').value.trim();
+      const box = document.getElementById('newUserIdPreview');
+      if (!nameParts[0] || !/^\d{10}$/.test(phone)) { box.value = ""; return; }
+
+      const firstName = nameParts[0].toLowerCase();
+      const candidates = [
+        firstName + phone.substring(6, 10),
+        firstName + phone.substring(0, 4),
+        firstName + phone.substring(0, 4) + phone.substring(9, 10)
+      ];
+
+      const taken = {};
+      if (latestUsersSnapshot) {
+        latestUsersSnapshot.forEach(function(d) { taken[d.id] = true; });
+      }
+
+      let found = "";
+      for (const c of candidates) {
+        if (!taken[c]) { found = c; break; }
+      }
+      box.value = found;
+    }
+
+    document.getElementById('newName').addEventListener('input', updateUserIdPreview);
+    document.getElementById('newPhone').addEventListener('input', updateUserIdPreview);
     let usersListener = null;
     let currentUserFilter = 'approved';
     let latestUsersSnapshot = null;
@@ -431,6 +497,59 @@ function shareTmsLink() {
     prompt('Copy this link:', shareUrl);
   }
 }
+
+    function openModal(id) {
+      document.getElementById('userMenu').style.display = 'none';
+      document.getElementById(id).style.display = 'flex';
+      history.pushState({ modalOpen: true }, '');
+    }
+
+    function showQr() { openModal('qrModal'); }
+    function showBank() { openModal('bankModal'); }
+
+    function closeModals() {
+      document.getElementById('qrModal').style.display = 'none';
+      document.getElementById('bankModal').style.display = 'none';
+      document.getElementById('pwModal').style.display = 'none';
+      pwCallback = null;
+    }
+
+    window.addEventListener('popstate', closeModals);
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' &&
+          (document.getElementById('qrModal').style.display === 'flex' ||
+           document.getElementById('bankModal').style.display === 'flex' ||
+           document.getElementById('pwModal').style.display === 'flex')) {
+        history.back();
+      }
+    });
+
+    async function shareQr() {
+      try {
+        const res = await fetch('gpay-qr.png');
+        const blob = await res.blob();
+        const file = new File([blob], 'gpay-qr.png', { type: blob.type || 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file] });
+        } else if (navigator.share) {
+          await navigator.share({ title: 'GPay QR', url: new URL('gpay-qr.png', location.href).href });
+        } else {
+          alert('Sharing is not supported on this device.');
+        }
+      } catch (e) {}
+    }
+
+    function shareBank() {
+      const text = 'Bank: Bandhan Bank\nName: Biswajit Karmakar\nS/B A/C No: 50150082646611\nIFSC Code: BDBL0001406\nBranch Name: Baghajatin';
+      if (navigator.share) {
+        navigator.share({ text: text }).catch(function() {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() { alert('Bank details copied.'); });
+      } else {
+        prompt('Copy bank details:', text);
+      }
+    }
 
     function adminLogout() {
       if (usersListener) {
@@ -484,8 +603,12 @@ function shareTmsLink() {
       }
     });
 
-    // ---- CREATE USER ----
-        async function createUser() {
+    async function sha256(text) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function createUser() {
       const rawName = document.getElementById('newName').value.trim();
       const phone = document.getElementById('newPhone').value.trim();
       const pin = document.getElementById('newPin').value.trim();
@@ -509,6 +632,12 @@ function shareTmsLink() {
         return;
       }
 
+      if (!createUser._ok) {
+        askAdminPassword(function() { createUser._ok = true; createUser(); });
+        return;
+      }
+      createUser._ok = false;
+
       const firstName = nameParts[0].toLowerCase();
       const candidates = [
         firstName + phone.substring(6, 10),
@@ -516,35 +645,22 @@ function shareTmsLink() {
         firstName + phone.substring(0, 4) + phone.substring(9, 10)
       ];
 
-      const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary_" + Date.now());
-      let cred = null;
-      let userId = null;
-
-      for (const candidate of candidates) {
-        try {
-          cred = await secondaryApp.auth().createUserWithEmailAndPassword(candidate + '@tms-library.in', pin);
-          userId = candidate;
-          break;
-        } catch (err) {
-          if (err.code !== 'auth/email-already-in-use') {
-            errorBox.innerText = err.message;
-            try { secondaryApp.delete(); } catch (e) {}
-            return;
-          }
-        }
-      }
-
-      if (!cred) {
-        errorBox.innerText = "Could not generate a unique User ID for this user.";
-        try { secondaryApp.delete(); } catch (e) {}
-        return;
-      }
-
       try {
-        await db.collection("users").doc(cred.user.uid).set({
+        let userId = null;
+        for (const candidate of candidates) {
+          const snap = await db.collection("tmsbusers").doc(candidate).get();
+          if (!snap.exists) { userId = candidate; break; }
+        }
+        if (!userId) {
+          errorBox.innerText = "Could not generate a unique User ID for this user.";
+          return;
+        }
+
+        await db.collection("tmsbusers").doc(userId).set({
           name: toTitleCaseAdmin(rawName),
           phone: phone,
           userId: userId,
+          pinHash: await sha256(pin),
           approved: true,
           approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
           blocked: false,
@@ -554,17 +670,21 @@ function shareTmsLink() {
           sessionVersion: 0,
           devices: []
         });
-        await secondaryApp.auth().signOut();
-        secondaryApp.delete();
+
         document.getElementById('newName').value = "";
         document.getElementById('newPhone').value = "";
         document.getElementById('newPin').value = "";
         document.getElementById('newMaxDevices').value = "1";
         document.getElementById('newStart').value = "";
         document.getElementById('newEnd').value = "";
+		document.getElementById('userSearchBox').value = "";
+		document.getElementById('newUserIdPreview').value = "";
+		setUserFilter('approved');
+        const fresh = await db.collection("tmsbusers").get();
+        latestUsersSnapshot = fresh;
+        renderUserTable();
       } catch (error) {
         errorBox.innerText = error.message;
-        try { secondaryApp.delete(); } catch (e) {}
       }
     }
 
@@ -595,25 +715,33 @@ function shareTmsLink() {
       const value = parseInt(document.getElementById(selectId).value);
       const update = {};
       update[fieldKey] = value;
-      db.collection("settings").doc("quoteSettings").set(update, { merge: true })
-        .then(function() {
-          const status = document.getElementById('rotationStatus');
-          status.innerText = 'Saved! New timing is effective immediately.';
-          setTimeout(function() { status.innerText = ''; }, 4000);
-        });
+      askAdminPassword(function() {
+        db.collection("settings").doc("quoteSettings").set(update, { merge: true })
+          .then(function() {
+            const status = document.getElementById('rotationStatus');
+            status.innerText = 'Saved! New timing is effective immediately.';
+            setTimeout(function() { status.innerText = ''; }, 4000);
+          });
+      });
     }
 	
     // ---- LOAD USERS ----
-    // ---- LOAD USERS ----
     function loadUsers() {
-      usersListener = db.collection("users").onSnapshot(function(snapshot) {
+      if (usersListener) { usersListener(); usersListener = null; }
+      usersListener = db.collection("tmsbusers").onSnapshot(function(snapshot) {
         latestUsersSnapshot = snapshot;
         renderUserTable();
+      }, function(error) {
+        document.getElementById('createError').innerText = "List error: " + error.message;
       });
     }
 
     function renderUserTable() {
       if (!latestUsersSnapshot) return;
+	  const todayStr = new Date().toISOString().split('T')[0];
+      function isActiveUser(u) {
+        return !!u.approved && !(u.accessEnd && todayStr > u.accessEnd);
+      }
       const snapshot = latestUsersSnapshot;
       const tbody = document.getElementById('userTableBody');
       const noUsersMsg = document.getElementById('noUsersMsg');
@@ -627,7 +755,7 @@ function shareTmsLink() {
 
       snapshot.forEach(function(doc) {
         const u = doc.data();
-        if (u.approved) {
+        if (isActiveUser(u)) {
           approvedCount++;
           totalLicenses += (u.maxDevices || 0);
           activeLicenses += ((u.devices || []).length);
@@ -648,7 +776,13 @@ function shareTmsLink() {
       const searchBox = document.getElementById('userSearchBox');
       const searchTerm = searchBox ? searchBox.value.trim().toLowerCase() : '';
 
-      snapshot.forEach(function(doc) {
+      const sortedDocs = snapshot.docs.slice().sort(function(a, b) {
+        const nameA = (a.data().name || '').toLowerCase();
+        const nameB = (b.data().name || '').toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
+
+      sortedDocs.forEach(function(doc) {
         const u = doc.data();
         const id = doc.id;
 
@@ -659,7 +793,7 @@ function shareTmsLink() {
           if (!matches) return;
         } else {
           const wantApproved = (currentUserFilter === 'approved');
-          if (!!u.approved !== wantApproved) return;
+          if (isActiveUser(u) !== wantApproved) return;
         }
 
         visibleCount++;
@@ -668,22 +802,22 @@ function shareTmsLink() {
           '<td data-label="Name">' + (u.name || "") + '</td>' +
           '<td data-label="Phone">' + (u.phone || "") + '</td>' +
           '<td data-label="User ID">' + (u.userId || "") + '</td>' +
-          '<td data-label="Approved">' + (u.approved ? "Yes" : "No") + '</td>' +
+          '<td data-label="Approved">' + (isActiveUser(u) ? "Yes" : "No") + '</td>' +
           '<td data-label="Blocked">' + (u.blocked ? "Yes" : "No") + '</td>' +
           '<td data-label="Allowed"><input type="number" id="dev-' + id + '" value="' + (u.maxDevices || 1) + '"></td>' +
           '<td data-label="Logged in">' + ((u.devices || []).length) + '</td>' +
           '<td data-label="Start"><input type="date" id="start-' + id + '" value="' + (u.accessStart || '') + '"></td>' +
           '<td data-label="End"><input type="date" id="end-' + id + '" value="' + (u.accessEnd || '') + '"></td>' +
-          '<td data-label="Actions">' +
+          '<td data-label="Actions"><div class="actionGrid">' +
           '<button class="btnSmall save" onclick="saveUser(\'' + id + '\')">Save</button>' +
+          '<button class="btnSmall delete" onclick="deleteUser(\'' + id + '\')">Delete</button>' +
           '<button class="btnSmall approve" onclick="setApproved(\'' + id + '\', true)"' + (u.approved ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Approve</button>' +
           '<button class="btnSmall block" onclick="setApproved(\'' + id + '\', false)"' + (!u.approved ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Disapprove</button>' +
           '<button class="btnSmall block" onclick="setBlocked(\'' + id + '\', true)"' + (u.blocked ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Block</button>' +
           '<button class="btnSmall unblock" onclick="setBlocked(\'' + id + '\', false)"' + (!u.blocked ? ' disabled style="opacity:0.5; cursor:not-allowed;"' : '') + '>Unblock</button>' +
           '<button class="btnSmall reset" onclick="resetPin(\'' + id + '\')">Reset PIN</button>' +
           '<button class="btnSmall block" onclick="forceLogout(\'' + id + '\')">Force Logout</button>' +
-          '<button class="btnSmall delete" onclick="deleteUser(\'' + id + '\')">Delete</button>' +
-          '</td>';
+          '</div></td>';
         tbody.appendChild(row);
       });
 
@@ -699,58 +833,102 @@ function shareTmsLink() {
       }
     }
 
+    let pwCallback = null;
+
+    function askAdminPassword(cb) {
+      pwCallback = cb;
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwError').innerText = '';
+      document.getElementById('pwModal').style.display = 'flex';
+	  history.pushState({ modalOpen: true }, '');
+      document.getElementById('pwInput').focus();
+    }
+
+    function closePw() {
+      if (document.getElementById('pwModal').style.display === 'flex') history.back();
+    }
+
+    async function submitPw() {
+      const pwd = document.getElementById('pwInput').value;
+      try {
+        const cred = firebase.auth.EmailAuthProvider.credential(ADMIN_EMAIL, pwd);
+        await auth.currentUser.reauthenticateWithCredential(cred);
+      } catch (e) {
+        document.getElementById('pwError').innerText = "Invalid Credentials";
+        return;
+      }
+      const cb = pwCallback;
+      closePw();
+      if (cb) cb();
+    }
+
+    document.getElementById('pwInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') submitPw();
+    });
+
     function saveUser(id) {
       const maxDevices = parseInt(document.getElementById('dev-' + id).value) || 1;
       const start = document.getElementById('start-' + id).value;
       const end = document.getElementById('end-' + id).value;
-      db.collection("users").doc(id).update({
-        maxDevices: maxDevices,
-        accessStart: start,
-        accessEnd: end
+      askAdminPassword(function() {
+        db.collection("tmsbusers").doc(id).update({
+          maxDevices: maxDevices,
+          accessStart: start,
+          accessEnd: end
+        });
       });
     }
 
     function setApproved(id, value) {
-      if (!value) {
-        db.collection("users").doc(id).update({ approved: false });
-        return;
-      }
-      db.collection("users").doc(id).get().then(function(doc) {
-        const data = doc.data() || {};
-        const update = { approved: true };
-        if (!data.approvedAt) {
-          update.approvedAt = firebase.firestore.FieldValue.serverTimestamp();
+      askAdminPassword(function() {
+        if (!value) {
+          db.collection("tmsbusers").doc(id).update({ approved: false });
+          return;
         }
-        db.collection("users").doc(id).update(update);
+        db.collection("tmsbusers").doc(id).get().then(function(doc) {
+          const data = doc.data() || {};
+          const update = { approved: true };
+          if (!data.approvedAt) {
+            update.approvedAt = firebase.firestore.FieldValue.serverTimestamp();
+          }
+          db.collection("tmsbusers").doc(id).update(update);
+        });
       });
     }
 
     function setBlocked(id, value) {
-      db.collection("users").doc(id).update({ blocked: value });
+      askAdminPassword(function() {
+        db.collection("tmsbusers").doc(id).update({ blocked: value });
+      });
     }
 
     function forceLogout(id) {
-      if (confirm("Force logout this user from ALL devices and clear registered devices?")) {
-        db.collection("users").doc(id).update({
+      askAdminPassword(function() {
+        db.collection("tmsbusers").doc(id).update({
           sessionVersion: firebase.firestore.FieldValue.increment(1),
           devices: []
         });
-      }
+      });
     }
 
     function resetPin(id) {
-      const newPin = prompt("Enter new 6-digit PIN for this user:");
-      if (!newPin || !/^\d{6}$/.test(newPin)) {
-        alert("PIN must be exactly 6 digits.");
-        return;
-      }
-      alert("Note: Resetting the login PIN requires a Cloud Function (admin SDK) since this can't be done from the browser alone.");
+      askAdminPassword(async function() {
+        try {
+          await db.collection("tmsbusers").doc(id).update({
+            pinHash: await sha256("123456"),
+            sessionVersion: firebase.firestore.FieldValue.increment(1),
+            devices: []
+          });
+        } catch (e) {
+          alert("Something went wrong. Please try again.");
+        }
+      });
     }
 
     function deleteUser(id) {
-      if (confirm("Delete this user's access record?")) {
-        db.collection("users").doc(id).delete();
-      }
+      askAdminPassword(function() {
+        db.collection("tmsbusers").doc(id).delete();
+      });
     }
 
     let deferredAdminInstallPrompt = null;

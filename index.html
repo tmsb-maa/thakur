@@ -323,9 +323,9 @@
           <input type="text" id="signupPinConfirm" placeholder="Confirm PIN" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
           <span onclick="togglePin('signupPinConfirm')" style="position:absolute; right:12px; top:12px; cursor:pointer;">👁</span>
         </div>
-        <button id="registerBtn" onclick="registerUser()" style="width:100%;">Register</button>
+                <button id="registerBtn" onclick="registerUser()" style="width:100%; font-size:20px;">Register</button>
         <p id="signupError" style="color:red; font-size:13px;"></p>
-        <p style="margin-top:10px; font-size:14px;"><a href="#" onclick="showLogin(); return false;">Back to Login</a></p>
+                <p style="margin-top:10px; font-size:20px; font-weight:bold;"><a href="#" onclick="showLogin(); return false;">Back to Login</a></p>
       </div>
     </div>
 
@@ -334,9 +334,10 @@
 <div class="barContainer" id="barContainer">
   <div class="bar" style="background-color:#64BA88;" onclick="window.location.href='quoteoftheday.html'">Quotes / Advisories<span class="barBengali">বাণী / উপদেশাবলী</span></div>
   <div class="bar" style="background-color:#45A3C2;" onclick="window.location.href='spiritualprayers.html'">Spiritual Prayers<span class="barBengali">আধ্যাত্মিক প্রার্থনাসমূহ</span></div>
-  <div class="bar" style="background-color:#C2A13D;" onclick="window.location.href='panchalimantratarpon.html'">Panchali / Mantras / Tarpon<span class="barBengali">পাঁচালী / মন্ত্র / তর্পণ</span></div>
-  <div class="bar" style="background-color:#D44E4E;" onclick="window.location.href='hinduceremonies.html'">Hindu Ceremonies<span class="barBengali">হিন্দু পূজা/আচার সময়সূচী</span></div>
-  <div class="bar" style="background-color:#B873E7;" onclick="window.location.href='hindugodphotos.html'">Photos of Hindu Goddess<span class="barBengali">হিন্দু দেবদেবীর ছবি</span></div>
+  <div class="bar" style="background-color:#E19D09;" onclick="window.location.href='godasavatars.html'">God as Avatars<span class="barBengali">অবতার রূপে ভগবান</span></div>
+  <div class="bar" style="background-color:#64BA88;" onclick="window.location.href='panchalimantratarpon.html'">Panchali / Mantras / Tarpon<span class="barBengali">পাঁচালী / মন্ত্র / তর্পণ</span></div>
+  <div class="bar" style="background-color:#45A3C2;" onclick="window.location.href='hinduceremonies.html'">Hindu Ceremonies<span class="barBengali">হিন্দু পূজা/আচার সময়সূচী</span></div>
+  <div class="bar" style="background-color:#D44E4E;" onclick="window.location.href='hindugodphotos.html'">Photos of Hindu Goddess<span class="barBengali">হিন্দু দেবদেবীর ছবি</span></div>
 </div>
 
     <div class="tmsModal" id="changePinModal">
@@ -351,17 +352,50 @@
     </div>
 
     <div class="tmsModal" id="profileModal">
-      <div class="tmsModalBox">
-        <img src="icon-192.png" alt="TMS Library" class="tmsModalLogo">
-        <h2 class="tmsCenterLine" style="color:#FF8C00; font-size:24px; font-weight:bold; margin-bottom:20px;">TMS Library</h2>
-        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">Name: <span id="profileName"></span></p>
-        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">Phone No: <span id="profilePhone"></span></p>
-        <p style="font-size:18px; font-weight:bold; margin-bottom:10px;">No. of Devices: <span id="profileDevices"></span></p>
-        <p style="font-size:18px; font-weight:bold; margin-bottom:35px;">Access Period : <span id="profileAccessWrap" style="display:inline-block; vertical-align:top;"></span></p>
-        <button onclick="downloadProfilePdf()" style="width:100%; padding:14px; background:#4CAF50; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer; margin-bottom:40px;">Download PDF</button>
-        <p class="tmsCenterLine" style="font-weight:bold; font-size:16px; margin-bottom:5px;">Completely private library.</p>
-        <p class="tmsCenterLine" style="font-weight:bold; font-size:16px; margin-bottom:15px;">Call:+91-9830894559</p>
-        <button onclick="closeProfile()" style="width:100%; padding:12px; background:#ccc; color:#333; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Close</button>
+      <div class="tmsModalBox" style="max-height:100%; overflow-y:auto;">
+        <img src="icon-192.png" alt="TMS Library" class="tmsModalLogo" style="width:100px; height:100px;">
+        <h2 class="tmsCenterLine" style="color:#FF8C00; font-size:28px; font-weight:bold; margin-bottom:0;">TMS Library</h2>
+        <hr style="border:0; border-top:3px solid #000; margin:20px 0 24px 0;">
+
+        <table style="width:100%; border-collapse:collapse; font-size:18px;">
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Name</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profileName" style="padding:8px 0 8px 24px; word-break:break-word;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Phone</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profilePhone" style="padding:8px 0 8px 24px;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Allowed Devices</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profileAllowed" style="padding:8px 0 8px 24px;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Logged in</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profileLoggedIn" style="padding:8px 0 8px 24px;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Access Start</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profileStart" style="padding:8px 0 8px 24px;"></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; white-space:nowrap; padding:8px 0; vertical-align:top;">Access End</td>
+            <td style="font-weight:bold; padding:8px 0 8px 6px; vertical-align:top;">:</td>
+            <td id="profileEnd" style="padding:8px 0 8px 24px;"></td>
+          </tr>
+        </table>
+
+        <p class="tmsCenterLine" style="font-size:18px; margin-top:64px; margin-bottom:32px;">Completely private library.</p>
+        <p class="tmsCenterLine" style="font-size:18px; margin-bottom:32px;">Call / Whatsapp : Biswajit : +91-9830894559</p>
+        <p class="tmsCenterLine" style="font-size:18px; margin-bottom:36px;">Thanks.</p>
+
+        <button onclick="downloadProfilePdf()" style="width:100%; padding:14px; background:#4CAF50; color:#fff; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer; margin-bottom:12px;">Download PDF</button>
+        <button onclick="closeProfile()" style="width:100%; padding:14px; background:#ccc; color:#333; border:none; border-radius:8px; font-size:17px; font-weight:bold; cursor:pointer;">Close</button>
       </div>
     </div>
 
@@ -395,14 +429,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDqmiTPNCbx2Kd9PKZdaKYrm_tKdR7gqzc",
-      authDomain: "tmsb-online-library.firebaseapp.com",
-      projectId: "tmsb-online-library",
-      storageBucket: "tmsb-online-library.firebasestorage.app",
-      messagingSenderId: "305360233952",
-      appId: "1:305360233952:web:3c92404970ac61c6143785"
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSyDuuW3QUEYB15CEAh0PgTArLdL21LhtA7g",
+  authDomain: "tmsb-online-library-4eaa6.firebaseapp.com",
+  projectId: "tmsb-online-library-4eaa6",
+  storageBucket: "tmsb-online-library-4eaa6.firebasestorage.app",
+  messagingSenderId: "133113941862",
+  appId: "1:133113941862:web:01ecc4e679dbc3c27d02a7"
+};
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
@@ -457,11 +491,11 @@
 
     async function resolveUniqueUserId(rawName, phone, firestoreDb) {
       const candidate1 = generateBaseUserId(rawName, phone, false); // firstname + last4
-      let doc1 = await firestoreDb.collection("users").where("userId", "==", candidate1).limit(1).get();
+      let doc1 = await firestoreDb.collection("tmsbusers").where("userId", "==", candidate1).limit(1).get();
       if (doc1.empty) return candidate1;
 
       const candidate2 = generateBaseUserId(rawName, phone, true); // firstname + first4
-      let doc2 = await firestoreDb.collection("users").where("userId", "==", candidate2).limit(1).get();
+      let doc2 = await firestoreDb.collection("tmsbusers").where("userId", "==", candidate2).limit(1).get();
       if (doc2.empty) return candidate2;
 
       return candidate2 + phone.substring(9, 10); // firstname + first4 + last digit of phone
@@ -469,14 +503,20 @@
 	
 	    function formatNameInput() {
       const field = document.getElementById('signupName');
-      const cursorPos = field.selectionStart;
-      const before = field.value;
+      const rawValue = field.value;
+      const cursorPos = rawValue.slice(0, field.selectionStart).replace(/[^A-Za-z ]/g, '').length;
+      const before = rawValue.replace(/[^A-Za-z ]/g, '');
       field.value = before.replace(/\b\w/g, function(c) { return c.toUpperCase(); })
                            .replace(/\B\w/g, function(c) { return c.toLowerCase(); });
       field.setSelectionRange(cursorPos, cursorPos);
     }
 
         document.getElementById('signupName').addEventListener('input', formatNameInput);
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
 	
     async function registerUser() {
       const errorBox = document.getElementById('signupError');
@@ -537,35 +577,19 @@
         firstName + phone.substring(0, 4) + phone.substring(9, 10)
       ];
 
-      const secondaryApp = firebase.initializeApp(firebaseConfig, "SignupSecondary_" + Date.now());
-      let cred = null;
-      let userId = null;
-
-      for (const candidate of candidates) {
-        try {
-          cred = await secondaryApp.auth().createUserWithEmailAndPassword(candidate + '@tms-library.in', pin);
-          userId = candidate;
-          break;
-        } catch (err) {
-          if (err.code !== 'auth/email-already-in-use') {
-            errorBox.innerText = 'Something went wrong. Please contact admin.';
-            try { secondaryApp.delete(); } catch (e) {}
-            registerBtn.disabled = false;
-            registerBtn.style.opacity = '1';
-            return;
-          }
-        }
-      }
-
-      if (!cred) {
-        errorBox.innerText = 'Could not generate a unique User ID. Please contact admin.';
-        try { secondaryApp.delete(); } catch (e) {}
-        registerBtn.disabled = false;
-        registerBtn.style.opacity = '1';
-        return;
-      }
-
       try {
+        let userId = null;
+        for (const candidate of candidates) {
+          const snap = await db.collection("tmsbusers").doc(candidate).get();
+          if (!snap.exists) { userId = candidate; break; }
+        }
+        if (!userId) {
+          errorBox.innerText = 'Could not generate a unique User ID. Please contact admin.';
+          registerBtn.disabled = false;
+          registerBtn.style.opacity = '1';
+          return;
+        }
+
         const todayDate = new Date();
         const oneYearLater = new Date(todayDate);
         oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
@@ -573,10 +597,11 @@
         const startStr = todayDate.getFullYear() + '-' + pad(todayDate.getMonth() + 1) + '-' + pad(todayDate.getDate());
         const endStr = oneYearLater.getFullYear() + '-' + pad(oneYearLater.getMonth() + 1) + '-' + pad(oneYearLater.getDate());
 
-        await secondaryApp.firestore().collection("users").doc(cred.user.uid).set({
+        await db.collection("tmsbusers").doc(userId).set({
           name: name,
           phone: phone,
           userId: userId,
+          pinHash: await sha256(pin),
           approved: false,
           blocked: false,
           maxDevices: 1,
@@ -585,30 +610,35 @@
           sessionVersion: 0,
           devices: []
         });
-        await secondaryApp.auth().signOut();
-        secondaryApp.delete();
-localStorage.setItem('tmsb_signup_done', Date.now().toString());
-showLogin();
-document.getElementById('resultUserId').innerText = userId;
-document.getElementById('signupResultModal').style.display = 'flex';
-registerBtn.disabled = false;
-registerBtn.style.opacity = '1';
+
+        localStorage.setItem('tmsb_signup_done', Date.now().toString());
+        showLogin();
+        document.getElementById('resultUserId').innerText = userId;
+        document.getElementById('signupResultModal').style.display = 'flex';
       } catch (error) {
         errorBox.innerText = 'Something went wrong. Please contact admin.';
-        try { secondaryApp.delete(); } catch (e) {}
-        registerBtn.disabled = false;
-        registerBtn.style.opacity = '1';
       }
+      registerBtn.disabled = false;
+      registerBtn.style.opacity = '1';
     }
 
-    function loginUser() {
+    async function loginUser() {
       const userId = document.getElementById('userIdInput').value.trim().toLowerCase();
       const pin = document.getElementById('passwordInput').value;
-      const pseudoEmail = userId + '@tms-library.in';
-      auth.signInWithEmailAndPassword(pseudoEmail, pin)
-        .catch(function(error) {
-          document.getElementById('authError').innerText = "Invalid Credentials";
-        });
+      const errorBox = document.getElementById('authError');
+      errorBox.innerText = '';
+      if (!userId || !/^\d{6}$/.test(pin)) { errorBox.innerText = "Invalid Credentials"; return; }
+      try {
+        const snap = await db.collection("tmsbusers").doc(userId).get();
+        if (!snap.exists || snap.data().pinHash !== await sha256(pin)) {
+          errorBox.innerText = "Invalid Credentials";
+          return;
+        }
+        localStorage.setItem('tms_user_id', userId);
+        startSession(userId);
+      } catch (e) {
+        errorBox.innerText = "Something went wrong. Please try again.";
+      }
     }
 
 function shareTmsLink() {
@@ -630,11 +660,7 @@ function shareTmsLink() {
 
     function logoutUser() {
       document.getElementById('userMenu').style.display = 'none';
-      if (profileListener) {
-        profileListener();
-        profileListener = null;
-      }
-      auth.signOut();
+      endSession();
     }
 
     function toggleUserMenu() {
@@ -689,11 +715,10 @@ function shareTmsLink() {
       if (!currentUserData) return;
       document.getElementById('profileName').innerText = currentUserData.name || "-";
       document.getElementById('profilePhone').innerText = currentUserData.phone || "-";
-      document.getElementById('profileDevices').innerText = ((currentUserData.devices || []).length) + " / " + (currentUserData.maxDevices || 0);
-
-      const startFmt = currentUserData.accessStart ? formatDisplayDate(currentUserData.accessStart) : "-";
-      const endFmt = currentUserData.accessEnd ? formatDisplayDate(currentUserData.accessEnd) : "";
-      document.getElementById('profileAccessWrap').innerHTML = endFmt ? (startFmt + " -<br>" + endFmt) : startFmt;
+      document.getElementById('profileAllowed').innerText = String(currentUserData.maxDevices || 0);
+      document.getElementById('profileLoggedIn').innerText = String((currentUserData.devices || []).length);
+      document.getElementById('profileStart').innerText = currentUserData.accessStart ? formatDisplayDate(currentUserData.accessStart) : "-";
+      document.getElementById('profileEnd').innerText = currentUserData.accessEnd ? formatDisplayDate(currentUserData.accessEnd) : "-";
 
       document.getElementById('userMenu').style.display = 'none';
       document.getElementById('profileModal').style.display = 'flex';
@@ -738,13 +763,14 @@ function shareTmsLink() {
         return;
       }
 
-      const user = auth.currentUser;
-      if (!user) return;
+      const uid = localStorage.getItem('tms_user_id');
+      if (!uid) return;
 
-      user.updatePassword(newPin)
-        .then(function() {
+      sha256(newPin)
+        .then(function(h) {
           selfInitiatedPinChange = true;
-          return db.collection("users").doc(user.uid).update({
+          return db.collection("tmsbusers").doc(uid).update({
+            pinHash: h,
             sessionVersion: firebase.firestore.FieldValue.increment(1),
             devices: []
           });
@@ -757,21 +783,91 @@ function shareTmsLink() {
     function downloadProfilePdf() {
       if (!currentUserData) return;
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFontSize(18);
-      doc.text("TMS Library", 105, 20, { align: "center" });
-      doc.setFontSize(14);
-      doc.text("Name: " + (currentUserData.name || "-"), 20, 40);
-      doc.text("Phone No: " + (currentUserData.phone || "-"), 20, 50);
-      doc.text("No. of Devices: " + ((currentUserData.devices || []).length) + " / " + (currentUserData.maxDevices || 0), 20, 60);
-      doc.text("Access Period: " + (currentUserData.accessStart ? currentUserData.accessStart : "-") + " - " + (currentUserData.accessEnd ? currentUserData.accessEnd : "-"), 20, 70);
-      doc.setFontSize(12);
-      doc.text("Completely private library.", 105, 90, { align: "center" });
-      doc.text("Call:+91-9830894559", 105, 100, { align: "center" });
 
-      const timestamp = Date.now();
-      const filename = (currentUserData.userId || "user") + "_" + (currentUserData.phone || "phone") + "_" + timestamp + ".pdf";
-      doc.save(filename);
+      function buildPdf(logoDataUrl) {
+        const doc = new jsPDF();
+        let y = 20;
+
+        if (logoDataUrl) {
+          doc.addImage(logoDataUrl, 'PNG', 92, 15, 26, 26);
+          y = 55;
+        }
+
+        // Headline
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(26);
+        doc.setTextColor(255, 140, 0);
+        doc.text("TMS Library", 105, y, { align: "center" });
+
+        // Bold black horizontal line between headline and first field
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(1.2);
+        doc.line(40, y + 22, 170, y + 22);
+
+        // Rows
+        const labelX = 40;
+        const rowGap = 12;
+        const firstRowY = y + 44;
+
+        const rows = [
+          ["Name", currentUserData.name || "-"],
+          ["Phone", currentUserData.phone || "-"],
+          ["Allowed Devices", String(currentUserData.maxDevices || 0)],
+          ["Logged in", String((currentUserData.devices || []).length)],
+          ["Access Start", currentUserData.accessStart ? formatDisplayDate(currentUserData.accessStart) : "-"],
+          ["Access End", currentUserData.accessEnd ? formatDisplayDate(currentUserData.accessEnd) : "-"]
+        ];
+
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+
+        // Colon position: just after the longest field name
+        doc.setFont("helvetica", "bold");
+        let maxLabelWidth = 0;
+        rows.forEach(function(r) {
+          const w = doc.getTextWidth(r[0]);
+          if (w > maxLabelWidth) maxLabelWidth = w;
+        });
+        const colonX = labelX + maxLabelWidth + 3;
+        const valueX = colonX + 12;
+
+        let rowY = firstRowY;
+        rows.forEach(function(r) {
+          doc.setFont("helvetica", "bold");
+          doc.text(r[0], labelX, rowY);
+          doc.text(":", colonX, rowY);
+          doc.setFont("helvetica", "normal");
+          doc.text(r[1], valueX, rowY);
+          rowY += rowGap;
+        });
+
+        // Footer: same size as the rows, centered
+        let fy = rowY + 28;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(16);
+        doc.text("Completely private library.", 105, fy, { align: "center" });
+        fy += 16;
+        doc.text("Call / Whatsapp : Biswajit : +91-9830894559", 105, fy, { align: "center" });
+        fy += 16;
+        doc.text("Thanks.", 105, fy, { align: "center" });
+
+        const timestamp = Date.now();
+        const filename = (currentUserData.userId || "user") + "_" + (currentUserData.phone || "phone") + "_" + timestamp + ".pdf";
+        doc.save(filename);
+      }
+
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+        buildPdf(canvas.toDataURL('image/png'));
+      };
+      img.onerror = function() {
+        buildPdf(null);
+      };
+      img.src = 'icon-192.png';
     }
 
         function tryInstantAuthDisplay() {
@@ -790,103 +886,100 @@ function shareTmsLink() {
 
     tryInstantAuthDisplay();
 
-    auth.onAuthStateChanged(function(user) {
-      const authBox = document.getElementById('authBox');
-      const personBtn = document.getElementById('personBtn');
-      const barContainer = document.getElementById('barContainer');
-      const checkingMsg = document.getElementById('checkingMsg');
+    function endSession() {
+      if (profileListener) { profileListener(); profileListener = null; }
+      localStorage.removeItem('tms_user_id');
+      try { localStorage.removeItem('tms_index_last_logged_in'); } catch (e) {}
+      document.getElementById('checkingMsg').style.display = 'none';
+      document.getElementById('authBox').style.display = 'block';
+      document.getElementById('personBtn').style.display = 'none';
+      document.getElementById('userMenu').style.display = 'none';
+      document.getElementById('profileModal').style.display = 'none';
+      document.getElementById('changePinModal').style.display = 'none';
+      document.getElementById('barContainer').style.display = 'none';
+      deviceWasRegistered = false;
+      currentUserData = null;
+    }
 
-      if (profileListener) {
-        profileListener();
-        profileListener = null;
-      }
+    function startSession(userId) {
+      if (profileListener) { profileListener(); profileListener = null; }
 
-      if (user) {
-        profileListener = db.collection("users").doc(user.uid).onSnapshot(function(doc) {
-          if (!doc.exists) {
-            document.getElementById('authError').innerText = "Account not found. Contact admin.";
-            auth.signOut();
-            return;
+      profileListener = db.collection("tmsbusers").doc(userId).onSnapshot(function(doc) {
+        if (!doc.exists) {
+          document.getElementById('authError').innerText = "Account not found. Contact admin.";
+          endSession();
+          return;
+        }
+        const data = doc.data();
+        const today = new Date().toISOString().split('T')[0];
+
+        if (!data.approved) {
+          document.getElementById('authError').innerText = "Account pending admin approval.";
+          endSession();
+          return;
+        }
+        if (data.blocked) {
+          document.getElementById('authError').innerText = "Account has been blocked by admin.";
+          endSession();
+          return;
+        }
+        if (data.accessStart && today < data.accessStart) {
+          document.getElementById('authError').innerText = "Access not yet started.";
+          endSession();
+          return;
+        }
+        if (data.accessEnd && today > data.accessEnd) {
+          document.getElementById('authError').innerText = "Access period has expired.";
+          endSession();
+          return;
+        }
+
+        const deviceId = getDeviceId();
+        const devices = data.devices || [];
+
+        if (devices.includes(deviceId)) {
+          deviceWasRegistered = true;
+        } else if (deviceWasRegistered) {
+          document.getElementById('authError').innerText = selfInitiatedPinChange
+            ? "PIN changed successfully. Please login with your new PIN."
+            : "You have been logged out.";
+          selfInitiatedPinChange = false;
+          deviceWasRegistered = false;
+          endSession();
+          return;
+        } else {
+          let updatedDevices = devices.slice();
+          if (updatedDevices.length >= (data.maxDevices || 1)) {
+            updatedDevices.shift();
           }
-          const data = doc.data();
-          const today = new Date().toISOString().split('T')[0];
+          updatedDevices.push(deviceId);
+          deviceWasRegistered = true;
+          db.collection("tmsbusers").doc(userId).update({
+            devices: updatedDevices
+          }).catch(function(error) {
+            alert("Something went wrong. Please contact admin.");
+          });
+        }
 
-          if (!data.approved) {
-            document.getElementById('authError').innerText = "Account pending admin approval.";
-            auth.signOut();
-            return;
-          }
-          if (data.blocked) {
-            document.getElementById('authError').innerText = "Account has been blocked by admin.";
-            auth.signOut();
-            return;
-          }
-          if (data.accessStart && today < data.accessStart) {
-            document.getElementById('authError').innerText = "Access not yet started.";
-            auth.signOut();
-            return;
-          }
-          if (data.accessEnd && today > data.accessEnd) {
-            document.getElementById('authError').innerText = "Access period has expired.";
-            auth.signOut();
-            return;
-          }
+        currentUserData = data;
 
-          const deviceId = getDeviceId();
-          const devices = data.devices || [];
-
-          if (devices.includes(deviceId)) {
-            deviceWasRegistered = true;
-          } else if (deviceWasRegistered) {
-            document.getElementById('authError').innerText = selfInitiatedPinChange
-              ? "PIN changed successfully. Please login with your new PIN."
-              : "You have been logged out.";
-            selfInitiatedPinChange = false;
-            deviceWasRegistered = false;
-            auth.signOut();
-            return;
-          } else {
-            let updatedDevices = devices.slice();
-            if (updatedDevices.length >= (data.maxDevices || 1)) {
-              updatedDevices.shift();
-            }
-            updatedDevices.push(deviceId);
-            deviceWasRegistered = true;
-            db.collection("users").doc(user.uid).update({
-              devices: updatedDevices
-            }).catch(function(error) {
-              alert("Something went wrong. Please contact admin.");
-            });
-          }
-
-                    currentUserData = data;
-
-          checkingMsg.style.display = 'none';
-          authBox.style.display = 'none';
-          personBtn.style.display = 'flex';
-          barContainer.style.display = 'flex';
-          document.getElementById('authError').innerText = "";
-
-          try {
-            localStorage.setItem('tms_index_last_logged_in', 'true');
-          } catch (e) {}
-        });
-            } else {
-        checkingMsg.style.display = 'none';
-        authBox.style.display = 'block';
-        personBtn.style.display = 'none';
-        document.getElementById('userMenu').style.display = 'none';
-        document.getElementById('profileModal').style.display = 'none';
-        document.getElementById('changePinModal').style.display = 'none';
-        barContainer.style.display = 'none';
-        deviceWasRegistered = false;
-        currentUserData = null;
+        document.getElementById('checkingMsg').style.display = 'none';
+        document.getElementById('authBox').style.display = 'none';
+        document.getElementById('personBtn').style.display = 'flex';
+        document.getElementById('barContainer').style.display = 'flex';
+        document.getElementById('authError').innerText = "";
 
         try {
-          localStorage.removeItem('tms_index_last_logged_in');
+          localStorage.setItem('tms_index_last_logged_in', 'true');
         } catch (e) {}
-      }
-    });
+      }, function(error) {
+        endSession();
+      });
+    }
+
+    const savedUid = localStorage.getItem('tms_user_id');
+    if (savedUid) { startSession(savedUid); } else { endSession(); }
+
   </script>
 
   <script>
