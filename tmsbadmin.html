@@ -436,7 +436,8 @@ const db = adminApp.firestore();
 
     function formatNameInputAdmin() {
       const field = document.getElementById('newName');
-      const cursorPos = field.selectionStart;
+      const cursorPos = field.value.slice(0, field.selectionStart).replace(/[^A-Za-z ]/g, '').length;
+      field.value = field.value.replace(/[^A-Za-z ]/g, '');
       field.value = field.value.replace(/\b\w/g, function(c) { return c.toUpperCase(); })
                                 .replace(/\B\w/g, function(c) { return c.toLowerCase(); });
       field.setSelectionRange(cursorPos, cursorPos);
