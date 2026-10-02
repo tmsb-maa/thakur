@@ -1,4 +1,4 @@
-# Thakur — Free Educational Library
+# Thakur Maa Swamiji (TMS) — Personal Educational Library
 
 An online library built for **educational purposes**, offering free access to open-access academic materials and public-domain story books.
 
