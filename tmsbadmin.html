@@ -469,7 +469,10 @@ const db = adminApp.firestore();
     }
 
     document.getElementById('newName').addEventListener('input', updateUserIdPreview);
-    document.getElementById('newPhone').addEventListener('input', updateUserIdPreview);
+    document.getElementById('newPhone').addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '').substring(0, 10);
+    });
+	document.getElementById('newPhone').addEventListener('input', updateUserIdPreview);
     let usersListener = null;
     let currentUserFilter = 'approved';
     let latestUsersSnapshot = null;
