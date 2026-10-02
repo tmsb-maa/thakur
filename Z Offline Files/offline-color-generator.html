@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Offline Color Generator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+    h1 {
+      text-align: center;
+      font-size: 26px;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 35px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    input[type="color"] {
+      width: 130px;
+      height: 130px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      background: none;
+      padding: 0;
+      box-shadow: 0 0 30px rgba(255,255,255,0.15);
+    }
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type="color"]::-webkit-color-swatch { border: 3px solid white; border-radius: 20px; }
+
+    .hex-input-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .hex-input-wrap label {
+      color: #888;
+      font-size: 13px;
+      text-align: center;
+    }
+    #hexInput {
+      background: #2a2a2a;
+      border: 2px solid #444;
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      width: 200px;
+      text-align: center;
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    #hexInput:focus {
+      outline: none;
+      border-color: #6FCF97;
+    }
+
+    .base-preview {
+      width: 130px;
+      height: 130px;
+      border-radius: 20px;
+      border: 3px solid white;
+      box-shadow: 0 0 30px rgba(255,255,255,0.15);
+    }
+
+    .row-label {
+      text-align: center;
+      color: #888;
+      font-size: 13px;
+      margin: 30px 0 15px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .swatch-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+    .swatch {
+      width: 140px;
+      height: 140px;
+      border-radius: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      border: 2px solid transparent;
+      font-family: monospace;
+    }
+    .swatch:hover {
+      transform: scale(1.08);
+      border-color: white;
+    }
+    .swatch:active { transform: scale(0.97); }
+    .swatch.light-text { color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+    .swatch.dark-text { color: #222; }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #6FCF97;
+      color: #111;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 15px;
+      box-shadow: 0 8px 30px rgba(111,207,151,0.5);
+      transition: transform 0.3s ease;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .hint {
+      text-align: center;
+      color: #666;
+      font-size: 13px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Offline Color Generator</h1>
+  <p class="subtitle">Pick any color → get 5 lighter + 5 deeper instantly</p>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <input type="color" id="colorPicker" value="#6FCF97">
+    
+    <div class="hex-input-wrap">
+      <label>Or type / paste hex:</label>
+      <input type="text" id="hexInput" value="#6FCF97" maxlength="7">
+    </div>
+
+    <div class="base-preview" id="basePreview"></div>
+  </div>
+
+  <!-- LIGHTER ROW -->
+  <div class="row-label">☀️ Lighter Shades</div>
+  <div class="swatch-row" id="lighterRow"></div>
+
+  <!-- DEEPER ROW -->
+  <div class="row-label">🌙 Deeper Shades</div>
+  <div class="swatch-row" id="deeperRow"></div>
+
+  <p class="hint">💡 Click any swatch to copy its hex code</p>
+
+  <div class="toast" id="toast">✅ Copied!</div>
+
+<script>
+  // ===== HELPERS =====
+  function hexToRgb(hex) {
+    hex = hex.replace('#', '').trim();
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    if (hex.length !== 6 || !/^[0-9a-fA-F]{6}$/.test(hex)) return null;
+    return {
+      r: parseInt(hex.substr(0, 2), 16),
+      g: parseInt(hex.substr(2, 2), 16),
+      b: parseInt(hex.substr(4, 2), 16)
+    };
+  }
+
+  function rgbToHex(r, g, b) {
+    const toHex = v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0');
+    return '#' + toHex(r) + toHex(g) + toHex(b);
+  }
+
+  function getLighterShades(hex) {
+    const { r, g, b } = hexToRgb(hex);
+    const shades = [];
+    for (let i = 1; i <= 5; i++) {
+      const t = i * 0.15;
+      shades.push(rgbToHex(r + (255 - r) * t, g + (255 - g) * t, b + (255 - b) * t));
+    }
+    return shades;
+  }
+
+  function getDeeperShades(hex) {
+    const { r, g, b } = hexToRgb(hex);
+    const shades = [];
+    for (let i = 1; i <= 5; i++) {
+      const t = i * 0.15;
+      shades.push(rgbToHex(r * (1 - t), g * (1 - t), b * (1 - t)));
+    }
+    return shades;
+  }
+
+  function textClass(hex) {
+    const { r, g, b } = hexToRgb(hex);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 150 ? 'dark-text' : 'light-text';
+  }
+
+  // ===== RENDER =====
+  function render(hex) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return; // invalid hex, skip
+
+    const cleanHex = rgbToHex(rgb.r, rgb.g, rgb.b);
+
+    // update preview
+    document.getElementById('basePreview').style.background = cleanHex;
+
+    // sync color picker
+    document.getElementById('colorPicker').value = cleanHex;
+
+    // sync hex input (only if user is not currently typing)
+    if (document.activeElement.id !== 'hexInput') {
+      document.getElementById('hexInput').value = cleanHex.toUpperCase();
+    }
+
+    // build rows
+    const lighter = getLighterShades(cleanHex).reverse();
+    const deeper = getDeeperShades(cleanHex);
+
+    const lighterRow = document.getElementById('lighterRow');
+    const deeperRow = document.getElementById('deeperRow');
+    lighterRow.innerHTML = '';
+    deeperRow.innerHTML = '';
+
+    lighter.forEach(c => lighterRow.appendChild(makeSwatch(c)));
+    deeper.forEach(c => deeperRow.appendChild(makeSwatch(c)));
+  }
+
+  function makeSwatch(hex) {
+    const div = document.createElement('div');
+    div.className = 'swatch ' + textClass(hex);
+    div.style.background = hex;
+    div.textContent = hex.toUpperCase();
+    div.addEventListener('click', () => copyHex(hex));
+    return div;
+  }
+
+  function copyHex(hex) {
+    const text = hex.toUpperCase();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => showToast('✅ Copied: ' + text));
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('✅ Copied: ' + text);
+    }
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1500);
+  }
+
+  // ===== EVENT LISTENERS =====
+  document.getElementById('colorPicker').addEventListener('input', e => render(e.target.value));
+
+  const hexInput = document.getElementById('hexInput');
+  hexInput.addEventListener('input', e => {
+    let v = e.target.value.trim();
+    if (!v.startsWith('#')) v = '#' + v;
+    if (v.length === 7 && /^#[0-9a-fA-F]{6}$/.test(v)) {
+      render(v);
+    }
+  });
+  hexInput.addEventListener('blur', e => {
+    // reset to valid value on blur
+    const rgb = hexToRgb(e.target.value);
+    if (rgb) e.target.value = rgbToHex(rgb.r, rgb.g, rgb.b).toUpperCase();
+    else e.target.value = document.getElementById('colorPicker').value.toUpperCase();
+  });
+
+  // ===== INITIAL =====
+  render('#6FCF97');
+</script>
+
+</body>
+</html>
