@@ -183,9 +183,11 @@
   .colorModalBox {
     background: #fff;
     border-radius: 10px;
-    padding: 20px;
+    padding: 14px;
     width: 280px;
     max-width: 90%;
+    max-height: 60vh;
+    overflow-y: auto;
   }
 
   .colorModalBox h3 {
@@ -214,6 +216,13 @@
     outline: 2px solid #333;
   }
 
+  .recentColorsRow .colorSwatch {
+    width: 22px;
+    height: 22px;
+    aspect-ratio: auto;
+    flex-shrink: 0;
+  }
+  
   .recentColorsLabel {
     font-size: 12px;
     color: #888;
@@ -491,7 +500,8 @@
     ];
 
     function loadRecentColors() {
-      const saved = localStorage.getItem('tms_recent_colors');
+      localStorage.removeItem('tms_recent_colors');
+      const saved = sessionStorage.getItem('tms_recent_colors');
       if (saved) {
         try { recentColors = JSON.parse(saved); } catch (e) { recentColors = []; }
       }
@@ -501,7 +511,7 @@
       recentColors = recentColors.filter(function(c) { return c !== hex; });
       recentColors.unshift(hex);
       if (recentColors.length > 8) recentColors = recentColors.slice(0, 8);
-      localStorage.setItem('tms_recent_colors', JSON.stringify(recentColors));
+      sessionStorage.setItem('tms_recent_colors', JSON.stringify(recentColors));
       renderRecentColors();
     }
 
