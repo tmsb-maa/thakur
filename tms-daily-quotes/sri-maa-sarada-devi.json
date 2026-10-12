@@ -69,7 +69,7 @@
     },
     {
       "serial": 17,
-      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যার (অর্থ) আছে সে মাপো (দান কর), যার নেই সে জপো।</span></div>"
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">যার (অর্থ) আছে সে মাপো (দান কর), যার নেই সে জপো।&nbsp;</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">(যা অর্থাদি আছে সে ভগবানের সেবা করুক। আর যার নেই, সে ভগবানের নামজপ করুক। এই উভয় উপায়েই ভগবানের কৃপালাভ করা যায়)।</span></div>"
     },
     {
       "serial": 18,
@@ -558,6 +558,78 @@
     {
       "serial": 139,
       "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… (ত্যাগী এবং গৃহস্থ বিষয়ে) সেকি! ত্যাগি আর গৃহস্থ কি সমান? ওদের (গৃহস্থদের) কামনা বাসনা কত কি রয়েছে, আর এরা (সাধুরা) তাঁর জন্য সব ছেড়ে চলে এসেছে। এদের আর তিনি ভিন্ন কি আছে? সাধুদের সঙ্গে কি ওদের তুলনা হয়।</span></div>"
+    },
+    {
+      "serial": 140,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ মা, এই যে ঠাকুরকে সকলে পূর্ণব্রহ্ম সনাতন বলে, তুমি কি বলো?</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ হ্যাঁ, তিনি আমার পূর্ণব্রহ্ম সনাতন। \r</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ তা প্রত্যেক স্ত্রীলোকেরই স্বামী পূর্ণব্রহ্ম সনাতন। আমি সেভাবে জিজ্ঞাসা করছি না। \r</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ হ্যাঁ, তিনি পূর্ণব্রহ্ম সনাতন – স্বামীভাবেও, এমনি ভাবেও।</span></div>"
+    },
+    {
+      "serial": 141,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ তুমি কি সকলেরই মা?</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ হ্যাঁ\r</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ এই সব ইতর জীবজন্তুও? \r</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ হ্যাঁ, ওদেরও। \r</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ তবে ওরা এত কষ্ট পাচ্ছে কেন? \r</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ ওদের এসব জন্ম এই-ই। (অর্থাৎ ইতর জীবজন্তুর এই সকল জন্মে এই প্রকারই হয়ে থাকে।)</span></div><div>\r</div>"
+    },
+    {
+      "serial": 142,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ আমি কি তোমার আপনার?</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ হ্যাঁ, আপনার বই কি। ‘যে যার সে তার, যুগে যুগে অবতার’। (যে যাহার আপনার জন, সে তাহার সহিত যুগে যুগে আসে)।</span></div><div>\r</div>"
+    },
+    {
+      "serial": 143,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... মানুষের কি সাধ্য যে আপনি (নিজে) এ মায়ার হাত থেকে সরতে পারে? তাই তো ঠাকুর এত সাধনা করলেন, সব ফল জীবোদ্ধারে দিয়ে গেলেন।&nbsp;</span></div>"
+    },
+    {
+      "serial": 144,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">... দেহ একটি, দেহী একটি। দেহী সব শরীর জুড়ে রয়েছেন, তাই পায়ে ব্যাথা। যদি এখান (হাঁটু) থেকে মন তুলে নিই, তাহলে আর বেদনা নেই।</span></div>"
+    },
+    {
+      "serial": 145,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ আচ্ছা মা, মন্ত্র নেবার কি দরকার? মন্ত্রজপ না করে কেউ যদি ‘মা কালী’, ‘মা কালী’ বলে ডাকে, তাতে হয় না?</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ মন্ত্রের দ্বারা দেহ শুদ্ধি হয়। ভগবানের মন্ত্র জপ করে মানুষ পবিত্র হয়।</span></div><div>\r</div>"
+    },
+    {
+      "serial": 146,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… মনেতেই সব। মন শুদ্ধ না হলে, কিছুই হয় না।&nbsp;</span></div>"
+    },
+    {
+      "serial": 147,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… যখন ঠাকুর চলে গেলেন, আমারও ইচ্ছা হল আমিও চলে যাই। তিনি (ঠাকুর) দেখা দিয়ে বললেন, “না তুমি থাকো। অনেক কাজ বাকি আছে”। শেষে দেখলুম, তাই তো অনেক কাজ বাকি।</span></div>"
+    },
+    {
+      "serial": 148,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… তিনি (ঠাকুর) শত বৎসর সূক্ষ শরীরে ভক্ত হৃদয়ে বাস করবেন বলেছেন।&nbsp;</span></div>"
+    },
+    {
+      "serial": 149,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… দয়া যার শরীরে নেই, সে কি মানুষ? সে তো পশু। আমি কখনও কখনও দয়ায় আত্মহারা হয়ে যাই, ভুলে যাই যে আমি কে।&nbsp;</span></div>"
+    },
+    {
+      "serial": 150,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ মা, এবার আমাকে বেশি দিন রেখো না।</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ থাকতে ইচ্ছা না হয়, আমার সঙ্গে যাবে। সময় হলে (দেহান্তে) সকলে (সব ভক্তরা) যাবে।</span></div><div>\r</div>"
+    },
+    {
+      "serial": 151,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ মা, কবে ঠাকুরের দেখা পাবো?</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ পাবে পাবে, সময় হলেই ঠাকুরের দেখা পাবে।</span></div><div>\r</div>"
+    },
+    {
+      "serial": 152,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">… তোমরাই ভগবান। ভগবানের জন্য কে সব ত্যাগ করতে পেরেছে? ঈশ্বরের শরণাগত হলে বিধির বিধি খন্ডন হয়ে যায়। তাঁর নিজের কলম নিজ হাতে কাটতে হয়। ভগবান লাভ হলে কি আর হয়? দুটো কি শিং বেরোয়? না, সদ্‌-অসদ্‌ বিচার আসে, জ্ঞান চৈতন্য হয়। জন্মমৃত্যু তরে যায়। ভাবে লাভ – এছাড়া কে ভগবানকে দেখেছে, কার সঙ্গে ভগবান কথা কয়েছেন? ভাবে দর্শন, ভাবে কথাবার্তা, সব ভাবে হয়।&nbsp;</span></div>"
+    },
+    {
+      "serial": 153,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">…জপ ধ্যান করা, আর ঠাকুরকে ডাকা, এই তো? … আর ‘ঠাকুর, ঠাকুরে’ই বা আছে কি? তিনি তো চিরদিনই আপন জন।</span></div>"
+    },
+    {
+      "serial": 154,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ কি করে বিচার বন্ধ হবে?</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ ঠিক ঠিক পূর্ণজ্ঞান না হলে বিচার যায় না।</span></div><div>\r</div>"
+    },
+    {
+      "serial": 155,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ আচ্ছা এই যে সব অসংখ্য প্রাণী – ছোটো, বড়ো সব কি একসময়ে সৃষ্টি হয়েছে না কি?</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ চিত্রকর যেমন তুলি দিয়ে চোখটি, মুখটি, নাকটি – এমনি একটু একটু করে পুতুলটি তৈরী করেন, ভগবান কি অমনি একটি একটি করে সৃষ্টি করেছেন? না, তাঁর একটা শক্তি আছে। তাঁ ‘হ্যাঁ’-তে জগতের সব হচ্ছে, ‘না’-তে লোপ পাচ্ছে। যা হয়েছে সব এককালে হয়েছে। একটি একটি করে হয়নি।</span></div><div>\r</div>"
+    },
+    {
+      "serial": 156,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ তাঁর (ঈশ্বরের) ভালোবাসা না পেলে তাঁর (ঈশ্বরের) জন্য প্রাণ কেন ব্যাকুল হবে?</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ তাই তো, সেটি তাঁর (ঈশ্বরের) কৃপা।</span></div>"
+    },
+    {
+      "serial": 157,
+      "text": "<div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">ভক্তঃ তবে যে তোমাকে এই দেখছি যেন সাধারণ স্ত্রীলোকের মতো বসে বসে রুটি বেলছ, এসব কি? মায়া না কি?</span></div><div style=\"text-align: justify;\"><span style=\"font-size: 23px;\">মাঃ মায়া বই কি! মায়া না হলে আমার এ দশা কেন? আমি বৈকুণ্ঠে নারায়ণের পাশে লক্ষী হয়ে থাকতুম।</span></div>"
     }
   ]
 }
