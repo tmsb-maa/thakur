@@ -681,35 +681,78 @@ function shareTmsLink() {
       return order[position];
     }
 
-    async function loadAvatarQuote(key, contentBox, img, titleEn) {
-      const uid = localStorage.getItem('tms_user_id');
-      try {
-        const res = await fetch('avatar-bani/' + key + '.json?t=' + Date.now());
-        const personData = await res.json();
-        const quotesArr = personData.quotes || [];
-        if (quotesArr.length === 0) { contentBox.innerText = 'No quotes added yet.'; return; }
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise(function(_, reject) {
+      setTimeout(function() { reject(new Error('timeout')); }, ms);
+    })
+  ]);
+}
 
-        const textBySerial = {};
-        quotesArr.forEach(function(q) { textBySerial[q.serial] = q.text; });
-        const allSerials = quotesArr.map(function(q) { return q.serial; });
+async function loadAvatarQuote(key, contentBox, img, titleEn) {
+  const uid = localStorage.getItem('tms_user_id');
+  const cacheKey = 'tms_avatar_cache_' + uid + '_' + key;
+  let shownFromCache = false;
 
+  // 1. Show the last bani instantly, like the other page does
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) { contentBox.innerHTML = cached; shownFromCache = true; }
+  } catch (e) {}
+
+  try {
+    // 2. Fetch JSON, maximum 10 seconds
+    const controller = new AbortController();
+    const abortTimer = setTimeout(function() { controller.abort(); }, 10000);
+    const res = await fetch('avatar-bani/' + key + '.json?t=' + Date.now(), { signal: controller.signal });
+    clearTimeout(abortTimer);
+    const personData = await res.json();
+
+    const quotesArr = personData.quotes || [];
+    if (quotesArr.length === 0) {
+      if (currentContentKey === key) contentBox.innerText = 'No quotes added yet.';
+      return;
+    }
+
+    const textBySerial = {};
+    quotesArr.forEach(function(q) { textBySerial[q.serial] = q.text; });
+    const allSerials = quotesArr.map(function(q) { return q.serial; });
+
+    // 3. Firestore part (settings + chosen serial), maximum 8 seconds
+    let chosen = null;
+    try {
+      chosen = await withTimeout((async function() {
         let rotationHours = 24;
         try {
           const s = await db.collection('settings').doc('quoteSettings').get();
           if (s.exists && typeof s.data().page2 === 'number') rotationHours = s.data().page2;
         } catch (e) {}
-
-        let chosen;
-        try { chosen = await getChosenSerial(key, allSerials, rotationHours, uid); }
-        catch (e) { chosen = allSerials[0]; }
-
-        contentBox.innerHTML =
-          '<img class="avatar" src="images/' + img + '.png" alt="' + titleEn + '">' +
-          (textBySerial[chosen] || '');
-      } catch (e) {
-        contentBox.innerText = 'Content not available.';
-      }
+        return await getChosenSerial(key, allSerials, rotationHours, uid);
+      })(), 8000);
+    } catch (e) {
+      chosen = null;
     }
+
+    if (chosen === null || chosen === undefined) {
+      if (shownFromCache) return;      // keep what is already showing
+      chosen = allSerials[0];          // same fallback as your original
+    }
+
+    const html =
+      '<img class="avatar" src="images/' + img + '.png" alt="' + titleEn + '">' +
+      (textBySerial[chosen] || '');
+
+    // 4. Update screen only if the person is still on this tab
+    if (currentContentKey === key) contentBox.innerHTML = html;
+    try { localStorage.setItem(cacheKey, html); } catch (e) {}
+
+  } catch (e) {
+    if (!shownFromCache && currentContentKey === key) {
+      contentBox.innerText = 'Content not available. Please check your internet and try again.';
+    }
+  }
+}
 
     function openPrayer(key, titleEn, titleBn, img) {
       currentContentKey = key;
