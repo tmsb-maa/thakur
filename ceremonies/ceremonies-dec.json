@@ -1,0 +1,184 @@
+{
+  "1": {
+    "english": "1-Dec-2026",
+    "weekday": "Tuesday",
+    "lines": []
+  },
+  "2": {
+    "english": "2-Dec-2026",
+    "weekday": "Wednesday",
+    "lines": []
+  },
+  "3": {
+    "english": "3-Dec-2026",
+    "weekday": "Thursday",
+    "lines": [
+      "কৃষ্ণপক্ষ একাদশী শুরুঃ রাত 11:03 PM"
+    ]
+  },
+  "4": {
+    "english": "4-Dec-2026",
+    "weekday": "Friday",
+    "lines": [
+      "কৃষ্ণপক্ষ একাদশী শেষঃ রাত 11:44 PM"
+    ]
+  },
+  "5": {
+    "english": "5-Dec-2026",
+    "weekday": "Saturday",
+    "lines": []
+  },
+  "6": {
+    "english": "6-Dec-2026",
+    "weekday": "Sunday",
+    "lines": []
+  },
+  "7": {
+    "english": "7-Dec-2026",
+    "weekday": "Monday",
+    "lines": [
+      "শিবরাত্রি তিথি শুরুঃ 2:22 AM"
+    ]
+  },
+  "8": {
+    "english": "8-Dec-2026",
+    "weekday": "Tuesday",
+    "lines": [
+      "শিবরাত্রি তিথি শেষঃ 4:13 AM",
+      "অমাবস্যা তিথি শুরুঃ ভোর 4:12 AM"
+    ]
+  },
+  "9": {
+    "english": "9-Dec-2026",
+    "weekday": "Wednesday",
+    "lines": [
+      "অমাবস্যা তিথি শেষঃ সকাল 6:21 AM"
+    ]
+  },
+  "10": {
+    "english": "10-Dec-2026",
+    "weekday": "Thursday",
+    "lines": []
+  },
+  "11": {
+    "english": "11-Dec-2026",
+    "weekday": "Friday",
+    "lines": []
+  },
+  "12": {
+    "english": "12-Dec-2026",
+    "weekday": "Saturday",
+    "lines": []
+  },
+  "13": {
+    "english": "13-Dec-2026",
+    "weekday": "Sunday",
+    "lines": []
+  },
+  "14": {
+    "english": "14-Dec-2026",
+    "weekday": "Monday",
+    "lines": []
+  },
+  "15": {
+    "english": "15-Dec-2026",
+    "weekday": "Tuesday",
+    "lines": []
+  },
+  "16": {
+    "english": "16-Dec-2026",
+    "weekday": "Wednesday",
+    "lines": [
+      "ধনু সংক্রান্তি (সূর্য পূজা) শুরুঃ 10:21 AM"
+    ]
+  },
+  "17": {
+    "english": "17-Dec-2026",
+    "weekday": "Thursday",
+    "lines": []
+  },
+  "18": {
+    "english": "18-Dec-2026",
+    "weekday": "Friday",
+    "lines": []
+  },
+  "19": {
+    "english": "19-Dec-2026",
+    "weekday": "Saturday",
+    "lines": [
+      "শুক্লপক্ষ একাদশী শুরুঃ রাত 10:09 PM"
+    ]
+  },
+  "20": {
+    "english": "20-Dec-2026",
+    "weekday": "Sunday",
+    "lines": [
+      "শুক্লপক্ষ একাদশী শেষঃ রাত 8:15 PM"
+    ]
+  },
+  "21": {
+    "english": "21-Dec-2026",
+    "weekday": "Monday",
+    "lines": []
+  },
+  "22": {
+    "english": "22-Dec-2026",
+    "weekday": "Tuesday",
+    "lines": []
+  },
+  "23": {
+    "english": "23-Dec-2026",
+    "weekday": "Wednesday",
+    "lines": [
+      "পূর্ণিমা তিথি শুরুঃ সকাল 10:47 AM"
+    ]
+  },
+  "24": {
+    "english": "24-Dec-2026",
+    "weekday": "Thursday",
+    "lines": [
+      "পূর্ণিমা তিথি শেষঃ সকাল 6:57 AM"
+    ]
+  },
+  "25": {
+    "english": "25-Dec-2026",
+    "weekday": "Friday",
+    "lines": [
+      "তুলসী পূজা"
+    ]
+  },
+  "26": {
+    "english": "26-Dec-2026",
+    "weekday": "Saturday",
+    "lines": [
+      "সংকট হারা চতুর্থী শুরুঃ রাত 8:05 PM"
+    ]
+  },
+  "27": {
+    "english": "27-Dec-2026",
+    "weekday": "Sunday",
+    "lines": [
+      "সংকট হারা চতুর্থী শেষঃ বিকেল 5:12 PM"
+    ]
+  },
+  "28": {
+    "english": "28-Dec-2026",
+    "weekday": "Monday",
+    "lines": []
+  },
+  "29": {
+    "english": "29-Dec-2026",
+    "weekday": "Tuesday",
+    "lines": []
+  },
+  "30": {
+    "english": "30-Dec-2026",
+    "weekday": "Wednesday",
+    "lines": []
+  },
+  "31": {
+    "english": "31-Dec-2026",
+    "weekday": "Thursday",
+    "lines": []
+  }
+}
