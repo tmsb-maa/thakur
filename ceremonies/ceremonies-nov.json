@@ -144,7 +144,7 @@
     "english": "23-Nov-2026",
     "weekday": "Monday",
     "lines": [
-      "<span style=\"font-size: 21px;\">পূর্ণিমা তিথি শুরুঃ রাত 11:42 PM</span>",
+      "<span style=\"font-size: 21px;\">রাস পূর্ণিমা তিথি শুরুঃ রাত 11:42 PM</span>",
       "<span style=\"font-size: 21px;\">শুক্লপক্ষ চতুর্দশী শুরুঃ রাত 2:37 AM</span>",
       "<span style=\"font-size: 21px;\">শুক্লপক্ষ চতুর্দশী শেষঃ রাত 11:42 PM</span>"
     ]
@@ -153,8 +153,7 @@
     "english": "24-Nov-2026",
     "weekday": "Tuesday",
     "lines": [
-      "<span style=\"font-size: 21px;\">পূর্ণিমা তিথি শেষঃ রাত 8:23 PM</span>",
-      "<span style=\"font-size: 21px;\">রাস পূর্ণিমা</span>"
+      "<span style=\"font-size: 21px;\">রাস পূর্ণিমা তিথি শেষঃ রাত 8:23 PM</span>"
     ]
   },
   "25": {
