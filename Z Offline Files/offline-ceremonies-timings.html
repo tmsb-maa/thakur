@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Offline Ceremonies Timings</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
+    body { zoom: 150%; }
+
+  h1 { color: #FF8C00; margin-bottom: 20px; text-align: center; }
+
+  .topBar {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .topBar label { font-weight: bold; font-size: 14px; }
+  .topBar select, .topBar input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+
+  .topBar button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+  }
+
+  #exportBtn { background: #4CAF50; }
+  #importBtn { background: #1E90FF; }
+    #clearBtn { background: #e53935; }
+
+#previewOuter { display: flex; justify-content: center; padding-bottom: 40px; }
+
+  #deviceSim {
+    width: 400px;
+    max-width: 100%;
+    flex-shrink: 0;
+    background: #fff;
+    border: 2px solid #333;
+    border-radius: 14px;
+    overflow: hidden;
+    zoom: 1;
+  }
+  
+  @media (max-width: 600px) {
+    body { padding: 8px; zoom: 1; }
+    #deviceSim { width: 100%; zoom: 1; }
+  }
+
+  #previewLabel {
+    text-align: center;
+    font-size: 15px;
+    color: #000;
+    font-weight: bold;
+    padding: 10px;
+    background: #FF8C00;
+  }
+
+  #mainSim { padding: 0; }
+
+  #monthContentSim {
+    background: #fff8f0;
+    padding: 0;
+    min-height: 60px;
+  }
+
+  .dateBlock {
+    margin-bottom: 0;
+    padding: 12px 0;
+    border-bottom: 2px solid #FFDDB0;
+  }
+  .dateBlock:last-child { border-bottom: none; margin-bottom: 0; }
+
+  .dateBlockHeader {
+      padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .dateBlockTitle {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    white-space: nowrap;
+  }
+
+  .addFieldBtn {
+    background: #FF8C00;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .fieldRow { margin-top: 8px; }
+  .fieldActions { padding: 0 10px; }
+
+  .fieldToolbar {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    padding: 6px;
+    overflow-x: auto;
+    margin-bottom: 0;
+  }
+  .fieldToolbar button {
+    width: auto;
+    min-width: 32px;
+    padding: 6px 7px;
+    font-size: 13px;
+    font-weight: bold;
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .fieldToolbar button svg { fill: #333; display: block; }
+  .fieldToolbar input[type="number"] {
+    width: 42px;
+    padding: 4px 2px;
+    font-size: 13px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+
+/* color picker modal */
+.colorOverlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:999;
+  align-items:center; justify-content:center; }
+.colorModal { background:#fff; border-radius:12px; padding:16px; width:300px; max-width:92vw; }
+.colorModal button { padding:8px 12px; border:none; border-radius:6px; background:#FF8C00;
+  color:#fff; font-weight:bold; cursor:pointer; margin-top:10px; }
+.colorLabel { font-size:12px; font-weight:bold; color:#666; margin:10px 0 6px; }
+.colorGrid { display:flex; flex-wrap:wrap; gap:6px; }
+.colorSwatch { width:28px; height:28px; border-radius:6px; border:1px solid #ccc; cursor:pointer; }
+.customRow { display:flex; gap:8px; align-items:center; }
+
+  .fieldText {
+    border: 1px solid #ccc;
+    border-radius: 0 0 6px 6px;
+    padding: 16px 10px;
+    min-height: 60px;
+    font-size: 21px;
+    line-height: 1.4;
+    outline: none;
+    word-break: break-word;
+  }
+  .fieldText:focus { outline: none; border-color: #FF8C00; }
+
+  .fieldActions {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+    justify-content: flex-end;
+  }
+
+  .fieldActions button {
+    font-size: 12px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  .moveBtn { background: #757575; }
+  .delBtn { background: #e53935; }
+</style>
+</head>
+<body>
+
+  <h1>Offline Ceremonies Timings</h1>
+
+  <div class="topBar">
+    <label>Month:</label>
+    <select id="monthSelect"></select>
+
+    <label>Year:</label>
+    <input type="number" id="yearInput" value="2026" style="width:90px;">
+
+    <button id="importBtn" onclick="document.getElementById('importFile').click()">Import JSON</button>
+    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importJson(event)">
+
+    <button id="exportBtn" onclick="exportJson()">Export JSON</button>
+	    <button id="clearBtn" onclick="clearAll()">Clear All</button>
+  </div>
+
+  <div id="previewOuter">
+    <div id="deviceSim">
+      <p id="previewLabel">Matches Mobile Screen Exactly.</p>
+      <div id="mainSim">
+        <div id="monthContentSim">
+          <div id="datesContainer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id="colorModalOverlay" class="colorOverlay" onclick="if(event.target===this)closeColorPicker()">
+  <div class="colorModal">
+    <b>Pick a color</b>
+    <div class="colorLabel">Recent</div><div id="recentColorsRow" class="colorGrid"></div>
+    <div class="colorLabel">Standard</div><div id="standardColorGrid" class="colorGrid"></div>
+    <div class="colorLabel">Custom</div>
+    <div class="customRow">
+      <input type="color" id="customColorInput" value="#ff0000">
+      <button type="button" onclick="applyCustomColor()" style="margin-top:0">Apply</button>
+    </div>
+    <button type="button" onclick="closeColorPicker()" style="background:#757575">Cancel</button>
+  </div>
+</div>
+
+  <script>
+    const englishMonthsFull = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const englishMonthsShort = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const weekdaysFull = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const ceremonyMonthFiles = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+let savedRanges = {};          // fieldId -> Range
+let colorTargetId = null;
+let allMonths = {};            // "2026-0" -> { dateNum: [lines] }
+let activeKey = null;
+let recentColors = [];
+const standardColors = [
+  '#000000','#444444','#666666','#999999','#cccccc','#eeeeee','#f3f3f3','#ffffff',
+  '#e53935','#f4511e','#fb8c00','#fdd835','#43a047','#00acc1','#1e88e5','#3949ab',
+  '#8e24aa','#d81b60','#795548','#607d8b','#c62828','#ad1457','#4527a0','#00695c'
+];
+
+    let calendarData = {};
+    let currentMonthIndex = 0;
+
+    function daysInMonth(monthIndex, year) {
+      return new Date(year, monthIndex + 1, 0).getDate();
+    }
+
+    function formatEnglish(date) {
+      return date.getDate() + '-' + englishMonthsShort[date.getMonth()] + '-' + date.getFullYear();
+    }
+
+    function populateMonthSelect() {
+      const select = document.getElementById('monthSelect');
+      select.innerHTML = '';
+      englishMonthsFull.forEach(function(name, i) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.text = name + ' (ceremonies-' + ceremonyMonthFiles[i] + '.json)';
+        select.appendChild(opt);
+      });
+      select.addEventListener('change', function() {
+        currentMonthIndex = parseInt(select.value);
+        buildDateSkeleton();
+      });
+      document.getElementById('yearInput').addEventListener('change', buildDateSkeleton);
+    }
+
+function clearAll() {
+  if (!confirm('This will erase all lines of the current month from the editor (not any file already uploaded). Continue?')) return;
+  Object.keys(calendarData).forEach(function(d) { calendarData[d].lines = []; });
+  if (activeKey) delete allMonths[activeKey];
+  savedRanges = {};
+  renderDates();
+}
+
+function stashCurrent() {
+  if (activeKey === null) return;
+  const lines = {};
+  Object.keys(calendarData).forEach(function(d) { lines[d] = calendarData[d].lines; });
+  allMonths[activeKey] = lines;
+}
+
+function saveDraft() {
+  try {
+    stashCurrent();
+    localStorage.setItem('tms_ceremonies_draft', JSON.stringify({
+      allMonths: allMonths,
+      month: currentMonthIndex,
+      year: parseInt(document.getElementById('yearInput').value) || 2026
+    }));
+  } catch (e) {}
+}
+
+function loadDraft() {
+  try {
+    const s = JSON.parse(localStorage.getItem('tms_ceremonies_draft'));
+    if (s) {
+      allMonths = s.allMonths || {};
+      currentMonthIndex = s.month || 0;
+      document.getElementById('yearInput').value = s.year || 2026;
+    }
+  } catch (e) {}
+}
+
+function buildDateSkeleton() {
+  stashCurrent();                                   // save the OLD month first
+  const year = parseInt(document.getElementById('yearInput').value) || 2026;
+  activeKey = year + '-' + currentMonthIndex;
+  const saved = allMonths[activeKey] || {};
+  const numDays = daysInMonth(currentMonthIndex, year);
+  const newData = {};
+  for (let d = 1; d <= numDays; d++) {
+    const eDate = new Date(year, currentMonthIndex, d);
+    newData[d] = {
+      english: formatEnglish(eDate),
+      weekday: weekdaysFull[eDate.getDay()],
+      lines: saved[d] || []
+    };
+  }
+  calendarData = newData;
+  renderDates();
+}
+
+    function renderDates() {
+	savedRanges = {};     // first line
+      const container = document.getElementById('datesContainer');
+      container.innerHTML = '';
+
+      const dateKeys = Object.keys(calendarData).map(Number).sort(function(a, b) { return a - b; });
+
+      dateKeys.forEach(function(dateNum) {
+        const entry = calendarData[dateNum];
+        const block = document.createElement('div');
+        block.className = 'dateBlock';
+
+        let fieldsHtml = '';
+        entry.lines.forEach(function(lineHtml, idx) {
+          fieldsHtml += renderFieldRow(dateNum, idx, lineHtml);
+        });
+
+        block.innerHTML =
+          '<div class="dateBlockHeader">' +
+            '<span class="dateBlockTitle">' + entry.english + ', ' + entry.weekday + '</span>' +
+            '<button class="addFieldBtn" onclick="addField(' + dateNum + ')">+ Add Line</button>' +
+          '</div>' +
+          '<div id="fields-' + dateNum + '">' + fieldsHtml + '</div>';
+
+        container.appendChild(block);
+      });
+    saveDraft();          // last line
+	}
+
+function renderFieldRow(dateNum, idx, lineHtml) {
+  const id = 'field-' + dateNum + '-' + idx;
+  const q = "'" + id + "'";
+  function b(title, action, label) {
+    return '<button type="button" title="' + title + '" onmousedown="event.preventDefault()" onclick="' + action + '">' + label + '</button>';
+  }
+  function align(title, cmd, bars) {
+    return b(title, 'fmt(' + q + ",'" + cmd + "')", '<svg width="16" height="16" viewBox="0 0 16 16">' + bars + '</svg>');
+  }
+  return (
+    '<div class="fieldRow">' +
+      '<div class="fieldToolbar">' +
+        b('Bold', 'fmt(' + q + ",'bold')", '<b>B</b>') +
+        b('Italic', 'fmt(' + q + ",'italic')", '<i>I</i>') +
+        b('Underline', 'fmt(' + q + ",'underline')", '<u>U</u>') +
+        b('Font Color', 'openColorPicker(' + q + ')', 'A<span id="colorInd-' + id + '" style="display:block;width:16px;height:3px;background:#000;margin:2px auto 0;"></span>') +
+        '<input type="number" id="size-' + id + '" title="Font Size" min="6" max="200" value="21" ' +
+          'onfocus="showFakeHighlight(' + q + ')" onblur="removeFakeHighlight(' + q + ')" onchange="applyFontSize(' + q + ')" ' +
+          'onkeydown="if(event.key===\'Enter\'){event.preventDefault();applyFontSize(' + q + ');}">' +
+        b('Bigger', 'resizeSelection(' + q + ',1)', 'A+') +
+        b('Smaller', 'resizeSelection(' + q + ',-1)', 'A-') +
+        align('Align Left', 'justifyLeft', '<rect x="1" y="2" width="14" height="2"/><rect x="1" y="7" width="9" height="2"/><rect x="1" y="12" width="14" height="2"/>') +
+        align('Align Center', 'justifyCenter', '<rect x="1" y="2" width="14" height="2"/><rect x="3.5" y="7" width="9" height="2"/><rect x="1" y="12" width="14" height="2"/>') +
+        align('Align Right', 'justifyRight', '<rect x="1" y="2" width="14" height="2"/><rect x="6" y="7" width="9" height="2"/><rect x="1" y="12" width="14" height="2"/>') +
+        align('Justify', 'justifyFull', '<rect x="1" y="2" width="14" height="2"/><rect x="1" y="7" width="14" height="2"/><rect x="1" y="12" width="14" height="2"/>') +
+      '</div>' +
+      '<div class="fieldText" id="' + id + '" contenteditable="true" ' +
+        'oninput="syncField(' + dateNum + ',' + idx + ',\'' + id + '\')" onpaste="handlePaste(event,\'' + id + '\')">' + lineHtml + '</div>' +
+      '<div class="fieldActions">' +
+        '<button class="moveBtn" onclick="moveField(' + dateNum + ',' + idx + ',-1)">↑ Up</button>' +
+        '<button class="moveBtn" onclick="moveField(' + dateNum + ',' + idx + ',1)">↓ Down</button>' +
+        '<button class="delBtn" onclick="deleteField(' + dateNum + ',' + idx + ')">Delete</button>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+    function addField(dateNum) {
+      calendarData[dateNum].lines.push('');
+      renderDates();
+      setTimeout(function() {
+        const lastIdx = calendarData[dateNum].lines.length - 1;
+        const el = document.getElementById('field-' + dateNum + '-' + lastIdx);
+        if (el) el.focus();
+      }, 50);
+    }
+
+    function deleteField(dateNum, idx) {
+      calendarData[dateNum].lines.splice(idx, 1);
+      renderDates();
+    }
+
+    function moveField(dateNum, idx, direction) {
+      const lines = calendarData[dateNum].lines;
+      const newIdx = idx + direction;
+      if (newIdx < 0 || newIdx >= lines.length) return;
+      const temp = lines[idx];
+      lines[idx] = lines[newIdx];
+      lines[newIdx] = temp;
+      renderDates();
+    }
+
+    function syncField(dateNum, idx, fieldId) {
+      const el = document.getElementById(fieldId);
+      calendarData[dateNum].lines[idx] = el.innerHTML;
+    saveDraft();
+	}
+
+// ---------- selection tracking ----------
+document.addEventListener('selectionchange', function() {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return;
+  const range = sel.getRangeAt(0);
+  let node = range.commonAncestorContainer;
+  if (node.nodeType === 3) node = node.parentElement;
+  const el = node ? node.closest('.fieldText') : null;
+  if (!el) return;
+  savedRanges[el.id] = range.cloneRange();
+  if (!range.collapsed) syncSizeInput(el.id, range);
+});
+
+function syncSizeInput(fieldId, range) {
+  const input = document.getElementById('size-' + fieldId);
+  if (!input) return;
+  let node = range.startContainer;
+  if (node.nodeType === 3) node = node.parentElement;
+  const size = parseInt(window.getComputedStyle(node).fontSize, 10);
+  if (size) input.value = size;
+}
+
+function syncById(fieldId) {
+  const p = fieldId.split('-');
+  syncField(p[1], parseInt(p[2], 10), fieldId);
+}
+
+function restoreSelection(fieldId) {
+  removeFakeHighlight(fieldId);
+  const el = document.getElementById(fieldId);
+  el.focus();
+  const sel = window.getSelection();
+  if (savedRanges[fieldId]) { sel.removeAllRanges(); sel.addRange(savedRanges[fieldId]); }
+  return sel;
+}
+
+// if nothing is selected, select the whole line
+function selectWholeIfNone(fieldId) {
+  const sel = restoreSelection(fieldId);
+  if (!sel.rangeCount || sel.isCollapsed) {
+    const r = document.createRange();
+    r.selectNodeContents(document.getElementById(fieldId));
+    sel.removeAllRanges();
+    sel.addRange(r);
+  }
+  return sel;
+}
+
+// fake highlight so the selection stays visible while typing in the size box
+function showFakeHighlight(fieldId) {
+  const r = savedRanges[fieldId];
+  if (!r || r.collapsed) return;
+  removeFakeHighlight(fieldId);
+  const span = document.createElement('span');
+  span.id = 'fakeHL-' + fieldId;
+  span.style.background = '#FFD180';
+  try { r.surroundContents(span); } catch (e) {}
+}
+function removeFakeHighlight(fieldId) {
+  const span = document.getElementById('fakeHL-' + fieldId);
+  if (!span) return;
+  const parent = span.parentNode;
+  while (span.firstChild) parent.insertBefore(span.firstChild, span);
+  parent.removeChild(span);
+}
+
+// ---------- formatting ----------
+function fmt(fieldId, command, value) {
+  restoreSelection(fieldId);
+  document.execCommand('styleWithCSS', false, true);
+  document.execCommand(command, false, value || null);
+  syncById(fieldId);
+}
+
+function unwrapFontSizeSpans(node) {
+  let parent = node.parentElement;
+  while (parent && !parent.classList.contains('fieldText') && parent.tagName === 'SPAN' && parent.style.fontSize) {
+    parent.style.fontSize = '';
+    if (!parent.getAttribute('style')) {
+      const gp = parent.parentNode;
+      while (parent.firstChild) gp.insertBefore(parent.firstChild, parent);
+      gp.removeChild(parent);
+      parent = node.parentElement;
+    } else break;
+  }
+}
+
+function applySizeToSelection(fieldId, sel, computeSize) {
+  const editable = document.getElementById(fieldId);
+  const range = sel.getRangeAt(0);
+  if (range.startContainer.nodeType === 3 && range.startOffset > 0 && range.startOffset < range.startContainer.length) {
+    range.startContainer.splitText(range.startOffset);
+    range.setStart(range.startContainer.nextSibling, 0);
+  }
+  if (range.endContainer.nodeType === 3 && range.endOffset > 0 && range.endOffset < range.endContainer.length) {
+    range.endContainer.splitText(range.endOffset);
+    range.setEnd(range.endContainer, range.endContainer.length);
+  }
+  const walker = document.createTreeWalker(editable, NodeFilter.SHOW_TEXT, null);
+  const nodes = [];
+  while (walker.nextNode()) {
+    const n = walker.currentNode;
+    if (range.intersectsNode(n) && n.nodeValue && n.nodeValue.length > 0) nodes.push(n);
+  }
+  let lastSpan = null;
+  nodes.forEach(function(node) {
+    const parent = node.parentElement;
+    if (!parent) return;
+    const cur = parseInt(window.getComputedStyle(parent).fontSize, 10) || 21;
+    const newSize = computeSize(cur);
+    unwrapFontSizeSpans(node);
+    const span = document.createElement('span');
+    span.style.fontSize = newSize + 'px';
+    node.parentElement.replaceChild(span, node);
+    span.appendChild(node);
+    lastSpan = span;
+  });
+  if (lastSpan && nodes.length) {
+    const nr = document.createRange();
+    nr.setStart(nodes[0], 0);
+    nr.setEnd(lastSpan.firstChild, lastSpan.firstChild.length);
+    sel.removeAllRanges();
+    sel.addRange(nr);
+    savedRanges[fieldId] = nr.cloneRange();
+  }
+  syncById(fieldId);
+}
+
+function resizeSelection(fieldId, delta) {
+  const sel = selectWholeIfNone(fieldId);
+  applySizeToSelection(fieldId, sel, function(cur) { return Math.max(6, cur + delta); });
+}
+
+function applyFontSize(fieldId) {
+  removeFakeHighlight(fieldId);
+  const size = parseInt(document.getElementById('size-' + fieldId).value, 10);
+  if (!size || size < 6) return;
+  const sel = selectWholeIfNone(fieldId);
+  applySizeToSelection(fieldId, sel, function() { return size; });
+}
+
+function handlePaste(e, fieldId) {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  document.execCommand('insertText', false, text);
+  syncById(fieldId);
+}
+
+// ---------- color picker ----------
+function loadRecentColors() {
+  try { recentColors = JSON.parse(localStorage.getItem('tms_recent_colors')) || []; } catch (e) { recentColors = []; }
+}
+function saveRecentColor(hex) {
+  recentColors = recentColors.filter(function(c) { return c !== hex; });
+  recentColors.unshift(hex);
+  recentColors = recentColors.slice(0, 8);
+  try { localStorage.setItem('tms_recent_colors', JSON.stringify(recentColors)); } catch (e) {}
+}
+function swatches(list) {
+  return list.map(function(c) {
+    return '<div class="colorSwatch" style="background:' + c + ';" onclick="pickColor(\'' + c + '\')" title="' + c + '"></div>';
+  }).join('');
+}
+function openColorPicker(fieldId) {
+  colorTargetId = fieldId;
+  document.getElementById('standardColorGrid').innerHTML = swatches(standardColors);
+  document.getElementById('recentColorsRow').innerHTML = recentColors.length
+    ? swatches(recentColors) : '<span style="font-size:12px;color:#bbb;">No recent colors yet</span>';
+  document.getElementById('colorModalOverlay').style.display = 'flex';
+}
+function closeColorPicker() { document.getElementById('colorModalOverlay').style.display = 'none'; }
+function pickColor(hex) {
+  if (!colorTargetId) return;
+  fmt(colorTargetId, 'foreColor', hex);
+  saveRecentColor(hex);
+  const ind = document.getElementById('colorInd-' + colorTargetId);
+  if (ind) ind.style.background = hex;
+  closeColorPicker();
+}
+function applyCustomColor() { pickColor(document.getElementById('customColorInput').value); }
+
+function isBlankLine(html) {
+  const t = document.createElement('div');
+  t.innerHTML = html || '';
+  return t.textContent.replace(/\u200B/g, '').trim() === '';
+}
+
+    function exportJson() {
+      const dateKeys = Object.keys(calendarData);
+      const output = {};
+      dateKeys.forEach(function(dateNum) {
+        const entry = calendarData[dateNum];
+        const nonEmptyLines = entry.lines.filter(function(l) { return !isBlankLine(l); });
+        output[dateNum] = { english: entry.english, weekday: entry.weekday, lines: nonEmptyLines };
+      });
+
+      const filename = 'ceremonies-' + ceremonyMonthFiles[currentMonthIndex] + '.json';
+      const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function importJson(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const filenameMatch = file.name.match(/^ceremonies-([a-z]+)\.json$/i);
+      let detectedIndex = -1;
+      if (filenameMatch) {
+        detectedIndex = ceremonyMonthFiles.indexOf(filenameMatch[1].toLowerCase());
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+
+          if (detectedIndex !== -1) {
+            currentMonthIndex = detectedIndex;
+            document.getElementById('monthSelect').value = detectedIndex;
+const first = Object.values(imported)[0];
+const ym = first && first.english && first.english.match(/(\d{4})$/);
+if (ym) document.getElementById('yearInput').value = ym[1];
+            buildDateSkeleton();
+          } else {
+            alert('Could not detect month from filename. Please make sure the correct month is selected before importing.');
+          }
+
+          Object.keys(imported).forEach(function(dateNum) {
+            if (calendarData[dateNum]) {
+              calendarData[dateNum].lines = imported[dateNum].lines || [];
+            }
+          });
+          renderDates();
+          alert('Imported successfully' + (detectedIndex !== -1 ? ' — month auto-selected from filename.' : '.'));
+        } catch (err) {
+          alert('Invalid JSON file.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+loadRecentColors();
+loadDraft();
+populateMonthSelect();
+document.getElementById('monthSelect').value = currentMonthIndex;
+buildDateSkeleton();
+  </script>
+
+</body>
+</html>
