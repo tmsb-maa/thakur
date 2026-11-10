@@ -25,7 +25,7 @@
     "english": "5-Nov-2026",
     "weekday": "Thursday",
     "lines": [
-      "রাম একাদশী শেষঃ সকাল&nbsp;10:35 AM"
+      "<span style=\"font-size: 22px;\">রাম একাদশী শেষঃ সকাল&nbsp;10:35 AM</span>"
     ]
   },
   "6": {
@@ -37,38 +37,38 @@
     "english": "7-Nov-2026",
     "weekday": "Saturday",
     "lines": [
-      "ভুত চতুর্দশী শুরুঃ সকাল&nbsp;10:48 AM"
+      "<span style=\"font-size: 22px;\">ভুত চতুর্দশী শুরুঃ সকাল&nbsp;10:48 AM</span>"
     ]
   },
   "8": {
     "english": "8-Nov-2026",
     "weekday": "Sunday",
     "lines": [
-      "অমাবস্যা তিথি শুরুঃ সকাল&nbsp;11:27 AM",
-      "ভুত চতুর্দশী শেষঃ সকাল&nbsp;11:28 AM",
-      "কালীপূজা শুরুঃ সকাল&nbsp;11:27 AM"
+      "<span style=\"font-size: 22px;\">অমাবস্যা তিথি শুরুঃ সকাল&nbsp;11:27 AM</span>",
+      "<span style=\"font-size: 22px;\">ভুত চতুর্দশী শেষঃ সকাল&nbsp;11:28 AM</span>",
+      "<span style=\"font-size: 22px;\">কালীপূজা শুরুঃ সকাল&nbsp;11:27 AM</span>"
     ]
   },
   "9": {
     "english": "9-Nov-2026",
     "weekday": "Monday",
     "lines": [
-      "অমাবস্যা তিথি শেষঃ দুপুর 12:31 PM",
-      "কালীপূজা শেষঃ দুপুর&nbsp;12:31 PM"
+      "<span style=\"font-size: 22px;\">অমাবস্যা তিথি শেষঃ দুপুর 12:31 PM</span>",
+      "<span style=\"font-size: 22px;\">কালীপূজা শেষঃ দুপুর&nbsp;12:31 PM</span>"
     ]
   },
   "10": {
     "english": "10-Nov-2026",
     "weekday": "Tuesday",
     "lines": [
-      "ভাতৃ দ্বিতীয়া তিথি শুরুঃ দুপুর 2 PM"
+      "<span style=\"font-size: 22px;\">ভাতৃ দ্বিতীয়া তিথি শুরুঃ দুপুর 2 PM</span>"
     ]
   },
   "11": {
     "english": "11-Nov-2026",
     "weekday": "Wednesday",
     "lines": [
-      "ভাতৃ দ্বিতীয়া তিথি শেষঃ দুপুর 3:53 PM"
+      "<span style=\"font-size: 22px;\">ভাতৃ দ্বিতীয়া তিথি শেষঃ দুপুর 3:53 PM</span>"
     ]
   },
   "12": {
@@ -95,44 +95,44 @@
     "english": "16-Nov-2026",
     "weekday": "Monday",
     "lines": [
-      "কার্ত্তিক পূজাঃ তিথি শুরু সন্ধ্যে 7:45 PM",
-      "জগদ্ধাত্রী পূজাঃ মহাসপ্তমী"
+      "<span style=\"font-size: 22px;\">কার্ত্তিক পূজাঃ তিথি শুরু সন্ধ্যে 7:45 PM</span>",
+      "<span style=\"font-size: 22px;\">জগদ্ধাত্রী পূজাঃ মহাসপ্তমী</span>"
     ]
   },
   "17": {
     "english": "17-Nov-2026",
     "weekday": "Tuesday",
     "lines": [
-      "কার্ত্তিক পূজাঃ তিথি শেষঃ দুপুর 12 PM&nbsp;",
-      "জগদ্ধাত্রী পূজাঃ মহাঅষ্টমী"
+      "<span style=\"font-size: 22px;\">কার্ত্তিক পূজাঃ তিথি শেষঃ দুপুর 12 PM&nbsp;</span>",
+      "<span style=\"font-size: 22px;\">জগদ্ধাত্রী পূজাঃ মহাঅষ্টমী</span>"
     ]
   },
   "18": {
     "english": "18-Nov-2026",
     "weekday": "Wednesday",
     "lines": [
-      "জগদ্ধাত্রী পূজাঃ মহানবমী"
+      "<span style=\"font-size: 22px;\">জগদ্ধাত্রী পূজাঃ মহানবমী</span>"
     ]
   },
   "19": {
     "english": "19-Nov-2026",
     "weekday": "Thursday",
     "lines": [
-      "জগদ্ধাত্রী পূজাঃ মহাদশমী"
+      "<span style=\"font-size: 22px;\">জগদ্ধাত্রী পূজাঃ মহাদশমী</span>"
     ]
   },
   "20": {
     "english": "20-Nov-2026",
     "weekday": "Friday",
     "lines": [
-      "দেবোত্থানী একাদশী শুরুঃ সকাল&nbsp;7:15 AM"
+      "<span style=\"font-size: 21px;\">দেবোত্থানী একাদশী শুরুঃ সকাল&nbsp;7:15 AM</span>"
     ]
   },
   "21": {
     "english": "21-Nov-2026",
     "weekday": "Saturday",
     "lines": [
-      "দেবোত্থানী একাদশী শেষঃ সকাল&nbsp;6:31 AM"
+      "<span style=\"font-size: 21px;\">দেবোত্থানী একাদশী শেষঃ সকাল&nbsp;6:31 AM</span>"
     ]
   },
   "22": {
@@ -144,17 +144,17 @@
     "english": "23-Nov-2026",
     "weekday": "Monday",
     "lines": [
-      "পূর্ণিমা তিথি শুরুঃ রাত 11:42 PM",
-      "শুক্লপক্ষ চতুর্দশী শুরুঃ রাত&nbsp;2:37 AM",
-      "শুক্লপক্ষ চতুর্দশী শেষঃ রাত&nbsp;11:42 PM"
+      "<span style=\"font-size: 22px;\">পূর্ণিমা তিথি শুরুঃ রাত 11:42 PM</span>",
+      "<span style=\"font-size: 22px;\">শুক্লপক্ষ চতুর্দশী শুরুঃ রাত&nbsp;2:37 AM</span>",
+      "<span style=\"font-size: 22px;\">শুক্লপক্ষ চতুর্দশী শেষঃ রাত&nbsp;11:42 PM</span>"
     ]
   },
   "24": {
     "english": "24-Nov-2026",
     "weekday": "Tuesday",
     "lines": [
-      "পূর্ণিমা তিথি শেষঃ রাত 08:23 PM",
-      "রাস পূর্ণিমা&nbsp;"
+      "<span style=\"font-size: 22px;\">পূর্ণিমা তিথি শেষঃ রাত 08:23 PM</span>",
+      "<span style=\"font-size: 22px;\">রাস পূর্ণিমা&nbsp;</span>"
     ]
   },
   "25": {
