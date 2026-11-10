@@ -169,7 +169,7 @@
     border-radius: 0 0 6px 6px;
     padding: 16px 10px;
     min-height: 60px;
-    font-size: 21px;
+    font-size: 20px;
     line-height: 1.4;
     outline: none;
     word-break: break-word;
@@ -384,7 +384,7 @@ function renderFieldRow(dateNum, idx, lineHtml) {
         b('Italic', 'fmt(' + q + ",'italic')", '<i>I</i>') +
         b('Underline', 'fmt(' + q + ",'underline')", '<u>U</u>') +
         b('Font Color', 'openColorPicker(' + q + ')', 'A<span id="colorInd-' + id + '" style="display:block;width:16px;height:3px;background:#000;margin:2px auto 0;"></span>') +
-        '<input type="number" id="size-' + id + '" title="Font Size" min="6" max="200" value="21" ' +
+        '<input type="number" id="size-' + id + '" title="Font Size" min="6" max="200" value="20" ' +
           'onfocus="showFakeHighlight(' + q + ')" onblur="removeFakeHighlight(' + q + ')" onchange="applyFontSize(' + q + ')" ' +
           'onkeydown="if(event.key===\'Enter\'){event.preventDefault();applyFontSize(' + q + ');}">' +
         b('Bigger', 'resizeSelection(' + q + ',1)', 'A+') +
@@ -544,7 +544,7 @@ function applySizeToSelection(fieldId, sel, computeSize) {
   nodes.forEach(function(node) {
     const parent = node.parentElement;
     if (!parent) return;
-    const cur = parseInt(window.getComputedStyle(parent).fontSize, 10) || 21;
+    const cur = parseInt(window.getComputedStyle(parent).fontSize, 10) || 20;
     const newSize = computeSize(cur);
     unwrapFontSizeSpans(node);
     const span = document.createElement('span');
