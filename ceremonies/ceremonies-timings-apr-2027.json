@@ -3,14 +3,14 @@
     "english": "1-Apr-2027",
     "weekday": "Thursday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:29 AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:51 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "2": {
     "english": "2-Apr-2027",
     "weekday": "Friday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:28 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:52 PM (কলকাতা ভিত্তিক)</span></div>",
       "<span style=\"font-size: 20px;\">পাপমোচনী একাদশী শুরুঃ রাত&nbsp;12:45 AM</span>"
     ]
   },
@@ -18,29 +18,29 @@
     "english": "3-Apr-2027",
     "weekday": "Saturday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>",
-      "পাপমোচনী একাদশী শেষঃ রাত 2:51 AM"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:27 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:52 PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 20px;\">পাপমোচনী একাদশী শেষঃ রাত 2:51 AM</span>"
     ]
   },
   "4": {
     "english": "4-Apr-2027",
     "weekday": "Sunday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:26 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:52 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "5": {
     "english": "5-Apr-2027",
     "weekday": "Monday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:26 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:53 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "6": {
     "english": "6-Apr-2027",
     "weekday": "Tuesday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:25 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:53 PM (কলকাতা ভিত্তিক)</span></div>",
       "<span style=\"font-size: 21px;\">অমাবস্যা তিথি শুরুঃ ভোর 5:40 AM</span>"
     ]
   },
@@ -48,7 +48,7 @@
     "english": "7-Apr-2027",
     "weekday": "Wednesday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:24 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:53 PM (কলকাতা ভিত্তিক)</span></div>",
       "<span style=\"font-size: 21px;\">অমাবস্যা তিথি শেষঃ ভোর 5:20 AM</span>"
     ]
   },
@@ -56,63 +56,63 @@
     "english": "8-Apr-2027",
     "weekday": "Thursday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:23 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:54 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "9": {
     "english": "9-Apr-2027",
     "weekday": "Friday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:22 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:54 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "10": {
     "english": "10-Apr-2027",
     "weekday": "Saturday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:21 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:54 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "11": {
     "english": "11-Apr-2027",
     "weekday": "Sunday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:20 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:55 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "12": {
     "english": "12-Apr-2027",
     "weekday": "Monday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:19 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:55 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "13": {
     "english": "13-Apr-2027",
     "weekday": "Tuesday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:18 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:56 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "14": {
     "english": "14-Apr-2027",
     "weekday": "Wednesday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:17 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:56 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "15": {
     "english": "15-Apr-2027",
     "weekday": "Thursday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:17 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:56 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "16": {
     "english": "16-Apr-2027",
     "weekday": "Friday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:16 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:57 PM (কলকাতা ভিত্তিক)</span></div>",
       "<span style=\"font-size: 21px;\">কামদা একাদশী শুরুঃ সকাল&nbsp;11:21 AM</span> "
     ]
   },
@@ -120,7 +120,7 @@
     "english": "17-Apr-2027",
     "weekday": "Saturday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:15 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:57 PM (কলকাতা ভিত্তিক)</span></div>",
       "<span style=\"font-size: 21px;\">কামদা একাদশী শেষঃ সকাল 9:27 AM</span>"
     ]
   },
@@ -128,93 +128,93 @@
     "english": "18-Apr-2027",
     "weekday": "Sunday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:14 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:57 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "19": {
     "english": "19-Apr-2027",
     "weekday": "Monday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:13 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:58 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "20": {
     "english": "20-Apr-2027",
     "weekday": "Tuesday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>",
-      "<span style=\"font-size: 21px;\">পূর্ণিমা শুরুঃ রাত&nbsp;</span>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:12 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:58 PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">পূর্ণিমা শুরুঃ ভোর 4:51 AM</span>"
     ]
   },
   "21": {
     "english": "21-Apr-2027",
     "weekday": "Wednesday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>",
-      "<span style=\"font-size: 21px;\">পূর্ণিমা শেষঃ রাত&nbsp;03:57 AM</span>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:11 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:59 PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">পূর্ণিমা শেষঃ ভোর 3:57 AM</span>"
     ]
   },
   "22": {
     "english": "22-Apr-2027",
     "weekday": "Thursday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:11 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:59 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "23": {
     "english": "23-Apr-2027",
     "weekday": "Friday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:10 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:59 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "24": {
     "english": "24-Apr-2027",
     "weekday": "Saturday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:09 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 6:00 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "25": {
     "english": "25-Apr-2027",
     "weekday": "Sunday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:08 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 6:00 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "26": {
     "english": "26-Apr-2027",
     "weekday": "Monday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:08 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 6:01 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "27": {
     "english": "27-Apr-2027",
     "weekday": "Tuesday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:07 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 6:01 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "28": {
     "english": "28-Apr-2027",
     "weekday": "Wednesday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:06 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 6:01 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "29": {
     "english": "29-Apr-2027",
     "weekday": "Thursday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:05 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 6:02 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   },
   "30": {
     "english": "30-Apr-2027",
     "weekday": "Friday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ  AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:05 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 6:02 PM (কলকাতা ভিত্তিক)</span></div>"
     ]
   }
 }
