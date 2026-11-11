@@ -97,7 +97,7 @@
 
   .dateBlockTitle {
     font-weight: bold;
-    font-size: 16px;
+    font-size: 18px;
     color: #333;
     white-space: nowrap;
   }
@@ -273,7 +273,7 @@ const standardColors = [
       englishMonthsFull.forEach(function(name, i) {
         const opt = document.createElement('option');
         opt.value = i;
-        opt.text = name + ' (ceremonies-' + ceremonyMonthFiles[i] + '.json)';
+        opt.text = name;
         select.appendChild(opt);
       });
       select.addEventListener('change', function() {
@@ -632,7 +632,8 @@ function isBlankLine(html) {
         output[dateNum] = { english: entry.english, weekday: entry.weekday, lines: nonEmptyLines };
       });
 
-      const filename = 'ceremonies-' + ceremonyMonthFiles[currentMonthIndex] + '.json';
+      const exportYear = parseInt(document.getElementById('yearInput').value) || 2026;
+      const filename = 'ceremonies-timings-' + ceremonyMonthFiles[currentMonthIndex] + '-' + exportYear + '.json';
       const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -648,10 +649,15 @@ function isBlankLine(html) {
       const file = event.target.files[0];
       if (!file) return;
 
-      const filenameMatch = file.name.match(/^ceremonies-([a-z]+)\.json$/i);
+      const newMatch = file.name.match(/^ceremonies-timings-([a-z]+)-(\d{4})\.json$/i);
+      const oldMatch = file.name.match(/^ceremonies-([a-z]+)\.json$/i);
       let detectedIndex = -1;
-      if (filenameMatch) {
-        detectedIndex = ceremonyMonthFiles.indexOf(filenameMatch[1].toLowerCase());
+      let detectedYear = null;
+      if (newMatch) {
+        detectedIndex = ceremonyMonthFiles.indexOf(newMatch[1].toLowerCase());
+        detectedYear = newMatch[2];
+      } else if (oldMatch) {
+        detectedIndex = ceremonyMonthFiles.indexOf(oldMatch[1].toLowerCase());
       }
 
       const reader = new FileReader();
@@ -662,9 +668,13 @@ function isBlankLine(html) {
           if (detectedIndex !== -1) {
             currentMonthIndex = detectedIndex;
             document.getElementById('monthSelect').value = detectedIndex;
-const first = Object.values(imported)[0];
-const ym = first && first.english && first.english.match(/(\d{4})$/);
-if (ym) document.getElementById('yearInput').value = ym[1];
+if (detectedYear) {
+  document.getElementById('yearInput').value = detectedYear;
+} else {
+  const first = Object.values(imported)[0];
+  const ym = first && first.english && first.english.match(/(\d{4})$/);
+  if (ym) document.getElementById('yearInput').value = ym[1];
+}
             buildDateSkeleton();
           } else {
             alert('Could not detect month from filename. Please make sure the correct month is selected before importing.');
