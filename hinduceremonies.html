@@ -133,7 +133,7 @@
   main {
     flex: 1;
     background-color: #FFFFFF;
-    padding: 30px 20px;
+    padding: 15px 20px 30px 20px;
     display: flex;
     flex-direction: column;
   }
@@ -153,15 +153,6 @@
     max-width: 700px;
     width: 100%;
     margin: 0 auto;
-  }
-
-  #todayLine {
-    text-align: center;
-    font-size: 26px;
-    font-weight: bold;
-    color: #FF8C00;
-    margin-bottom: 25px;
-    white-space: nowrap;
   }
 
   #monthNavRow {
@@ -188,9 +179,9 @@
   #monthHeading {
     flex: 1;
     text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    color: #FF8C00;
+    font-size: 28px;
+    font-weight: 900;
+    color: #000000;
   }
 
   #monthContent {
@@ -239,10 +230,9 @@
     #backBtn { width: 40px; height: 40px; }
     #personBtn { width: 40px; height: 40px; }
     footer p { font-size: 18px; }
-    #todayLine { font-size: 21px; }
-    #monthHeading { font-size: 22px; }
+    #monthHeading { font-size: 26px; }
     #prevMonthBtn, #nextMonthBtn { width: 36px; height: 36px; }
-    .cerDateHeading { font-size: 16px; }
+    .cerDateHeading { font-size: 18px; }
     .cerDateLine { font-size: 18px; }
     .userMenuItem { font-size: 18px; padding: 16px; }
     .tmsModalBox { max-width: 92%; padding: 25px 20px; }
@@ -273,7 +263,6 @@
     <p id="statusMsg">Checking access...</p>
 
     <div id="pageContent">
-      <p id="todayLine"></p>
 
       <div id="monthNavRow">
         <button id="prevMonthBtn" onclick="changeMonth(-1)">
@@ -618,41 +607,47 @@ function shareTmsLink() {
     const ceremonyMonthFiles = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 
     let viewMonthIndex = 0;
+    let viewYear = new Date().getFullYear();
     let currentlyRenderedMonth = null;
 
-    function renderTodayLine() {
-      const now = new Date();
-      document.getElementById('todayLine').innerText =
-        now.getDate() + '-' + englishMonthsShort[now.getMonth()] + '-' + now.getFullYear() + ', ' + weekdaysFull[now.getDay()];
-    }
+    async function loadMonthContent(index, year) {
+      let m = index;
+      let y = year;
+      while (m < 0)  { m += 12; y--; }
+      while (m > 11) { m -= 12; y++; }
+      viewMonthIndex = m;
+      viewYear = y;
+      const key = y + '_' + m;
 
-        async function loadMonthContent(index) {
-      const wrapped = ((index % 12) + 12) % 12;
-      viewMonthIndex = wrapped;
-
-      document.getElementById('monthHeading').innerText = englishMonthsFull[wrapped];
+      document.getElementById('monthHeading').innerText = englishMonthsShort[m] + ' ' + y;
       const contentBox = document.getElementById('monthContent');
-      if (wrapped !== currentlyRenderedMonth) {
+      if (key !== currentlyRenderedMonth) {
         contentBox.innerHTML = 'Loading...';
       }
 
       try {
-        const response = await fetch('ceremonies/ceremonies-' + ceremonyMonthFiles[wrapped] + '.json?t=' + Date.now());
+        const response = await fetch('ceremonies/ceremonies-timings-' + ceremonyMonthFiles[m] + '-' + y + '.json?t=' + Date.now());
+        if (!response.ok) throw new Error('not found');
         const data = await response.json();
-        const rawJson = JSON.stringify(data);
-        const cachedRaw = localStorage.getItem('tms_ceremonies_rawcache_' + wrapped);
 
-        if (rawJson !== cachedRaw || wrapped !== currentlyRenderedMonth) {
-          renderMonthContent(data, wrapped);
-          currentlyRenderedMonth = wrapped;
+        // ignore this result if user already moved to another month
+        if (key !== (viewYear + '_' + viewMonthIndex)) return;
+
+        const rawJson = JSON.stringify(data);
+        const cachedRaw = localStorage.getItem('tms_ceremonies_rawcache_' + key);
+
+        if (rawJson !== cachedRaw || key !== currentlyRenderedMonth) {
+          renderMonthContent(data, key);
+          currentlyRenderedMonth = key;
         }
 
         try {
-          localStorage.setItem('tms_ceremonies_rawcache_' + wrapped, rawJson);
+          localStorage.setItem('tms_ceremonies_rawcache_' + key, rawJson);
         } catch (e) {}
       } catch (e) {
+        if (key !== (viewYear + '_' + viewMonthIndex)) return;
         contentBox.innerHTML = '<p class="cerEmptyMsg">No entries yet for this month.</p>';
-        currentlyRenderedMonth = wrapped;
+        currentlyRenderedMonth = key;
       }
     }
 
@@ -677,7 +672,7 @@ function shareTmsLink() {
       const finalHtml = blocks.length > 0 ? blocks.join('') : '<p class="cerEmptyMsg">No entries yet for this month.</p>';
       contentBox.innerHTML = finalHtml;
 
-      if (typeof monthIndex === 'number') {
+      if (monthIndex) {
         try {
           localStorage.setItem('tms_ceremonies_cache_' + monthIndex, finalHtml);
         } catch (e) {}
@@ -685,7 +680,7 @@ function shareTmsLink() {
     }
 
     function changeMonth(direction) {
-      loadMonthContent(viewMonthIndex + direction);
+      loadMonthContent(viewMonthIndex + direction, viewYear);
     }
 
     function tryInstantAuthDisplay() {
@@ -695,14 +690,16 @@ function shareTmsLink() {
           document.getElementById('statusMsg').style.display = 'none';
           document.getElementById('pageContent').style.display = 'flex';
 
-          renderTodayLine();
           const currentMonth = new Date().getMonth();
-                    const cachedHtml = localStorage.getItem('tms_ceremonies_cache_' + currentMonth);
+          const currentYear = new Date().getFullYear();
+          const cacheKey = currentYear + '_' + currentMonth;
+          const cachedHtml = localStorage.getItem('tms_ceremonies_cache_' + cacheKey);
           if (cachedHtml) {
             viewMonthIndex = currentMonth;
-            document.getElementById('monthHeading').innerText = englishMonthsFull[currentMonth];
+            viewYear = currentYear;
+            document.getElementById('monthHeading').innerText = englishMonthsShort[currentMonth] + ' ' + currentYear;
             document.getElementById('monthContent').innerHTML = cachedHtml;
-            currentlyRenderedMonth = currentMonth;
+            currentlyRenderedMonth = cacheKey;
           }
         }
       } catch (e) {
@@ -767,8 +764,7 @@ function shareTmsLink() {
 
         if (!calendarStarted) {
           calendarStarted = true;
-          renderTodayLine();
-          loadMonthContent(new Date().getMonth());
+          loadMonthContent(new Date().getMonth(), new Date().getFullYear());
         }
 
         try {
