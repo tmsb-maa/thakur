@@ -11,7 +11,8 @@
     "weekday": "Saturday",
     "lines": [
       "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 6:16 AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:03 PM (কলকাতা ভিত্তিক)</span></div>",
-      "<span style=\"font-size: 21px;\">সফলা একাদশী শুরুঃ দুপুর 2:24 PM</span>"
+      "<span style=\"font-size: 21px;\">সফলা একাদশী শুরুঃ দুপুর 2:24 PM</span>",
+      "<span style=\"font-size: 21px;\">পৌষ পূর্ণিমা তিথি শুরুঃ সন্ধ্যা 6:53 PM</span>"
     ]
   },
   "3": {
@@ -19,7 +20,8 @@
     "weekday": "Sunday",
     "lines": [
       "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 6:17 AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:04 PM (কলকাতা ভিত্তিক)</span></div>",
-      "<span style=\"font-size: 21px;\">সফলা একাদশী শেষঃ বিকেল 4:08 PM</span>"
+      "<span style=\"font-size: 21px;\">সফলা একাদশী শেষঃ বিকেল 4:08 PM</span>",
+      "<span style=\"font-size: 21px;\">পৌষ পূর্ণিমা তিথি শেষঃ বিকেল 3:32 PM</span>"
     ]
   },
   "4": {
@@ -99,14 +101,16 @@
     "english": "14-Jan-2027",
     "weekday": "Thursday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 6:18 AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:12 PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 6:18 AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:12 PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">পৌষ সংক্রান্তি শুরুঃ রাত 9:14 PM</span>"
     ]
   },
   "15": {
     "english": "15-Jan-2027",
     "weekday": "Friday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 6:18 AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:12 PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 6:18 AM (কলকাতা ভিত্তিক)\n</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:12 PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">পৌষ সংক্রান্তি শেষঃ রাত 8:38 PM</span>"
     ]
   },
   "16": {
