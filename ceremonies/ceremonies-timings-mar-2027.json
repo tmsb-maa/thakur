@@ -40,7 +40,8 @@
     "english": "6-Mar-2027",
     "weekday": "Saturday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:54 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:42 PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:54 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:42 PM (কলকাতা ভিত্তিক)</span></div>",
+      "মহা শিবরাত্রি তিথি শুরুঃ দুপুর 12:04 PM"
     ]
   },
   "7": {
@@ -48,6 +49,7 @@
     "weekday": "Sunday",
     "lines": [
       "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:53 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:42 PM (কলকাতা ভিত্তিক)</span></div>",
+      "মহা শিবরাত্রি তিথি শেষঃ দুপুর 1:46 PM",
       "<span style=\"font-size: 21px;\">অমাবস্যা তিথি শুরুঃ দুপুর 1:46 PM</span>"
     ]
   },
@@ -150,7 +152,7 @@
     "weekday": "Sunday",
     "lines": [
       "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:40 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:47 PM (কলকাতা ভিত্তিক)</span></div>",
-      "<span style=\"font-size: 21px;\">পূর্ণিমা তিথি শুরুঃ সন্ধ্যে 6:21 PM</span>"
+      "<span style=\"font-size: 21px;\">দোল পূর্ণিমা তিথি শুরুঃ সন্ধ্যে 6:22 PM</span>"
     ]
   },
   "22": {
@@ -158,7 +160,7 @@
     "weekday": "Monday",
     "lines": [
       "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:39 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:48 PM (কলকাতা ভিত্তিক)</span></div>",
-      "<span style=\"font-size: 21px;\">পূর্ণিমা তিথি শেষঃ বিকেল 4:13 PM</span>"
+      "<span style=\"font-size: 21px;\">দোল পূর্ণিমা তিথি শেষঃ বিকেল 4:14 PM</span>"
     ]
   },
   "23": {
