@@ -84,28 +84,35 @@
     "english": "12-Apr-2027",
     "weekday": "Monday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:19 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:55 PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:19 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:55 PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">বাসন্তী পূজাঃ মা দূর্গার বোধন (মহাষষ্ঠী)&nbsp;</span>"
     ]
   },
   "13": {
     "english": "13-Apr-2027",
     "weekday": "Tuesday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:18 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:56 PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:18 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:56 PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">বাসন্তী পূজাঃ মহাসপ্তমী</span>",
+      "<span style=\"font-size: 21px;\">নীল পূজা (নীল ষষ্ঠী)&nbsp;</span>"
     ]
   },
   "14": {
     "english": "14-Apr-2027",
     "weekday": "Wednesday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:17 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:56 PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:17 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:56 PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">বাসন্তী পূজাঃ মহাঅষ্টমী</span>"
     ]
   },
   "15": {
     "english": "15-Apr-2027",
     "weekday": "Thursday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:17 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:56 PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:17 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:56 PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">বাসন্তী পূজাঃ মহানবমী</span>",
+      "<span style=\"font-size: 21px;\">পয়লা বৈশাখ (বাংলার নববর্ষ)</span>",
+      "<span style=\"font-size: 21px;\">রাম নবমী</span>"
     ]
   },
   "16": {
@@ -113,6 +120,7 @@
     "weekday": "Friday",
     "lines": [
       "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:16 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:57 PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">বাসন্তী পূজাঃ মহাদশমী</span>",
       "<span style=\"font-size: 21px;\">কামদা একাদশী শুরুঃ সকাল&nbsp;11:21 AM</span> "
     ]
   },
@@ -135,7 +143,8 @@
     "english": "19-Apr-2027",
     "weekday": "Monday",
     "lines": [
-      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:13 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:58 PM (কলকাতা ভিত্তিক)</span></div>"
+      "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:13 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:58 PM (কলকাতা ভিত্তিক)</span></div>",
+      "<span style=\"font-size: 21px;\">মহাবীর জয়ন্তী</span>"
     ]
   },
   "20": {
@@ -143,7 +152,8 @@
     "weekday": "Tuesday",
     "lines": [
       "<span style=\"font-size: 21px;\">সূর্যোদয়ঃ 5:12 AM (কলকাতা ভিত্তিক)\r</span><div><span style=\"font-size: 21px;\">সূর্যাস্তঃ 5:58 PM (কলকাতা ভিত্তিক)</span></div>",
-      "<span style=\"font-size: 21px;\">পূর্ণিমা শুরুঃ ভোর 4:51 AM</span>"
+      "<span style=\"font-size: 21px;\">পূর্ণিমা শুরুঃ ভোর 4:51 AM</span>",
+      "<span style=\"font-size: 21px;\">হনুমান জয়ন্তী</span>"
     ]
   },
   "21": {
